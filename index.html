@@ -29,7 +29,6 @@
             user-select: none;
         }
         
-        /* Плавный скролл для лога */
         html {
             scroll-behavior: smooth;
         }
@@ -38,11 +37,12 @@
             background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 100%);
             color: var(--text);
             min-height: 100vh;
-            min-height: 100dvh; /* Динамическая высота для мобилок */
+            min-height: 100dvh; /* Динамическая высота для мобилок, чтобы URL-бар не мешал */
             padding: 15px;
             overflow-x: hidden;
             touch-action: manipulation;
-            font-size: clamp(14px, 3.5vw, 16px); /* Адаптивный размер шрифта */
+            /* Ключевое правило для адаптивного шрифта на всех экранах */
+            font-size: clamp(14px, 3.5vw, 16px); 
         }
         
         .container {
@@ -100,15 +100,15 @@
         .character-container {
             text-align: center;
             margin: 15px 0;
-            font-size: 5rem; /* Базовый размер для эмодзи */
-            perspective: 500px; /* Для 3D эффектов */
+            font-size: 5rem;
+            perspective: 500px;
         }
         #stepa-emoji {
             display: inline-block;
             animation: idle-bob 4s ease-in-out infinite;
         }
 
-        /* Адаптивная сетка кнопок */
+        /* Ключевое правило для адаптивной сетки кнопок, работает на любых экранах */
         .actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -138,13 +138,8 @@
         .action-btn:active { transform: translateY(-1px) scale(0.98); background: rgba(240, 45, 84, 0.3); }
         
         .events {
-            background: var(--glass-bg);
-            padding: 15px;
-            border-radius: 20px;
-            height: 120px;
-            overflow-y: auto;
-            border: 1px solid var(--glass-border);
-            font-size: 0.85rem;
+            background: var(--glass-bg); padding: 15px; border-radius: 20px;
+            height: 120px; overflow-y: auto; border: 1px solid var(--glass-border); font-size: 0.85rem;
         }
         .event { padding: 8px; margin-bottom: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.2); border-left: 4px solid var(--secondary); animation: slideIn 0.4s ease-out; }
         .event.danger { border-left-color: var(--danger); }
@@ -178,7 +173,7 @@
         .toast { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 12px 18px; border-radius: 12px; color: var(--text); font-size: 0.9rem; border-left: 5px solid var(--primary); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); width: 100%; animation: slideInTop 0.5s ease-out, fadeOut 0.5s ease-in 3.5s forwards; }
         .toast.success { border-left-color: var(--success); } .toast.danger { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
 
-        /* --- АНИМАЦИИ --- */
+        /* --- Анимации --- */
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
@@ -196,7 +191,6 @@
 </head>
 <body>
     <div id="toast-container"></div>
-
     <div class="container">
         <div class="header">
             <h1>🐷 СТЕПА: КУРСКИЙ ДОЛЖНИК</h1>
@@ -234,16 +228,19 @@
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // --- Улучшенная аудиосистема ---
         let audioContext;
         const soundBuffers = {};
         const soundUrls = {
             click: 'https://www.myinstants.com/media/sounds/mouse-click.mp3',
             gain: 'https://www.myinstants.com/media/sounds/cash-register-cha-ching.mp3',
-            loss: 'https://www.myinstants.com/media/sounds/bruh.mp3',
-            error: 'https://www.myinstants.com/media/sounds/roblox-death-sound_1.mp3',
             gameOver: 'https://www.myinstants.com/media/sounds/sad-violin.mp3',
-            notification: 'https://www.myinstants.com/media/sounds/pling-sound-effect.mp3'
+            notification: 'https://www.myinstants.com/media/sounds/pling-sound-effect.mp3',
+            // --- Новые мемные звуки ---
+            vineBoom: 'https://www.myinstants.com/media/sounds/vine-boom.mp3',
+            gtaAhShit: 'https://www.myinstants.com/media/sounds/ah-shit-here-we-go-again.mp3',
+            mgsAlert: 'https://www.myinstants.com/media/sounds/metal-gear-solid-alert-sound.mp3',
+            mcVillager: 'https://www.myinstants.com/media/sounds/minecraft-villager-sound-effect.mp3',
+            nom: 'https://www.myinstants.com/media/sounds/om-nom-nom-nom.mp3'
         };
 
         async function initAudio() {
@@ -254,9 +251,7 @@
                     const response = await fetch(soundUrls[key]);
                     const arrayBuffer = await response.arrayBuffer();
                     soundBuffers[key] = await audioContext.decodeAudioData(arrayBuffer);
-                } catch (e) {
-                    console.error(`Не удалось загрузить звук ${key}:`, e);
-                }
+                } catch (e) { console.error(`Не удалось загрузить звук ${key}:`, e); }
             }
         }
         
@@ -268,21 +263,17 @@
             source.start(0);
         }
 
-        // --- Виброотклик ---
         function haptic(type) {
             try {
-                switch(type) {
-                    case 'error': tg.HapticFeedback.notificationOccurred('error'); break;
-                    case 'success': tg.HapticFeedback.notificationOccurred('success'); break;
-                    case 'warning': tg.HapticFeedback.notificationOccurred('warning'); break;
-                    case 'light': tg.HapticFeedback.impactOccurred('light'); break;
-                    case 'medium': tg.HapticFeedback.impactOccurred('medium'); break;
-                    default: tg.HapticFeedback.selectionChanged();
-                }
+                const feedback = tg.HapticFeedback;
+                if (type === 'error') feedback.notificationOccurred('error');
+                else if (type === 'success') feedback.notificationOccurred('success');
+                else if (type === 'warning') feedback.notificationOccurred('warning');
+                else if (type === 'light') feedback.impactOccurred('light');
+                else feedback.selectionChanged();
             } catch (e) { /* Игнорируем ошибки, если API недоступен */ }
         }
         
-        // --- Игровое состояние ---
         const initialGameState = {
             day: 1, money: 5000, debt: 100000, health: 100, satiety: 100, stress: 0,
             job: { name: "Бомж", salary: 750, stress: 5, health: -5, satiety: -15 },
@@ -296,7 +287,6 @@
         };
         let gameState;
 
-        // --- Константы и данные ---
         const food = [
             { name: "Доширак", cost: 100, satiety: 20, health: -2, stress: 5 },
             { name: "Шаурма у Ашота", cost: 250, satiety: 40, health: 5, stress: 0 },
@@ -320,7 +310,6 @@
             }
         };
 
-        // --- Управление UI ---
         const ui = {
             day: document.getElementById('day'), money: document.getElementById('money'), debt: document.getElementById('debt'), job: document.getElementById('job'),
             health: document.getElementById('health-value'), healthBar: document.getElementById('health-bar'),
@@ -330,7 +319,6 @@
         };
         
         function updateUI() {
-            // Анимация статов
             animateStatUpdate(ui.day, gameState.day);
             animateStatUpdate(ui.money, gameState.money.toLocaleString('ru-RU') + ' ₽');
             animateStatUpdate(ui.debt, gameState.debt.toLocaleString('ru-RU') + ' ₽');
@@ -344,24 +332,17 @@
 
         let statUpdateTimers = {};
         function animateStatUpdate(element, newValue) {
-            const key = element.id;
-            const oldValue = element.textContent;
+            const key = element.id; const oldValue = element.textContent;
             if (oldValue !== String(newValue)) {
                 const isNumber = !isNaN(parseFloat(oldValue.replace(/ /g, ''))) && !isNaN(parseFloat(String(newValue).replace(/ /g, '')));
                 let changeClass = '';
                 if (isNumber) {
-                    const oldNum = parseFloat(oldValue.replace(/ /g, ''));
-                    const newNum = parseFloat(String(newValue).replace(/ /g, ''));
-                    if (newNum > oldNum) changeClass = 'flash-green';
-                    if (newNum < oldNum) changeClass = 'flash-red';
+                    const oldNum = parseFloat(oldValue.replace(/ /g, '')); const newNum = parseFloat(String(newValue).replace(/ /g, ''));
+                    if (newNum > oldNum) changeClass = 'flash-green'; if (newNum < oldNum) changeClass = 'flash-red';
                 }
-
                 element.textContent = newValue;
-
                 if(changeClass) {
-                    clearTimeout(statUpdateTimers[key]);
-                    element.classList.remove('flash-green', 'flash-red');
-                    void element.offsetWidth; // трюк для рестарта анимации
+                    clearTimeout(statUpdateTimers[key]); element.classList.remove('flash-green', 'flash-red'); void element.offsetWidth; 
                     element.classList.add(changeClass);
                     statUpdateTimers[key] = setTimeout(() => element.classList.remove(changeClass), 700);
                 }
@@ -374,94 +355,63 @@
         }
         
         function setStepaAnimation(animation, duration) {
-            ui.stepaEmoji.style.animation = 'none';
-            void ui.stepaEmoji.offsetWidth;
+            ui.stepaEmoji.style.animation = 'none'; void ui.stepaEmoji.offsetWidth;
             ui.stepaEmoji.style.animation = `${animation} ${duration}s ease-in-out`;
-            setTimeout(() => {
-                ui.stepaEmoji.style.animation = 'idle-bob 4s ease-in-out infinite';
-            }, duration * 1000);
+            setTimeout(() => { ui.stepaEmoji.style.animation = 'idle-bob 4s ease-in-out infinite'; }, duration * 1000);
         }
         
         function updateStepaEmoji() {
-            if (gameState.health <= 20) ui.stepaEmoji.textContent = '💀';
-            else if (gameState.satiety <= 20) ui.stepaEmoji.textContent = '🤢';
-            else if (gameState.stress >= 80) ui.stepaEmoji.textContent = '😡';
-            else if (gameState.money < 1000) ui.stepaEmoji.textContent = '😭';
-            else if (gameState.debt > gameState.money * 10) ui.stepaEmoji.textContent = '😱';
-            else ui.stepaEmoji.textContent = '😐';
+            if (gameState.health <= 20) ui.stepaEmoji.textContent = '💀'; else if (gameState.satiety <= 20) ui.stepaEmoji.textContent = '🤢';
+            else if (gameState.stress >= 80) ui.stepaEmoji.textContent = '😡'; else if (gameState.money < 1000) ui.stepaEmoji.textContent = '😭';
+            else if (gameState.debt > gameState.money * 10) ui.stepaEmoji.textContent = '😱'; else ui.stepaEmoji.textContent = '😐';
         }
 
         function addEvent(message, type = "default") {
-            const eventEl = document.createElement('div');
-            eventEl.className = `event ${type}`;
-            eventEl.innerHTML = `<b>День ${gameState.day}:</b> ${message}`;
-            ui.events.prepend(eventEl);
+            const eventEl = document.createElement('div'); eventEl.className = `event ${type}`;
+            eventEl.innerHTML = `<b>День ${gameState.day}:</b> ${message}`; ui.events.prepend(eventEl);
         }
 
         function showToast(message, type = "default") {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            ui.toastContainer.appendChild(toast);
-            if(type === 'danger') { haptic('error'); playSound('error'); setStepaAnimation('danger-shake', 1.5); }
+            const toast = document.createElement('div'); toast.className = `toast ${type}`;
+            toast.textContent = message; ui.toastContainer.appendChild(toast);
+            if(type === 'danger') { haptic('error'); playSound('mgsAlert'); setStepaAnimation('danger-shake', 1.5); }
             else if(type === 'success') { haptic('success'); playSound('notification'); }
             else { haptic('warning'); playSound('notification'); }
             setTimeout(() => toast.remove(), 4000);
         }
         
-        // --- Главный игровой цикл ---
         function nextDay() {
-            if (gameState.gameOver) return;
-            changeStat('day', 1);
-            
+            if (gameState.gameOver) return; changeStat('day', 1);
             changeStat('satiety', -10);
-            if (gameState.satiety <= 0) {
-                changeStat('health', -10);
-                addEvent("От голода сводит живот. Теряешь здоровье.", "danger");
-            }
+            if (gameState.satiety <= 0) { changeStat('health', -10); addEvent("От голода сводит живот. Теряешь здоровье.", "danger"); }
             if(gameState.stress > 0) changeStat('stress', -2);
-
-            if (Math.random() < 0.25) randomEvent();
-            if (gameState.day % 5 === 0 && gameState.debt > 0) creditorHarassment();
-
-            updateUI();
-            checkGameOver();
-            saveGame();
+            if (Math.random() < 0.25) randomEvent(); if (gameState.day % 5 === 0 && gameState.debt > 0) creditorHarassment();
+            updateUI(); checkGameOver(); saveGame();
         }
         
-        // --- Действия игрока ---
         function work() {
             const { salary, stress, health, satiety } = gameState.job;
-            changeStat('money', salary);
-            changeStat('stress', stress);
-            changeStat('health', health);
-            changeStat('satiety', satiety);
-
-            playSound('gain');
-            haptic('light');
-            setStepaAnimation('money-bounce', 1);
+            changeStat('money', salary); changeStat('stress', stress); changeStat('health', health); changeStat('satiety', satiety);
+            playSound('gain'); haptic('light'); setStepaAnimation('money-bounce', 1);
             addEvent(`${phrases.work[Math.floor(Math.random() * phrases.work.length)]} +${salary} ₽.`);
             nextDay();
         }
 
         function findJob() {
             if (Math.random() > 0.4) {
-                const newJob = jobs[Math.floor(Math.random() * jobs.length)];
-                gameState.job = newJob;
-                showToast(`Ты нашел новую работу: ${newJob.name}!`, 'success');
-                addEvent(`Наконец-то ты не бомж, а ${newJob.name}.`);
+                const newJob = jobs[Math.floor(Math.random() * jobs.length)]; gameState.job = newJob;
+                showToast(`Ты нашел новую работу: ${newJob.name}!`, 'success'); addEvent(`Наконец-то ты не бомж, а ${newJob.name}.`);
             } else {
-                showToast("Никому ты нахуй не нужен, неудачник.", 'danger');
-                changeStat('stress', 10);
+                playSound('mcVillager'); showToast("Никому ты нахуй не нужен, неудачник.", 'danger'); changeStat('stress', 10);
             }
             nextDay();
         }
         
         function relieveStress() {
             if (gameState.money < 1000) { showToast("Денег нет даже на бояру!", "danger"); return; }
-            changeStat('money', -1000); changeStat('stress', -40); changeStat('health', -5);
-            playSound('loss'); haptic('medium');
-            addEvent("Просадил 1000 ₽ в баре. Стало легче, но печень передает привет.");
+            playSound('gtaAhShit');
+            changeStat('money', -1000); changeStat('stress', -40); changeStat('health', -5); haptic('medium');
+            addEvent("Просадил 1000 ₽ в баре. 'Ah shit, here we go again...'");
             nextDay();
         }
         
@@ -473,19 +423,16 @@
             nextDay();
         }
 
-        // --- Модальные окна ---
         function showModal(id) { document.getElementById(id).classList.add('show'); haptic('light');}
         function hideModal(id) { document.getElementById(id).classList.remove('show'); }
 
         function showFriendsModal() {
             const container = document.getElementById('friends-options'); container.innerHTML = '';
             gameState.friends.forEach(friend => {
-                const el = document.createElement('div'); el.className = 'option';
-                let button;
+                const el = document.createElement('div'); el.className = 'option'; let button;
                 if (friend.debtAmount > 0) button = `<button class="repay" onclick="repayFriend('${friend.name}')">Вернуть ${friend.debtAmount} ₽</button>`;
                 else button = `<button onclick="borrowFromFriend('${friend.name}')">Занять ${friend.maxLoan} ₽</button>`;
-                el.innerHTML = `<strong>${friend.name}</strong><br><small>${friend.desc}</small>${button}`;
-                container.appendChild(el);
+                el.innerHTML = `<strong>${friend.name}</strong><br><small>${friend.desc}</small>${button}`; container.appendChild(el);
             });
             showModal('friends-modal');
         }
@@ -507,8 +454,7 @@
              if (gameState.money < friend.debtAmount) { showToast("Нет бабок, чтобы вернуть долг!", "danger"); return; }
              changeStat('money', -friend.debtAmount);
              showToast(`Ты вернул долг ${friend.name}. Он снова считает тебя человеком.`, 'success');
-             friend.debtAmount = 0;
-             hideModal('friends-modal'); nextDay();
+             friend.debtAmount = 0; hideModal('friends-modal'); nextDay();
         }
 
         function showFoodModal() {
@@ -524,13 +470,12 @@
         function eat(name) {
             const foodItem = food.find(f => f.name === name);
             if (gameState.money < foodItem.cost) { showToast("Денег нет даже на еду, иди работай!", "danger"); return; }
+            playSound('nom');
             changeStat('money', -foodItem.cost); changeStat('satiety', foodItem.satiety); changeStat('health', foodItem.health); changeStat('stress', foodItem.stress);
-            playSound('loss');
             addEvent(`Поел: "${foodItem.name}". Хоть какая-то радость в этой жизни.`);
             hideModal('food-modal'); nextDay();
         }
         
-        // --- Случайные события и конец игры ---
         function randomEvent() {
             const events = [
                 () => { changeStat('money', 1000); showToast("Нашёл 1000 ₽ у ларька! Сегодня везет.", 'success'); },
@@ -542,8 +487,7 @@
         
         function creditorHarassment() {
             const threat = phrases.debtThreats[Math.floor(Math.random() * phrases.debtThreats.length)];
-            showToast(threat, 'danger');
-            changeStat('stress', 30);
+            showToast(threat, 'danger'); playSound('vineBoom'); changeStat('stress', 30);
         }
 
         function checkGameOver() {
@@ -555,49 +499,31 @@
 
         function endGame(title, text) {
             gameState.gameOver = true; saveGame(); playSound('gameOver'); haptic('error');
-            document.getElementById('game-over-title').textContent = title;
-            document.getElementById('game-over-text').textContent = text;
+            document.getElementById('game-over-title').textContent = title; document.getElementById('game-over-text').textContent = text;
             showModal('game-over-modal');
         }
         
         function restartGame() {
-            localStorage.removeItem('stepaGameState');
-            initGame();
-            hideModal('game-over-modal');
+            localStorage.removeItem('stepaGameState'); initGame(); hideModal('game-over-modal');
         }
 
-        // --- Сохранение и загрузка ---
-        function saveGame() {
-            localStorage.setItem('stepaGameState', JSON.stringify(gameState));
-        }
-
+        function saveGame() { localStorage.setItem('stepaGameState', JSON.stringify(gameState)); }
         function loadGame() {
             const savedState = localStorage.getItem('stepaGameState');
             if (savedState) {
                 gameState = JSON.parse(savedState);
-                if (gameState.gameOver) { // Если сохранена оконченная игра, начинаем заново
-                    gameState = JSON.parse(JSON.stringify(initialGameState));
-                }
-            } else {
-                gameState = JSON.parse(JSON.stringify(initialGameState)); // Глубокое копирование
-            }
+                if (gameState.gameOver) gameState = JSON.parse(JSON.stringify(initialGameState));
+            } else { gameState = JSON.parse(JSON.stringify(initialGameState)); }
         }
 
-        // --- Инициализация ---
         function initGame() {
-            loadGame();
-            addEvent("Проснулся с бодуна. Кажется, я кому-то должен...", "warning");
-            updateUI();
+            loadGame(); addEvent("Проснулся с бодуна. Кажется, я кому-то должен...", "warning"); updateUI();
         }
         
         document.addEventListener('DOMContentLoaded', () => {
             document.body.addEventListener('click', initAudio, { once: true });
             document.querySelectorAll('.action-btn, .modal-close, .option').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Предотвращаем двойные клики
-                    haptic('light');
-                    playSound('click');
-                });
+                btn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); playSound('click'); });
             });
             initGame();
         });
