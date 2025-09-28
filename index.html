@@ -480,8 +480,8 @@
             toast.className = `toast ${type}`;
             toast.textContent = message;
             ui.toastContainer.appendChild(toast);
-            const soundMap = { danger: 'error', success: 'notification', warning: 'notification' };
-            const hapticMap = { danger: 'error', success: 'success', warning: 'warning' };
+            const soundMap = { danger: 'error', success: 'notification', warning: 'notification', default: 'notification' };
+            const hapticMap = { danger: 'error', success: 'success', warning: 'warning', default: 'light' };
             
             if (soundMap[type]) playSound(soundMap[type]);
             if (hapticMap[type]) haptic(hapticMap[type]);
@@ -762,8 +762,7 @@
                     gameState = JSON.parse(JSON.stringify(initialGameState));
                 }
                 if (gameState.gameOver) {
-                    // Если была проигранная игра, сбрасываем состояние, но не показываем welcome-modal при initGame
-                    gameState = JSON.parse(JSON.stringify(initialGameState));
+                    // Если загружена проигранная игра, которая была сброшена, просто начинаем
                 }
             } else {
                 gameState = JSON.parse(JSON.stringify(initialGameState));
