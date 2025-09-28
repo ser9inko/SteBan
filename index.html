@@ -178,12 +178,40 @@
         .toast { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 12px 18px; border-radius: 12px; color: var(--text); font-size: 0.9rem; border-left: 5px solid var(--primary); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); width: 100%; animation: slideInTop 0.5s ease-out, fadeOut 0.5s ease-in 3.5s forwards; }
         .toast.success { border-left-color: var(--success); } .toast.danger { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
 
+        /* --- Стили для Загрузочного экрана --- */
+        .welcome-screen {
+            text-align: left;
+        }
+
+        .welcome-screen h3 {
+            font-size: 1.6rem;
+            color: var(--danger);
+            text-shadow: 0 0 10px var(--danger);
+            animation: flash 1s infinite alternate;
+        }
+
+        .welcome-screen p, .welcome-screen li {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+
+        .welcome-screen ol, .welcome-screen ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-screen li strong {
+            color: var(--warning);
+        }
+        
         /* --- АНИМАЦИИ --- */
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
         @keyframes slideInTop { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scale-up-center { from { transform: scale(0.5); opacity: 0.5; } to { transform: scale(1); opacity: 1; } }
+        @keyframes flash { from { opacity: 1; } to { opacity: 0.7; } }
 
         .flash-green { animation: flash-green 0.7s ease; } @keyframes flash-green { 0%, 100% { color: var(--text); transform: scale(1); } 50% { color: var(--success); transform: scale(1.15); } }
         .flash-red { animation: flash-red 0.7s ease; } @keyframes flash-red { 0%, 100% { color: var(--text); transform: scale(1); } 50% { color: var(--danger); transform: scale(1.15); } }
@@ -198,6 +226,26 @@
 <body>
     <div id="toast-container"></div>
 
+    <div id="welcome-modal" class="modal show">
+        <div class="modal-content welcome-screen">
+            <h3>🚨 СТЕПА: КУРСКИЙ ДОЛЖНИК 3.0 🚨</h3>
+            <hr style="margin: 15px 0; border-color: var(--primary);"/>
+            <p><strong>Суть игры, мудила:</strong></p>
+            <ol>
+                <li>У тебя долг: <strong>100 000 ₽</strong>.</li>
+                <li>Ты должен его **вернуть Серёге** до **30 дня**. Иначе — пиздец.</li>
+                <li>Въебывай, жри, снимай стресс, ищи схемы.</li>
+            </ol>
+            <p><strong>Как не сдохнуть, епта:</strong></p>
+            <ul>
+                <li>💀 **Здоровье 0:** Умрешь.</li>
+                <li>🤯 **Стресс 100:** Улетишь кукухой в дурку.</li>
+                <li>🍽️ **Сытость 0:** Начнешь терять здоровье от голода.</li>
+            </ul>
+            <p style="margin-top: 15px; text-align: center; color: var(--success);"><strong>ГОТОВЬСЯ ЖИТЬ, СУКА!</strong></p>
+            <button class="modal-close" onclick="hideModal('welcome-modal')">НАЧАТЬ ЭТУ ХУЙНЮ</button>
+        </div>
+    </div>
     <div class="container">
         <div class="header">
             <h1>🐷 СТЕПА: КУРСКИЙ ДОЛЖНИК 3.0</h1>
@@ -270,6 +318,8 @@
                 }
             });
             await Promise.all(promises);
+            // Воспроизведение звука при старте игры
+            playSound('click', 0.8);
         }
         
         function playSound(name, playbackRate = 1.0) {
@@ -315,7 +365,7 @@
             { name: "Доширак с мазиком", cost: 100, satiety: 20, health: -2, stress: 5 },
             { name: "Шаурма 'Пронеси, Господи'", cost: 250, satiety: 40, health: 5, stress: 0 },
             { name: "Комплексный обед 'Ностальгия'", cost: 500, satiety: 60, health: 10, stress: -5 },
-            { name: "Загул в 'Разгуляе'", cost: 2500, satiety: 100, health: -10, stress: -35 }
+            { name: "Загул в 'Разгуляе'", cost: 2500, satiety: 100, health: -10, stress: -35 } 
         ];
         const jobs = [
             { name: "Грузчик (ебаный)", salary: 1500, stress: 15, health: -10, satiety: -20 },
@@ -348,7 +398,8 @@
             health: document.getElementById('health-value'), healthBar: document.getElementById('health-bar'),
             satiety: document.getElementById('satiety-value'), satietyBar: document.getElementById('satiety-bar'),
             stress: document.getElementById('stress-value'), stressBar: document.getElementById('stress-bar'),
-            stepaEmoji: document.getElementById('stepa-emoji'), events: document.getElementById('events'), toastContainer: document.getElementById('toast-container')
+            stepaEmoji: document.getElementById('stepa-emoji'), events: document.getElementById('events'), toastContainer: document.getElementById('toast-container'),
+            welcomeModal: document.getElementById('welcome-modal')
         };
         
         function updateUI() {
@@ -405,13 +456,14 @@
         }
         
         function updateStepaEmoji() {
+            if (ui.stepaEmoji.style.animationName === 'dizzy') return; 
+
             if (gameState.stress >= 80) ui.stepaEmoji.textContent = '😡';
             else if (gameState.health <= 20) ui.stepaEmoji.textContent = '💀';
             else if (gameState.satiety <= 20) ui.stepaEmoji.textContent = '🤢';
             else if (gameState.money > 50000) ui.stepaEmoji.textContent = '🤑';
             else if (gameState.money < 1000) ui.stepaEmoji.textContent = '😭';
             else if (gameState.debt > gameState.money * 10) ui.stepaEmoji.textContent = '😱';
-            else if (ui.stepaEmoji.textContent == '🥴') { /* do nothing, let it be dizzy */ }
             else ui.stepaEmoji.textContent = '😐';
         }
 
@@ -433,7 +485,7 @@
             
             if (soundMap[type]) playSound(soundMap[type]);
             if (hapticMap[type]) haptic(hapticMap[type]);
-            if (type === 'danger') setStepaAnimation('danger-shake', 1.5);
+            if (type === 'danger' && Math.random() < 0.5) setStepaAnimation('danger-shake', 1.5); 
             
             setTimeout(() => toast.remove(), 4000);
         }
@@ -449,7 +501,7 @@
                 changeStat('health', -10);
                 addEvent("От голода сводит живот. Теряешь здоровье, хуила.", "danger");
             }
-            if(gameState.stress > 0) changeStat('stress', -2); // Естественное снижение стресса
+            if(gameState.stress > 0) changeStat('stress', -2); 
 
             // Шанс на событие
             if (Math.random() < 0.3) randomEvent();
@@ -471,13 +523,13 @@
             const rand = Math.random();
             const isHomeless = gameState.job.name.includes("Бомж");
 
-            if (rand < 0.1 && !isHomeless) { // 10% шанс на бонус, НО НЕ ДЛЯ БОМЖА (ПРАВИЛО!)
+            if (rand < 0.1 && !isHomeless) { 
                 finalSalary *= 1.5;
                 eventMsg = phrases.workBonus[Math.floor(Math.random() * phrases.workBonus.length)];
                 showToast(`Премия, сука! +${(finalSalary - salary).toLocaleString()} ₽`, 'success');
                 playSound('gain', 1.1); 
-            } else if (rand < 0.15) { // 5% шанс на штраф
-                const fine = isHomeless ? 0 : 500; // Бомжу штраф не выписать
+            } else if (rand < 0.15) { 
+                const fine = isHomeless ? 0 : 500; 
                 finalSalary = Math.max(0, salary - fine); 
                 if (salary > finalSalary) {
                      changeStat('money', -(salary - finalSalary));
@@ -486,7 +538,6 @@
                      playSound('loss', 1.2); 
                 }
             } else if (isHomeless && rand < 0.3) {
-                // Бомж нашел что-то
                 finalSalary += 200;
                 eventMsg = "Нашел несколько бутылок и сдал их. Мелочь, но приятно, бомжара.";
                 playSound('gain', 0.8); 
@@ -501,12 +552,17 @@
             setStepaAnimation('money-bounce', 1);
             addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`);
             
-            // СМЕНА ДНЯ - ТОЛЬКО ЗДЕСЬ (ПРАВИЛО!)
             nextDay(); 
         }
 
         function findJob() {
             playSound('click'); 
+            if (gameState.job.name !== "Бомж" && Math.random() > 0.6) {
+                 showToast("У тебя уже есть работа, мудила! Хочешь вторую? Перехочешь!", 'warning');
+                 changeStat('stress', 5);
+                 return;
+            }
+
             if (Math.random() > 0.4) {
                 const newJob = jobs[Math.floor(Math.random() * jobs.length)];
                 gameState.job = newJob;
@@ -522,6 +578,8 @@
         
         function relieveStress() {
             if (gameState.money < 1000) { showToast("Денег нет даже на бояру, иди нахуй!", "danger"); return; }
+            if (gameState.stress < 10) { showToast("Какой-то ты нестрессовый сегодня. Поработай сначала.", "warning"); return; }
+            
             playSound('chill');
             changeStat('money', -1000); changeStat('stress', -40); changeStat('health', -5);
             haptic('medium');
@@ -534,17 +592,17 @@
         }
         
         function payDebt() {
-            const payment = Math.min(gameState.money, 20000);
+            const payment = Math.min(gameState.money, 20000); 
             if (payment <= 0) { showToast("Нечем платить, ты нищий кусок говна!", "danger"); return; }
             playSound('gain');
             changeStat('money', -payment); changeStat('debt', -payment); changeStat('stress', -20);
-            showToast(`Отдал ${payment} ₽. Серёга сегодня не будет ломать тебе ноги. Пока что.`, "success");
+            showToast(`Отдал ${payment.toLocaleString()} ₽. Серёга сегодня не будет ломать тебе ноги. Пока что.`, "success");
             updateUI(); checkGameOver(); saveGame();
         }
 
         // --- Модальные окна ---
         function showModal(id) { document.getElementById(id).classList.add('show'); haptic('light');}
-        function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+        function hideModal(id) { document.getElementById(id).classList.remove('show'); playSound('click', 0.5);}
 
         function showFriendsModal() {
             playSound('click'); 
@@ -562,6 +620,9 @@
         
         function borrowFromFriend(name) {
             const friend = gameState.friends.find(f => f.name === name);
+            if (friend.debtAmount > 0) { showToast(`${friend.name}: "Сначала верни старое, пёс!"`, 'warning'); return; }
+            if (gameState.debt > 150000) { showToast(`${friend.name}: "Слышал про твой долг Серёге. Нахуй, я пас."`, 'danger'); changeStat('stress', 5); return; }
+
             if (Math.random() <= friend.chance) {
                 changeStat('money', friend.maxLoan); friend.debtAmount = friend.maxLoan;
                 showToast(`${friend.name} одолжил ${friend.maxLoan.toLocaleString()} ₽. "Верни, сука, а то хуже будет"`, 'success');
@@ -588,7 +649,8 @@
             const container = document.getElementById('food-options'); container.innerHTML = '';
             food.forEach(item => {
                 const el = document.createElement('div'); el.className = 'option';
-                el.innerHTML = `<strong>${item.name}</strong> - ${item.cost.toLocaleString()} ₽<br><small>Сытость: +${item.satiety}, Здоровье: ${item.health > 0 ? '+':''}${item.health}</small>`;
+                const stressText = item.stress < 0 ? `Стресс: ${item.stress}` : (item.stress > 0 ? `Стресс: +${item.stress}` : 'Стресс: 0');
+                el.innerHTML = `<strong>${item.name}</strong> - ${item.cost.toLocaleString()} ₽<br><small>Сытость: +${item.satiety}, Здоровье: ${item.health > 0 ? '+':''}${item.health}, ${stressText}</small>`;
                 el.onclick = () => eat(item.name); container.appendChild(el);
             });
             showModal('food-modal');
@@ -609,7 +671,8 @@
             shadyDeals.forEach(deal => {
                 const el = document.createElement('div');
                 el.className = 'option';
-                el.innerHTML = `<strong>${deal.name}</strong><br><small>${deal.desc}</small><br><small style="color:var(--warning)">Шанс: ${(deal.chance * 100)}%</small>`;
+                const costDisplay = deal.cost < 0 ? `Продажа (+${Math.abs(deal.cost).toLocaleString()} ₽)` : `Ставка: ${deal.cost.toLocaleString()} ₽`;
+                el.innerHTML = `<strong>${deal.name}</strong><br><small>${deal.desc}</small><br><small style="color:var(--warning)">Шанс: ${(deal.chance * 100)}% | ${costDisplay}</small>`;
                 el.onclick = () => attemptShadyDeal(deal.name);
                 container.appendChild(el);
             });
@@ -618,16 +681,19 @@
 
         function attemptShadyDeal(name) {
             const deal = shadyDeals.find(d => d.name === name);
-            if (gameState.money < deal.cost) {
+            const cost = deal.cost < 0 ? 0 : deal.cost;
+
+            if (gameState.money < cost) {
                 showToast("У тебя нет денег на такую авантюру, нищеброд!", 'danger');
                 return;
             }
-            changeStat('money', -deal.cost);
+            changeStat('money', -cost);
             changeStat('stress', deal.stress);
 
             if (Math.random() <= deal.chance) {
-                changeStat('money', deal.reward);
-                showToast(`Афера удалась, красава! Ты поднял ${deal.reward.toLocaleString()} ₽!`, 'success');
+                const profit = deal.reward + (deal.cost < 0 ? Math.abs(deal.cost) : 0);
+                changeStat('money', profit);
+                showToast(`Афера удалась, красава! Ты поднял ${profit.toLocaleString()} ₽!`, 'success');
                 addEvent(`Ты провернул "${deal.name}" и сорвал куш. Серёга в ахуе.`);
                 playSound('gain', 1.2);
             } else {
@@ -649,7 +715,8 @@
                 () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак.", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда, пиздец.", 'warning');},
                 () => { changeStat('stress', -20); showToast("По телеку показали 'Бригаду'. На душе стало тепло. Эх, времена...", 'success'); },
                 () => { if(gameState.money > 500) { changeStat('money', -500); showToast("Гопники отжали 500 ₽ 'на семки'. Пидоры.", 'danger'); addEvent("Нарвался на гоп-стоп. Легко отделался, повезло.", 'danger'); playSound('loss'); }},
-                () => { changeStat('satiety', 20); showToast("Баба Нюра из подъезда угостила пирожками. Спасибо, ебать!", 'success'); }
+                () => { changeStat('satiety', 20); showToast("Баба Нюра из подъезда угостила пирожками. Спасибо, ебать!", 'success'); },
+                () => { changeStat('stress', 10); showToast("Вспомнил, как Серёга смотрел на тебя. Ух, аж пропотел.", 'warning'); } 
             ];
             events[Math.floor(Math.random() * events.length)]();
         }
@@ -665,7 +732,7 @@
             if (gameState.gameOver) return;
             if (gameState.health <= 0) endGame("💀 СДОХ", phrases.gameOver.health);
             else if (gameState.stress >= 100) endGame("🤯 ПОЕХАЛ КУКУХОЙ", phrases.gameOver.stress);
-            else if (gameState.day > 30 && gameState.debt > 70000) endGame("🔫 РАСПРАВА", phrases.gameOver.debt);
+            else if (gameState.day >= 30 && gameState.debt > 0) endGame("🔫 РАСПРАВА", phrases.gameOver.debt); 
             else if (gameState.debt <= 0) endGame("🎉 ПОБЕДА, БЛЯТЬ!", phrases.gameOver.win);
         }
 
@@ -678,7 +745,7 @@
         
         function restartGame() {
             localStorage.removeItem('stepaGameState');
-            initGame();
+            initGame(true); 
             hideModal('game-over-modal');
         }
 
@@ -695,6 +762,7 @@
                     gameState = JSON.parse(JSON.stringify(initialGameState));
                 }
                 if (gameState.gameOver) {
+                    // Если была проигранная игра, сбрасываем состояние, но не показываем welcome-modal при initGame
                     gameState = JSON.parse(JSON.stringify(initialGameState));
                 }
             } else {
@@ -703,15 +771,22 @@
         }
 
         // --- Инициализация ---
-        function initGame() {
+        function initGame(forceWelcome = false) {
             loadGame();
-            if (gameState.day === 1) {
+            
+            // Показать приветственный экран только при первом запуске (день 1) или принудительном рестарте
+            if (gameState.day === 1 || forceWelcome) {
               addEvent("Проснулся с бодуна. Кажется, я кому-то должен... Пиздец.", "warning");
+              ui.welcomeModal.classList.add('show');
+            } else if (gameState.gameOver) {
+              // Если загружена проигранная игра, которая была сброшена, просто начинаем
             }
+
             updateUI();
         }
         
         document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация аудио по первому клику, чтобы не было проблем с браузерами
             document.body.addEventListener('click', initAudio, { once: true });
             
             // Обработчик для haptic feedback 
