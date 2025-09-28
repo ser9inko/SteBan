@@ -80,6 +80,8 @@
             border-radius: 12px;
             text-align: center;
             font-size: 0.85rem;
+            /* Улучшенный стиль для статусов */
+            border-left: 3px solid var(--primary); 
         }
 
         .stat-value {
@@ -236,28 +238,28 @@
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // --- УЛУЧШЕННАЯ АУДИОСИСТЕМА (БОЛЬШЕ УГАРА) ---
+        // --- АУДИОСИСТЕМА С МЕМНЫМИ ЗВУКАМИ ---
         let audioContext;
         const soundBuffers = {};
         const soundUrls = {
-            click: 'https://www.myinstants.com/media/sounds/pop-cat-original-meme_3.mp3',
-            gain: 'https://www.myinstants.com/media/sounds/gta-san-andreas-mission-passed-sound.mp3',
-            loss: 'https://www.myinstants.com/media/sounds/movie_1.mp3', // Fart sound
-            error: 'https://www.myinstants.com/media/sounds/windows-xp-error_13.mp3',
-            gameOver: 'https://www.myinstants.com/media/sounds/directed-by-robert-b-weide.mp3',
-            notification: 'https://www.myinstants.com/media/sounds/icq-uh-oh.mp3',
-            work: 'https://www.myinstants.com/media/sounds/minecraft-shovel.mp3',
-            chill: 'https://www.myinstants.com/media/sounds/a-a-a-a-a-a.mp3'
+            click: 'https://www.myinstants.com/media/sounds/pop-cat-original-meme_3.mp3', // Обычный клик
+            gain: 'https://www.myinstants.com/media/sounds/gta-san-andreas-mission-passed-sound.mp3', // Успех/Выигрыш
+            loss: 'https://www.myinstants.com/media/sounds/failure-sound-effect-cartoon-sound.mp3', // Провал/Потеря денег
+            error: 'https://www.myinstants.com/media/sounds/windows-xp-error_13.mp3', // Критическая ошибка/сильный штраф
+            gameOver: 'https://www.myinstants.com/media/sounds/directed-by-robert-b-weide.mp3', // Конец игры
+            notification: 'https://www.myinstants.com/media/sounds/icq-uh-oh.mp3', // Уведомление
+            work: 'https://www.myinstants.com/media/sounds/minecraft-shovel.mp3', // Работа
+            chill: 'https://www.myinstants.com/media/sounds/a-a-a-a-a-a.mp3', // Расслабление (чил)
+            eat: 'https://www.myinstants.com/media/sounds/spongebob-eating-chips-sfx.mp3', // Еда
+            stress: 'https://www.myinstants.com/media/sounds/quandale-dingle-meme-sound.mp3' // Высокий стресс/угроза
         };
 
         async function initAudio() {
             if (audioContext && audioContext.state !== 'suspended') return;
-            // Создаем AudioContext при первом взаимодействии
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             if (audioContext.state === 'suspended') {
                 await audioContext.resume();
             }
-            // Загрузка всех звуков в буфер
             const promises = Object.keys(soundUrls).map(async (key) => {
                 try {
                     const response = await fetch(soundUrls[key]);
@@ -270,9 +272,7 @@
             await Promise.all(promises);
         }
         
-        // Обертка для проверки, активен ли AudioContext
         function playSound(name, playbackRate = 1.0) {
-            // Проверка на null/undefined/suspended
             if (!audioContext || audioContext.state === 'suspended' || !soundBuffers[name]) return;
             try {
                 const source = audioContext.createBufferSource();
@@ -290,12 +290,9 @@
             if (!tg.HapticFeedback) return;
             try {
                 const styles = { error: 'error', success: 'success', warning: 'warning', light: 'light', medium: 'medium' };
-                if (styles[type]) {
-                    if(['error', 'success', 'warning'].includes(type)) tg.HapticFeedback.notificationOccurred(type);
-                    else tg.HapticFeedback.impactOccurred(type);
-                } else {
-                    tg.HapticFeedback.selectionChanged();
-                }
+                const hapticType = styles[type] || 'light';
+                if(['error', 'success', 'warning'].includes(hapticType)) tg.HapticFeedback.notificationOccurred(hapticType);
+                else tg.HapticFeedback.impactOccurred(hapticType);
             } catch (e) { /* Игнорируем ошибки */ }
         }
         
@@ -313,7 +310,7 @@
         };
         let gameState;
 
-        // --- Константы и данные (БОЛЬШЕ КОНТЕНТА) ---
+        // --- Константы и данные ---
         const food = [
             { name: "Доширак с мазиком", cost: 100, satiety: 20, health: -2, stress: 5 },
             { name: "Шаурма 'Пронеси, Господи'", cost: 250, satiety: 40, health: 5, stress: 0 },
@@ -355,14 +352,17 @@
         };
         
         function updateUI() {
+            // Обновление без лишней анимации, если значение не изменилось
             animateStatUpdate(ui.day, gameState.day);
             animateStatUpdate(ui.money, gameState.money.toLocaleString('ru-RU') + ' ₽');
             animateStatUpdate(ui.debt, gameState.debt.toLocaleString('ru-RU') + ' ₽');
             animateStatUpdate(ui.job, gameState.job.name);
             
+            // Обновление полосок прогресса
             ui.health.textContent = gameState.health; ui.healthBar.style.width = `${gameState.health}%`;
             ui.satiety.textContent = gameState.satiety; ui.satietyBar.style.width = `${gameState.satiety}%`;
             ui.stress.textContent = gameState.stress; ui.stressBar.style.width = `${gameState.stress}%`;
+
             updateStepaEmoji();
         }
 
@@ -372,6 +372,7 @@
             const oldValue = element.textContent;
             if (oldValue === String(newValue)) return;
 
+            // Логика определения изменения для анимации
             const isNumber = !isNaN(parseFloat(oldValue.replace(/\s|₽/g, ''))) && !isNaN(parseFloat(String(newValue).replace(/\s|₽/g, '')));
             let changeClass = '';
             if (isNumber) {
@@ -386,7 +387,7 @@
             if (changeClass) {
                 clearTimeout(statUpdateTimers[key]);
                 element.classList.remove('flash-green', 'flash-red');
-                void element.offsetWidth;
+                void element.offsetWidth; // Триггер рефлоу для перезапуска анимации
                 element.classList.add(changeClass);
                 statUpdateTimers[key] = setTimeout(() => element.classList.remove(changeClass), 700);
             }
@@ -413,7 +414,7 @@
             else if (gameState.money > 50000) ui.stepaEmoji.textContent = '🤑';
             else if (gameState.money < 1000) ui.stepaEmoji.textContent = '😭';
             else if (gameState.debt > gameState.money * 10) ui.stepaEmoji.textContent = '😱';
-            else if (ui.stepaEmoji.textContent == '🥴') { /* do nothing, let it be dizzy */}
+            else if (ui.stepaEmoji.textContent == '🥴') { /* do nothing, let it be dizzy */ }
             else ui.stepaEmoji.textContent = '😐';
         }
 
@@ -433,7 +434,6 @@
             const soundMap = { danger: 'error', success: 'notification', warning: 'notification' };
             const hapticMap = { danger: 'error', success: 'success', warning: 'warning' };
             
-            // Воспроизведение звука при тосте
             if (soundMap[type]) playSound(soundMap[type]);
             if (hapticMap[type]) haptic(hapticMap[type]);
             if (type === 'danger') setStepaAnimation('danger-shake', 1.5);
@@ -441,7 +441,7 @@
             setTimeout(() => toast.remove(), 4000);
         }
         
-        // --- Главный игровой цикл ---
+        // --- Главный игровой цикл - СМЕНА ДНЯ ---
         function nextDay() {
             if (gameState.gameOver) return;
             changeStat('day', 1);
@@ -466,23 +466,30 @@
         
         // --- Действия игрока ---
         function work() {
-            playSound('work'); // Звук работы
+            playSound('work'); 
             const { salary, stress, health, satiety } = gameState.job;
             let finalSalary = salary;
             let eventMsg = phrases.work[Math.floor(Math.random() * phrases.work.length)];
             
             const rand = Math.random();
-            if (rand < 0.1) { // 10% шанс на бонус
+            const isHomeless = gameState.job.name === "Бомж";
+
+            if (rand < 0.1 && !isHomeless) { // 10% шанс на бонус, но не для бомжа
                 finalSalary *= 1.5;
                 eventMsg = phrases.workBonus[Math.floor(Math.random() * phrases.workBonus.length)];
-                showToast(`Премия! +${finalSalary.toLocaleString()} ₽`, 'success');
-            } else if (rand < 0.15) { // 5% шанс на штраф
-                finalSalary = 0;
-                changeStat('money', -salary);
-                eventMsg = phrases.workPenalty[Math.floor(Math.random() * phrases.workPenalty.length)];
-                showToast(`Штраф! -${salary.toLocaleString()} ₽`, 'danger');
+                showToast(`Премия! +${(finalSalary - salary).toLocaleString()} ₽`, 'success');
+            } else if (rand < 0.15) { // 5% шанс на штраф (даже бомж может что-то потерять)
+                finalSalary = Math.max(0, salary - 500); // Штраф не может быть больше зарплаты
+                if (salary > finalSalary) {
+                     changeStat('money', -(salary - finalSalary));
+                     showToast(`Штраф! -${(salary - finalSalary).toLocaleString()} ₽`, 'danger');
+                     eventMsg = phrases.workPenalty[Math.floor(Math.random() * phrases.workPenalty.length)];
+                }
+            } else if (rand < 0.15 && isHomeless) {
+                // Бомж получил небольшой бонус, но не премию
+                finalSalary += 100;
             }
-            
+
             changeStat('money', finalSalary);
             changeStat('stress', stress);
             changeStat('health', health);
@@ -492,12 +499,12 @@
             setStepaAnimation('money-bounce', 1);
             addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`);
             
-            // !!! СМЕНА ДНЯ ТОЛЬКО ПОСЛЕ РАБОТЫ !!!
+            // СМЕНА ДНЯ - ТОЛЬКО ЗДЕСЬ
             nextDay(); 
         }
 
         function findJob() {
-            playSound('click'); // Звук клика
+            playSound('click'); 
             if (Math.random() > 0.4) {
                 const newJob = jobs[Math.floor(Math.random() * jobs.length)];
                 gameState.job = newJob;
@@ -538,7 +545,7 @@
         function hideModal(id) { document.getElementById(id).classList.remove('show'); }
 
         function showFriendsModal() {
-            playSound('click'); // Звук клика
+            playSound('click'); 
             const container = document.getElementById('friends-options'); container.innerHTML = '';
             gameState.friends.forEach(friend => {
                 const el = document.createElement('div'); el.className = 'option';
@@ -574,7 +581,7 @@
         }
 
         function showFoodModal() {
-            playSound('click'); // Звук клика
+            playSound('click'); 
             const container = document.getElementById('food-options'); container.innerHTML = '';
             food.forEach(item => {
                 const el = document.createElement('div'); el.className = 'option';
@@ -588,13 +595,13 @@
             const foodItem = food.find(f => f.name === name);
             if (gameState.money < foodItem.cost) { showToast("Денег нет даже на еду, иди работай!", "danger"); return; }
             changeStat('money', -foodItem.cost); changeStat('satiety', foodItem.satiety); changeStat('health', foodItem.health); changeStat('stress', foodItem.stress);
-            playSound('loss', 1.5);
+            playSound('eat', 1.5); // Новый звук еды
             addEvent(`Поел: "${foodItem.name}". Хоть какая-то радость в этой жизни.`);
             hideModal('food-modal'); updateUI(); saveGame();
         }
 
         function showShadyDealsModal() {
-            playSound('click'); // Звук клика
+            playSound('click'); 
             const container = document.getElementById('shady-deals-options'); container.innerHTML = '';
             shadyDeals.forEach(deal => {
                 const el = document.createElement('div');
@@ -631,7 +638,7 @@
             saveGame();
         }
         
-        // --- Случайные события и конец игры (БОЛЬШЕ РАНДОМА) ---
+        // --- Случайные события и конец игры ---
         function randomEvent() {
             const events = [
                 () => { changeStat('money', 1000); showToast("Нашёл 1000 ₽ у ларька! Сегодня везет.", 'success'); playSound('gain'); },
@@ -648,6 +655,7 @@
             const threat = phrases.debtThreats[Math.floor(Math.random() * phrases.debtThreats.length)];
             showToast(threat, 'danger');
             changeStat('stress', 30);
+            playSound('stress', 1.5); // Новый звук угрозы
         }
 
         function checkGameOver() {
@@ -698,11 +706,10 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Инициализация звука при первом клике на body, чтобы обойти ограничения браузеров
+            // Инициализация звука при первом клике на body
             document.body.addEventListener('click', initAudio, { once: true });
             
-            // Убрали playSound('click') из общего обработчика, чтобы он не срабатывал на каждое модальное окно/кнопку закрытия/option, 
-            // так как это мешало звукам в toast'ах и основной логике.
+            // Обработчик для haptic feedback и предотвращения всплытия
             document.querySelectorAll('.action-btn, .modal-close, .option').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
