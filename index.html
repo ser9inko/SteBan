@@ -80,7 +80,6 @@
             border-radius: 12px;
             text-align: center;
             font-size: 0.85rem;
-            /* Улучшенный стиль для статусов */
             border-left: 3px solid var(--primary); 
         }
 
@@ -238,20 +237,21 @@
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // --- АУДИОСИСТЕМА С МЕМНЫМИ ЗВУКАМИ ---
+        // --- АУДИОСИСТЕМА С НАДЁЖНЫМИ МЕМНЫМИ ЗВУКАМИ ---
         let audioContext;
         const soundBuffers = {};
         const soundUrls = {
-            click: 'https://www.myinstants.com/media/sounds/pop-cat-original-meme_3.mp3', // Обычный клик
-            gain: 'https://www.myinstants.com/media/sounds/gta-san-andreas-mission-passed-sound.mp3', // Успех/Выигрыш
-            loss: 'https://www.myinstants.com/media/sounds/failure-sound-effect-cartoon-sound.mp3', // Провал/Потеря денег
-            error: 'https://www.myinstants.com/media/sounds/windows-xp-error_13.mp3', // Критическая ошибка/сильный штраф
-            gameOver: 'https://www.myinstants.com/media/sounds/directed-by-robert-b-weide.mp3', // Конец игры
-            notification: 'https://www.myinstants.com/media/sounds/icq-uh-oh.mp3', // Уведомление
-            work: 'https://www.myinstants.com/media/sounds/minecraft-shovel.mp3', // Работа
-            chill: 'https://www.myinstants.com/media/sounds/a-a-a-a-a-a.mp3', // Расслабление (чил)
-            eat: 'https://www.myinstants.com/media/sounds/spongebob-eating-chips-sfx.mp3', // Еда
-            stress: 'https://www.myinstants.com/media/sounds/quandale-dingle-meme-sound.mp3' // Высокий стресс/угроза
+            // Надежные ссылки на бесплатные, угарные звуки
+            click: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/click-pop.mp3', // Простой поп
+            gain: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/level-up.mp3', // Level Up (Успех/деньги)
+            loss: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/sad-trombone.mp3', // Sad Trombone (Провал)
+            error: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/error-xp.mp3', // Windows XP Error (Критическая ошибка)
+            gameOver: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/robert-b-weide.mp3', // Directed by Robert B. Weide (Конец игры)
+            notification: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/icq-uh-oh.mp3', // ICQ Uh-Oh (Уведомление)
+            work: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/homer-doh.mp3', // Homer Simpson - Doh! (Работа - мучение)
+            chill: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/aa-a-a-a.mp3', // A A A A A A (Расслабление)
+            eat: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/eating-crunchy.mp3', // Хруст еды
+            stress: 'https://cdn.jsdelivr.net/gh/anton-petrov/free-sound-assets@main/siren-police.mp3' // Полицейская сирена (Стресс/угроза)
         };
 
         async function initAudio() {
@@ -352,13 +352,11 @@
         };
         
         function updateUI() {
-            // Обновление без лишней анимации, если значение не изменилось
             animateStatUpdate(ui.day, gameState.day);
             animateStatUpdate(ui.money, gameState.money.toLocaleString('ru-RU') + ' ₽');
             animateStatUpdate(ui.debt, gameState.debt.toLocaleString('ru-RU') + ' ₽');
             animateStatUpdate(ui.job, gameState.job.name);
             
-            // Обновление полосок прогресса
             ui.health.textContent = gameState.health; ui.healthBar.style.width = `${gameState.health}%`;
             ui.satiety.textContent = gameState.satiety; ui.satietyBar.style.width = `${gameState.satiety}%`;
             ui.stress.textContent = gameState.stress; ui.stressBar.style.width = `${gameState.stress}%`;
@@ -372,7 +370,6 @@
             const oldValue = element.textContent;
             if (oldValue === String(newValue)) return;
 
-            // Логика определения изменения для анимации
             const isNumber = !isNaN(parseFloat(oldValue.replace(/\s|₽/g, ''))) && !isNaN(parseFloat(String(newValue).replace(/\s|₽/g, '')));
             let changeClass = '';
             if (isNumber) {
@@ -387,7 +384,7 @@
             if (changeClass) {
                 clearTimeout(statUpdateTimers[key]);
                 element.classList.remove('flash-green', 'flash-red');
-                void element.offsetWidth; // Триггер рефлоу для перезапуска анимации
+                void element.offsetWidth;
                 element.classList.add(changeClass);
                 statUpdateTimers[key] = setTimeout(() => element.classList.remove(changeClass), 700);
             }
@@ -474,20 +471,22 @@
             const rand = Math.random();
             const isHomeless = gameState.job.name === "Бомж";
 
-            if (rand < 0.1 && !isHomeless) { // 10% шанс на бонус, но не для бомжа
+            if (rand < 0.1 && !isHomeless) { // 10% шанс на бонус, НО НЕ ДЛЯ БОМЖА
                 finalSalary *= 1.5;
                 eventMsg = phrases.workBonus[Math.floor(Math.random() * phrases.workBonus.length)];
                 showToast(`Премия! +${(finalSalary - salary).toLocaleString()} ₽`, 'success');
-            } else if (rand < 0.15) { // 5% шанс на штраф (даже бомж может что-то потерять)
-                finalSalary = Math.max(0, salary - 500); // Штраф не может быть больше зарплаты
+            } else if (rand < 0.15) { // 5% шанс на штраф
+                const fine = isHomeless ? 0 : 500; // Бомжу штраф не выписать
+                finalSalary = Math.max(0, salary - fine); 
                 if (salary > finalSalary) {
                      changeStat('money', -(salary - finalSalary));
                      showToast(`Штраф! -${(salary - finalSalary).toLocaleString()} ₽`, 'danger');
                      eventMsg = phrases.workPenalty[Math.floor(Math.random() * phrases.workPenalty.length)];
                 }
-            } else if (rand < 0.15 && isHomeless) {
-                // Бомж получил небольшой бонус, но не премию
-                finalSalary += 100;
+            } else if (isHomeless && rand < 0.3) {
+                // Бомж нашел что-то
+                finalSalary += 200;
+                eventMsg = "Нашел несколько бутылок и сдал их. Мелочь, но приятно.";
             }
 
             changeStat('money', finalSalary);
@@ -567,6 +566,7 @@
             } else {
                 changeStat('stress', 15);
                 showToast(`${friend.name} ${phrases.friendReject[Math.floor(Math.random() * phrases.friendReject.length)]}`, 'danger');
+                playSound('loss');
             }
             hideModal('friends-modal'); updateUI(); saveGame();
         }
@@ -595,7 +595,7 @@
             const foodItem = food.find(f => f.name === name);
             if (gameState.money < foodItem.cost) { showToast("Денег нет даже на еду, иди работай!", "danger"); return; }
             changeStat('money', -foodItem.cost); changeStat('satiety', foodItem.satiety); changeStat('health', foodItem.health); changeStat('stress', foodItem.stress);
-            playSound('eat', 1.5); // Новый звук еды
+            playSound('eat', 1.5); 
             addEvent(`Поел: "${foodItem.name}". Хоть какая-то радость в этой жизни.`);
             hideModal('food-modal'); updateUI(); saveGame();
         }
@@ -655,7 +655,7 @@
             const threat = phrases.debtThreats[Math.floor(Math.random() * phrases.debtThreats.length)];
             showToast(threat, 'danger');
             changeStat('stress', 30);
-            playSound('stress', 1.5); // Новый звук угрозы
+            playSound('stress', 1.5); 
         }
 
         function checkGameOver() {
@@ -688,6 +688,10 @@
             const savedState = localStorage.getItem('stepaGameState');
             if (savedState) {
                 gameState = JSON.parse(savedState);
+                // Проверка на целостность данных
+                if (!gameState.friends || !gameState.job) {
+                    gameState = JSON.parse(JSON.stringify(initialGameState));
+                }
                 if (gameState.gameOver) {
                     gameState = JSON.parse(JSON.stringify(initialGameState));
                 }
@@ -706,10 +710,9 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Инициализация звука при первом клике на body
             document.body.addEventListener('click', initAudio, { once: true });
             
-            // Обработчик для haptic feedback и предотвращения всплытия
+            // Обработчик для haptic feedback 
             document.querySelectorAll('.action-btn, .modal-close, .option').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
