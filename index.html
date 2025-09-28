@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Степа: Курский Должник 3.0</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js "></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css ">
     <style>
         :root {
             --bg-start: #10101b;
@@ -221,10 +221,36 @@
         @keyframes danger-shake { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 10% { transform: translate(-3px, 0) rotate(-2deg); } 20% { transform: translate(3px, 0) rotate(2deg); } 30%, 50%, 70% { transform: translate(-3px, 0) rotate(-2deg); } 40%, 60%, 80% { transform: translate(3px, 0) rotate(2deg); } 90% { transform: translate(0, 0) rotate(0); } }
         @keyframes money-bounce { 0% { transform: scale(1) translateY(0); } 30% { transform: scale(1.2) translateY(-15px) rotate(10deg); } 60% { transform: scale(0.9) translateY(5px); } 100% { transform: scale(1) translateY(0); } }
         @keyframes dizzy { 0%, 100% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(15deg) scale(1.1); } 75% { transform: rotate(-15deg) scale(1.1); } }
+        
+        /* Новые угарные фишки */
+        .ugly-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .ugly-element {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            animation: float 10s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
     <div id="toast-container"></div>
+
+    <!-- Угарные элементы -->
+    <div class="ugly-container" id="ugly-container"></div>
 
     <div id="welcome-modal" class="modal show">
         <div class="modal-content welcome-screen">
@@ -281,11 +307,29 @@
     <div id="game-over-modal" class="modal"><div class="modal-content game-over"><h2 id="game-over-title"></h2><p id="game-over-text"></p><button class="modal-close" onclick="restartGame()">Начать эту хуйню заново</button></div></div>
 
     <script>
-        const tg = window.Telegram.WebApp;
+        const tg = window.TeleApp.WebApp;
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // --- АУДИОСИСТЕМА УДАЛЕНА ---
+        // --- АУДИОСИСТЕМА ---
+        const audioSystem = {
+            sounds: {
+                work: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                eat: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                drink: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                win: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                lose: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                cash: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                danger: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA'),
+                meme: new Audio('audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA')
+            },
+            play: (name) => {
+                if (audioSystem.sounds[name]) {
+                    audioSystem.sounds[name].currentTime = 0;
+                    audioSystem.sounds[name].play().catch(e => console.log('Audio play error:', e));
+                }
+            }
+        };
 
         // --- Виброотклик ---
         function haptic(type) {
@@ -343,6 +387,24 @@
                 win: "Ебать, ты реально смог! Отдал все долги и выжил в этом гадюшнике. Теперь ты легенда Курска. Можешь съебать отсюда с чистой совестью, красава."
             }
         };
+
+        // --- Угарные фишки ---
+        const uglyElements = ['🐷', '💩', ' Fucked up', 'LOL', 'ROFL', 'KEK', 'MEME', '😂', '🤡', '💀'];
+        function createUglyElement() {
+            const container = document.getElementById('ugly-container');
+            const element = document.createElement('div');
+            element.className = 'ugly-element';
+            element.textContent = uglyElements[Math.floor(Math.random() * uglyElements.length)];
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.animationDuration = (5 + Math.random() * 10) + 's';
+            element.style.fontSize = (1 + Math.random() * 3) + 'rem';
+            element.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            container.appendChild(element);
+            
+            setTimeout(() => {
+                element.remove();
+            }, 10000);
+        }
 
         // --- Управление UI ---
         const ui = {
@@ -459,6 +521,9 @@
             // Звонок от Сереги
             if (gameState.day > 2 && gameState.day % 4 === 0 && gameState.debt > 0) creditorHarassment();
 
+            // Угарные фишки
+            if (Math.random() < 0.1) createUglyElement();
+
             updateUI();
             checkGameOver();
             saveGame();
@@ -477,6 +542,7 @@
                 finalSalary *= 1.5;
                 eventMsg = phrases.workBonus[Math.floor(Math.random() * phrases.workBonus.length)];
                 showToast(`Премия, сука! +${(finalSalary - salary).toLocaleString()} ₽`, 'success');
+                audioSystem.play('cash');
             } else if (rand < 0.15) { 
                 const fine = isHomeless ? 0 : 500; 
                 finalSalary = Math.max(0, salary - fine); 
@@ -484,10 +550,12 @@
                      changeStat('money', -(salary - finalSalary));
                      showToast(`Штраф! Минус бабки, уебок. -${(salary - finalSalary).toLocaleString()} ₽`, 'danger');
                      eventMsg = phrases.workPenalty[Math.floor(Math.random() * phrases.workPenalty.length)];
+                     audioSystem.play('danger');
                 }
             } else if (isHomeless && rand < 0.3) {
                 finalSalary += 200;
                 eventMsg = "Нашел несколько бутылок и сдал их. Мелочь, но приятно, бомжара.";
+                audioSystem.play('cash');
             }
 
             changeStat('money', finalSalary);
@@ -497,6 +565,7 @@
 
             haptic('light');
             setStepaAnimation('money-bounce', 1);
+            audioSystem.play('work');
             addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`);
             
             nextDay(); 
@@ -514,9 +583,11 @@
                 gameState.job = newJob;
                 showToast(`Ты нашел новую работу: ${newJob.name}! Наконец-то, блядь!`, 'success');
                 addEvent(`Наконец-то ты не бомж, а "${newJob.name}".`);
+                audioSystem.play('meme');
             } else {
                 showToast("Никому ты нахуй не нужен, неудачник. Ищи дальше.", 'danger');
                 changeStat('stress', 10);
+                audioSystem.play('lose');
             }
             updateUI();
             saveGame();
@@ -532,6 +603,7 @@
             setStepaAnimation('dizzy', 2);
             setTimeout(() => updateStepaEmoji(), 2000);
             addEvent("Просадил 1000 ₽ в баре. Стало легче, но печень передает привет. Хули, похуй.");
+            audioSystem.play('drink');
             updateUI();
             saveGame();
         }
@@ -541,6 +613,7 @@
             if (payment <= 0) { showToast("Нечем платить, ты нищий кусок говна!", "danger"); return; }
             changeStat('money', -payment); changeStat('debt', -payment); changeStat('stress', -20);
             showToast(`Отдал ${payment.toLocaleString()} ₽. Серёга сегодня не будет ломать тебе ноги. Пока что.`, "success");
+            audioSystem.play('cash');
             updateUI(); checkGameOver(); saveGame();
         }
 
@@ -569,9 +642,11 @@
             if (Math.random() <= friend.chance) {
                 changeStat('money', friend.maxLoan); friend.debtAmount = friend.maxLoan;
                 showToast(`${friend.name} одолжил ${friend.maxLoan.toLocaleString()} ₽. "Верни, сука, а то хуже будет"`, 'success');
+                audioSystem.play('cash');
             } else {
                 changeStat('stress', 15);
                 showToast(`${friend.name} ${phrases.friendReject[Math.floor(Math.random() * phrases.friendReject.length)]}`, 'danger');
+                audioSystem.play('lose');
             }
             hideModal('friends-modal'); updateUI(); saveGame();
         }
@@ -582,6 +657,7 @@
              changeStat('money', -friend.debtAmount);
              showToast(`Ты вернул долг ${friend.name}. Он снова считает тебя человеком. Красава.`, 'success');
              friend.debtAmount = 0;
+             audioSystem.play('meme');
              hideModal('friends-modal'); updateUI(); saveGame();
         }
 
@@ -601,6 +677,7 @@
             if (gameState.money < foodItem.cost) { showToast("Денег нет даже на еду, иди работай, хуесос!", "danger"); return; }
             changeStat('money', -foodItem.cost); changeStat('satiety', foodItem.satiety); changeStat('health', foodItem.health); changeStat('stress', foodItem.stress);
             addEvent(`Поел: "${foodItem.name}". Заткнул свое ебало. Хоть какая-то радость.`);
+            audioSystem.play('eat');
             hideModal('food-modal'); updateUI(); saveGame();
         }
 
@@ -632,10 +709,13 @@
                 const profit = deal.reward + (deal.cost < 0 ? Math.abs(deal.cost) : 0);
                 changeStat('money', profit);
                 showToast(`Афера удалась, красава! Ты поднял ${profit.toLocaleString()} ₽!`, 'success');
+                audioSystem.play('cash');
                 addEvent(`Ты провернул "${deal.name}" и сорвал куш. Серёга в ахуе.`);
+                createUglyElement(); // Мем на удачу
             } else {
                 changeStat('money', deal.penalty);
                 showToast(`Тебя кинули, лох ебаный! Потеряно ${Math.abs(deal.penalty).toLocaleString()} ₽`, 'danger');
+                audioSystem.play('lose');
                 addEvent(`Схема "${deal.name}" провалилась. Ты в еще большей жопе, мудак.`);
             }
             hideModal('shady-deals-modal');
@@ -646,13 +726,45 @@
         // --- Случайные события и конец игры ---
         function randomEvent() {
             const events = [
-                () => { changeStat('money', 1000); showToast("Нашёл 1000 ₽ у ларька! Сегодня фартит, блядь.", 'success'); },
-                () => { if(gameState.money > 1500) { changeStat('money', -1500); showToast("Цыгане развели на 1500 ₽. Лох - это судьба, хули.", 'danger'); }},
-                () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак.", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда, пиздец.", 'warning');},
-                () => { changeStat('stress', -20); showToast("По телеку показали 'Бригаду'. На душе стало тепло. Эх, времена...", 'success'); },
-                () => { if(gameState.money > 500) { changeStat('money', -500); showToast("Гопники отжали 500 ₽ 'на семки'. Пидоры.", 'danger'); addEvent("Нарвался на гоп-стоп. Легко отделался, повезло.", 'danger'); }},
-                () => { changeStat('satiety', 20); showToast("Баба Нюра из подъезда угостила пирожками. Спасибо, ебать!", 'success'); },
-                () => { changeStat('stress', 10); showToast("Вспомнил, как Серёга смотрел на тебя. Ух, аж пропотел.", 'warning'); } 
+                () => { 
+                    changeStat('money', 1000); 
+                    showToast("Нашёл 1000 ₽ у ларька! Сегодня фартит, блядь.", 'success'); 
+                    audioSystem.play('cash');
+                },
+                () => { 
+                    if(gameState.money > 1500) { 
+                        changeStat('money', -1500); 
+                        showToast("Цыгане развели на 1500 ₽. Лох - это судьба, хули.", 'danger'); 
+                        audioSystem.play('lose');
+                    }
+                },
+                () => { 
+                    changeStat('health', -15); 
+                    showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак.", 'warning'); 
+                    addEvent("Заболела спина и жопа. Кажется, это простуда, пиздец.", 'warning');
+                },
+                () => { 
+                    changeStat('stress', -20); 
+                    showToast("По телеку показали 'Бригаду'. На душе стало тепло. Эх, времена...", 'success'); 
+                    audioSystem.play('meme');
+                },
+                () => { 
+                    if(gameState.money > 500) { 
+                        changeStat('money', -500); 
+                        showToast("Гопники отжали 500 ₽ 'на семки'. Пидоры.", 'danger'); 
+                        addEvent("Нарвался на гоп-стоп. Легко отделался, повезло.", 'danger'); 
+                        audioSystem.play('danger');
+                    }
+                },
+                () => { 
+                    changeStat('satiety', 20); 
+                    showToast("Баба Нюра из подъезда угостила пирожками. Спасибо, ебать!", 'success'); 
+                    audioSystem.play('eat');
+                },
+                () => { 
+                    changeStat('stress', 10); 
+                    showToast("Вспомнил, как Серёга смотрел на тебя. Ух, аж пропотел.", 'warning'); 
+                } 
             ];
             events[Math.floor(Math.random() * events.length)]();
         }
@@ -661,6 +773,7 @@
             const threat = phrases.debtThreats[Math.floor(Math.random() * phrases.debtThreats.length)];
             showToast(threat, 'danger');
             changeStat('stress', 30);
+            audioSystem.play('danger');
         }
 
         function checkGameOver() {
@@ -675,6 +788,8 @@
             gameState.gameOver = true; saveGame(); haptic('error');
             document.getElementById('game-over-title').textContent = title;
             document.getElementById('game-over-text').textContent = text;
+            if (title.includes("ПОБЕДА")) audioSystem.play('win');
+            else audioSystem.play('lose');
             showModal('game-over-modal');
         }
         
