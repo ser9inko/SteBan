@@ -6,16 +6,21 @@
     <title>Степа: Жизнь Должника</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- ЦВЕТА И ПЕРЕМЕННЫЕ (Cyberpunk Glass) --- */
+        /* --- ЦВЕТА И ПЕРЕМЕННЫЕ (Cyberpunk Glass 2.0) --- */
         :root {
-            --bg-start: #080814; /* Почти черный, но с оттенком */
-            --bg-end: #10101f;
+            --bg-start: #060610; /* Ультра-темный фон */
+            --bg-end: #0c0c1b;
             --primary: #5c62ed; /* Неоновый синий (акцент) */
             --secondary: #ed5c62; /* Неоново-розовый (опасность/действие) */
             --text: #e0e0e0;
-            --glass-bg: rgba(30, 30, 50, 0.7); /* Более прозрачное стекло */
-            --glass-border: rgba(92, 98, 237, 0.3);
+            --text-low: #a0a0a0;
+            --glass-bg: rgba(20, 20, 40, 0.85); /* Более плотное, но прозрачное стекло */
+            --glass-border: rgba(92, 98, 237, 0.5); /* Более яркий неоновый бордюр */
             --success: #39d353;
             --danger: #ff4757;
             --warning: #ffab00;
@@ -26,7 +31,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, -apple-system, BlinkMacSystemFont;
+            font-family: 'Orbitron', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, -apple-system, BlinkMacSystemFont;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
@@ -36,111 +41,120 @@
             color: var(--text);
             min-height: 100vh;
             min-height: 100dvh;
-            padding: 15px;
+            padding: 10px;
             overflow-x: hidden;
             touch-action: manipulation;
-            font-size: clamp(14px, 3.5vw, 16px);
+            font-size: clamp(14px, 3.8vw, 16px);
         }
         
-        .container { max-width: 550px; margin: 0 auto; }
+        .container { max-width: 500px; margin: 0 auto; }
         
         /* --- GLASSMORHISM КАРТОЧКА --- */
         .card {
             background: var(--glass-bg);
-            padding: 18px;
-            border-radius: 25px; 
-            margin-bottom: 15px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(92, 98, 237, 0.15); 
+            padding: 16px;
+            border-radius: 20px; 
+            margin-bottom: 12px;
+            border: 2px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 25px rgba(92, 98, 237, 0.1), 0 0 10px rgba(92, 98, 237, 0.4) inset;
             transition: all 0.3s ease;
         }
         
         /* --- ЗАГОЛОВОК --- */
         h1 {
-            font-size: clamp(1.6rem, 5.5vw, 2rem);
+            font-size: clamp(1.4rem, 6vw, 1.8rem);
             text-align: center;
             color: var(--primary);
-            text-shadow: 0 0 18px rgba(92, 98, 237, 0.9), 0 0 8px var(--primary); 
-            margin-bottom: 18px;
-            font-weight: 900;
-            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(92, 98, 237, 0.8), 0 0 5px var(--primary); 
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 2px;
         }
         
         /* --- СТАТИСТИКА В ШАПКЕ --- */
         .stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-bottom: 15px;
         }
         
         .stat-item {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 10px 4px;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 8px;
+            border-radius: 12px;
             text-align: center;
-            font-size: 0.75rem;
-            border-bottom: 3px solid var(--secondary); 
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+            font-size: 0.7rem;
+            color: var(--text-low);
+            border-left: 4px solid var(--secondary);
+            overflow: hidden; /* Для анимации флэша */
         }
+        .stat-item:nth-child(1) { border-left-color: var(--primary); }
+        .stat-item:nth-child(2) { border-left-color: var(--success); }
+
         .stat-value {
-            font-weight: bold;
-            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-weight: 700;
+            font-size: clamp(1.1rem, 4.5vw, 1.3rem);
             color: var(--text);
-            margin-top: 5px;
-            word-break: break-all;
+            margin-top: 3px;
+            word-break: break-word;
+            display: block; /* Для анимации */
         }
 
         /* --- ПРОГРЕСС БАРЫ --- */
         .progress-container { 
-            margin-top: 12px; 
-            font-size: 0.85rem; 
+            margin-top: 8px; 
+            font-size: 0.8rem; 
             font-weight: 500; 
             display: flex; 
             flex-direction: column;
-            gap: 5px;
+            gap: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .progress-bar { 
-            height: 10px; 
-            background: rgba(0, 0, 0, 0.3); 
-            border-radius: 5px; 
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5); 
+            border-radius: 4px; 
             overflow: hidden; 
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7); 
+            border: 1px solid var(--glass-border);
         }
         .progress-fill { 
             height: 100%; 
             transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
-            border-radius: 5px;
-            box-shadow: 0 0 8px currentColor;
+            border-radius: 4px;
+            box-shadow: 0 0 5px currentColor;
         }
         /* Цвета */
-        #stress-bar .progress-fill { background: linear-gradient(90deg, #ffab00, var(--danger)); }
-        #health-bar .progress-fill { background: linear-gradient(90deg, var(--success), #8bc34a); }
-        #satiety-bar .progress-fill { background: linear-gradient(90deg, #ffc107, var(--warning)); }
+        #stress-bar .progress-fill { background: linear-gradient(90deg, #ffc107, var(--danger)); }
+        #health-bar .progress-fill { background: linear-gradient(90deg, #1fa536, var(--success)); }
+        #satiety-bar .progress-fill { background: linear-gradient(90deg, #7c4dff, #ffab00); }
         
         /* --- ПЕРСОНАЖ: СТЕПА --- */
         .character-container {
             text-align: center;
-            margin: 20px 0;
-            font-size: clamp(6rem, 20vw, 7rem);
+            margin: 15px 0;
+            font-size: clamp(5rem, 18vw, 6rem);
+            transition: transform 0.3s ease;
         }
 
         /* --- КНОПКИ ДЕЙСТВИЙ --- */
         .actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
             margin-bottom: 20px;
         }
         
         .action-btn {
-            padding: 12px 5px;
-            border: 2px solid var(--glass-border);
-            border-radius: 20px;
-            background: var(--glass-bg);
+            padding: 10px 5px;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(30, 30, 50, 0.6);
             color: var(--text);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -148,45 +162,80 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            min-height: 100px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            gap: 5px;
+            min-height: 90px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .action-btn i { font-size: clamp(1.8rem, 5vw, 2.2rem); color: var(--primary); transition: color 0.2s ease, text-shadow 0.2s ease; }
-        .action-btn:not(:disabled):hover { background: rgba(92, 98, 237, 0.2); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); }
+        .action-btn i { 
+            font-size: clamp(1.5rem, 4vw, 1.8rem); 
+            color: var(--primary); 
+            transition: color 0.2s ease, text-shadow 0.2s ease; 
+            text-shadow: 0 0 10px var(--primary);
+        }
+        .action-btn:not(:disabled):hover { 
+            background: rgba(92, 98, 237, 0.2); 
+            transform: translateY(-2px) scale(1.01); 
+            box-shadow: 0 0 20px rgba(92, 98, 237, 0.3);
+        }
         .action-btn:not(:disabled):active { transform: translateY(-1px) scale(0.98); background: rgba(92, 98, 237, 0.3); }
         .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         
-        .action-btn.escape {
-            background: linear-gradient(45deg, var(--secondary), var(--danger));
-            border-color: var(--danger);
-            color: white;
-            box-shadow: 0 0 15px rgba(255, 71, 87, 0.7);
+        .action-btn.pay, .action-btn.escape {
+            grid-column: span 3;
+            min-height: 50px;
+            flex-direction: row;
+            justify-content: space-around;
+            padding: 10px;
         }
-        
+        .action-btn.escape {
+            background: linear-gradient(90deg, #a700ff, var(--secondary));
+            border-color: #a700ff;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.7), 0 0 15px rgba(167, 0, 255, 0.7);
+            color: white;
+        }
+        .action-btn.pay {
+             background: linear-gradient(90deg, #1fa536, var(--success)); 
+             border-color: var(--success);
+             color: white;
+        }
+        .action-btn.escape i, .action-btn.pay i { color: white; text-shadow: 0 0 10px white;}
+
         /* --- ЛОГ СОБЫТИЙ --- */
         .events {
-            max-height: 250px;
+            max-height: 200px;
             overflow-y: auto;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            padding-right: 5px;
         }
         .events::-webkit-scrollbar { width: 5px; }
         .events::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
         .event { 
-            padding: 10px; 
-            margin-bottom: 8px; 
-            border-radius: 12px; 
-            background: rgba(0, 0, 0, 0.3); 
-            border-left: 5px solid var(--primary); 
+            padding: 8px; 
+            margin-bottom: 6px; 
+            border-radius: 8px; 
+            background: rgba(0, 0, 0, 0.2); 
+            border-left: 4px solid var(--primary); 
             animation: slideIn 0.4s ease-out; 
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
-
+        .event-icon { font-size: 1rem; color: var(--primary); }
+        .event.success { border-left-color: var(--success); }
+        .event.success .event-icon { color: var(--success); }
+        .event.danger { border-left-color: var(--danger); }
+        .event.danger .event-icon { color: var(--danger); }
+        .event.warning { border-left-color: var(--warning); }
+        .event.warning .event-icon { color: var(--warning); }
+        
         /* --- МОДАЛЬНОЕ ОКНО --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px);
-            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; 
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; 
             opacity: 0; transition: opacity 0.3s ease;
         }
         .modal.show { 
@@ -196,37 +245,65 @@
         
         .modal-content {
             background: linear-gradient(135deg, var(--bg-end) 50%, #151525); 
-            padding: 25px; border-radius: 25px; max-width: 90%; width: 450px;
-            max-height: 90vh; overflow-y: auto; border: 2px solid var(--glass-border); 
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(237, 92, 98, 0.3);
+            padding: 20px; border-radius: 20px; max-width: 95%; width: 400px;
+            max-height: 95vh; overflow-y: auto; 
+            border: 2px solid var(--primary); 
+            box-shadow: 0 0 30px rgba(92, 98, 237, 0.5);
             transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .modal.show .modal-content { transform: scale(1); }
         
         /* --- ОПЦИИ В МОДАЛКАХ --- */
         .option {
-            background: rgba(0, 0, 0, 0.4); padding: 15px; margin: 12px 0; border-radius: 15px; cursor: pointer; transition: all 0.2s ease; 
-            border-left: 6px solid var(--primary);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5); 
+            padding: 12px; 
+            margin: 10px 0; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            border-left: 5px solid var(--secondary);
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.7);
             display: flex; flex-direction: column;
         }
-        .option:hover { background: rgba(92, 98, 237, 0.2); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        .option:hover { 
+            background: rgba(92, 98, 237, 0.3); 
+            transform: none; 
+            box-shadow: 0 0 10px rgba(92, 98, 237, 0.5); 
+        }
+        .option strong { color: var(--primary); font-size: 1rem; }
+        .option small { line-height: 1.3; }
+
         .option button { 
-            background-color: var(--secondary); color: white; border: none; border-radius: 12px; padding: 10px 18px; 
-            cursor: pointer; margin-top: 10px; align-self: flex-end; font-size: 0.9rem; font-weight: bold;
+            background-color: var(--secondary); color: white; border: none; border-radius: 8px; padding: 8px 15px; 
+            cursor: pointer; margin-top: 8px; align-self: flex-end; font-size: 0.85rem; font-weight: bold;
             transition: background 0.2s ease; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
         }
         .option button.repay { background-color: var(--success); }
         .option button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .modal-close {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+        .modal-close:hover { background: var(--secondary); }
         
         /* --- ТОСТЫ --- */
         .toast {
-            background: rgba(0, 0, 0, 0.85); 
-            padding: 12px 20px; 
-            border-radius: 15px; 
-            font-size: 0.9rem; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); 
-            border-left: 4px solid var(--primary);
+            background: rgba(0, 0, 0, 0.95); 
+            padding: 10px 15px; 
+            border-radius: 12px; 
+            font-size: 0.85rem; 
+            box-shadow: 0 0 10px rgba(92, 98, 237, 0.7); 
+            border-left: 3px solid var(--primary);
             animation: fadeInOut 5s ease-in-out forwards;
         }
         .toast.success { border-left-color: var(--success); }
@@ -234,14 +311,14 @@
         .toast.warning { border-left-color: var(--warning); }
 
         /* --- АНИМАЦИИ --- */
-        @keyframes idle-bob { 0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 50% { transform: translateY(-8px) rotate(1deg) scale(1.02); } }
-        @keyframes danger-shake { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: translate(-5px, 0) rotate(-4deg); } 20%, 40%, 60%, 80% { transform: translate(5px, 0) rotate(4deg); } }
-        @keyframes money-bounce { 0% { transform: scale(1) translateY(0); } 30% { transform: scale(1.3) translateY(-20px) rotate(15deg); } 60% { transform: scale(0.9) translateY(5px); } 100% { transform: scale(1) translateY(0); } }
-        @keyframes dizzy { 0% { transform: rotateY(0deg) scale(1.1); } 50% { transform: rotateY(360deg) scale(1.1); } 100% { transform: rotateY(0deg) scale(1.1); } }
-        @keyframes flash-green { 0%, 100% { color: var(--text); } 50% { color: var(--success); transform: scale(1.1); text-shadow: 0 0 12px var(--success);} }
-        @keyframes flash-red { 0%, 100% { color: var(--text); } 50% { color: var(--danger); transform: scale(1.1); text-shadow: 0 0 12px var(--danger);} }
+        @keyframes idle-bob { 0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 50% { transform: translateY(-5px) rotate(1deg) scale(1.01); } }
+        @keyframes danger-shake { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: translate(-3px, 0) rotate(-2deg); } 20%, 40%, 60%, 80% { transform: translate(3px, 0) rotate(2deg); } }
+        @keyframes money-bounce { 0% { transform: scale(1) translateY(0); } 30% { transform: scale(1.2) translateY(-15px) rotate(10deg); } 60% { transform: scale(0.95) translateY(3px); } 100% { transform: scale(1) translateY(0); } }
+        @keyframes dizzy { 0% { transform: rotateY(0deg) scale(1.05); } 50% { transform: rotateY(360deg) scale(1.05); } 100% { transform: rotateY(0deg) scale(1.05); } }
+        @keyframes flash-green { 0%, 100% { color: var(--text); } 50% { color: var(--success); transform: scale(1.05); text-shadow: 0 0 15px var(--success);} }
+        @keyframes flash-red { 0%, 100% { color: var(--text); } 50% { color: var(--danger); transform: scale(1.05); text-shadow: 0 0 15px var(--danger);} }
         @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
@@ -255,25 +332,26 @@
     <audio id="sound-win" src="https://cdns-preview-a.dzcdn.net/stream/c-a81d115e619197c453c06159518a4a58-3.mp3" preload="auto"></audio> 
 
     <div id="welcome-modal" class="modal show">
-        <div class="modal-content welcome-screen card">
-            <h3>🚨 СТЕПА: ЖИЗНЬ ДОЛЖНИКА 🚨</h3>
-            <hr style="margin: 10px 0; border-color: var(--secondary);"/>
+        <div class="modal-content welcome-screen card" style="border-color: var(--secondary);">
+            <h3 style="color:var(--secondary); text-shadow: 0 0 10px var(--secondary); text-align: center; font-size: 1.2rem;">🚨 СТЕПА: ЖИЗНЬ ДОЛЖНИКА 🚨</h3>
+            <hr style="margin: 10px 0; border-color: var(--glass-border);"/>
             <p style="font-style: italic; color: var(--warning); margin-bottom: 15px;">Как все началось: Ты взял кредит на 100к на «девяточку», которая сдохла. Долг выкупил Коллектор Злой.</p>
-            <p><strong>Твоя цель, уебан:</strong></p>
-            <ul style="margin-left: 15px;">
+            <p style="font-weight: bold; color: var(--primary);">Твоя цель, уебан:</p>
+            <ul style="margin-left: 15px; list-style-type: '👉 ';">
                 <li>Вернуть долг: 100 000 ₽ Коллектору Злому. Срок: <span id="welcome-days">30</span> дней.</li>
                 <li>Или свалить нахуй в Ростов за <span id="welcome-escape">65 000</span> ₽, пока не поздно.</li>
             </ul>
-            <p style="margin-top: 15px; font-weight: bold; color: var(--danger);">ПРАВИЛА:</p>
-            <ul style="color: var(--warning); margin-left: 15px;">
-                </li>Здоровье 0: Пиздец.</li>
+            <p style="margin-top: 15px; font-weight: bold; color: var(--danger);">ПРАВИЛА (Следи за шкалами):</p>
+            <ul style="color: var(--warning); margin-left: 15px; list-style-type: '🔥 ';">
+                <li>Здоровье 0: Пиздец.</li>
                 <li>Стресс 100: Дубовая палата.</li>
                 <li>Сытость 0: Голодная смерть.</li>
             </ul>
-            <p style="margin-top: 15px; text-align: center; color: var(--success); font-weight: bold; font-size: 1.1rem;">ВЪЕБЫВАЙ! ИЛИ УЕБЫВАЙ!</p>
-            <button class="modal-close" onclick="hideModal('welcome-modal')">НАЧАТЬ ЭТУ ХУЙНЮ</button>
+            <p style="margin-top: 20px; text-align: center; color: var(--success); font-weight: bold; font-size: 1.2rem;">ВЪЕБЫВАЙ! ИЛИ УЕБЫВАЙ!</p>
+            <button class="modal-close" style="background: var(--secondary);" onclick="hideModal('welcome-modal')">НАЧАТЬ ЭТУ ХУЙНЮ</button>
         </div>
     </div>
+
     <div class="container">
         <div class="header card">
             <h1>СТЕПА: ЖИЗНЬ ДОЛЖНИКА</h1>
@@ -284,23 +362,23 @@
                 <div class="stat-item">РАБОТА<br><span class="stat-value" id="job">Бомж</span></div>
             </div>
             
-            <div class="progress-container">Здоровье 💪: <span id="health-value">100</span>%<div class="progress-bar"><div class="progress-fill" id="health-bar"></div></div></div>
-            <div class="progress-container">Сытость 🌭: <span id="satiety-value">100</span>%<div class="progress-bar"><div class="progress-fill" id="satiety-bar"></div></div></div>
-            <div class="progress-container">Стресс 🤯: <span id="stress-value">0</span>%<div class="progress-bar"><div class="progress-fill" id="stress-bar"></div></div></div>
+            <div class="progress-container">Здоровье 💪: <span id="health-value">100</span>%<div class="progress-bar"><div class="progress-fill" id="health-bar" style="width: 100%;"></div></div></div>
+            <div class="progress-container">Сытость 🌭: <span id="satiety-value">100</span>%<div class="progress-bar"><div class="progress-fill" id="satiety-bar" style="width: 100%;"></div></div></div>
+            <div class="progress-container">Стресс 🤯: <span id="stress-value">0</span>%<div class="progress-bar"><div class="progress-fill" id="stress-bar" style="width: 0%;"></div></div></div>
         </div>
         
         <div class="character-container"><span id="stepa-emoji" style="animation: idle-bob 4s ease-in-out infinite;">😐</span></div>
         
         <div class="actions">
-            <button class="action-btn" onclick="work()"><i class="fa-solid fa-person-digging"></i><span>Работать</span></button>
-            <button class="action-btn" onclick="showFoodModal()"><i class="fa-solid fa-burger"></i><span>Пожрать (День)</span></button>
-            <button class="action-btn" onclick="showFriendsModal()"><i class="fa-solid fa-handshake"></i><span>Кенты</span></button>
-            <button class="action-btn" onclick="relieveStress()"><i class="fa-solid fa-martini-glass-citrus"></i><span>Забухать (День)</span></button>
-            <button class="action-btn" onclick="showShadyDealsModal()"><i class="fa-solid fa-bolt-lightning"></i><span>Мутные схемы (День)</span></button>
-            <button class="action-btn" onclick="findJob()"><i class="fa-solid fa-briefcase"></i><span>Найти работу</span></button>
-            <button class="action-btn" onclick="showUpgradeModal()"><i class="fa-solid fa-graduation-cap"></i><span>Прокачать ебало</span></button>
-            <button class="action-btn escape" onclick="attemptEscape()"><i class="fa-solid fa-plane-departure"></i><span>Свалить нахуй</span></button>
-            <button class="action-btn" onclick="payDebt()"><i class="fa-solid fa-money-bill-transfer"></i><span>Отдать долг</span></button>
+            <button class="action-btn" onclick="work()"><i class="fa-solid fa-person-digging"></i>Работать</button>
+            <button class="action-btn" onclick="showFoodModal()"><i class="fa-solid fa-burger"></i>Пожрать</button>
+            <button class="action-btn" onclick="showFriendsModal()"><i class="fa-solid fa-handshake"></i>Кенты</button>
+            <button class="action-btn" onclick="relieveStress()"><i class="fa-solid fa-martini-glass-citrus"></i>Забухать</button>
+            <button class="action-btn" onclick="showShadyDealsModal()"><i class="fa-solid fa-bolt-lightning"></i>Мутные схемы</button>
+            <button class="action-btn" onclick="findJob()"><i class="fa-solid fa-briefcase"></i>Найти работу</button>
+            <button class="action-btn" onclick="showUpgradeModal()"><i class="fa-solid fa-graduation-cap"></i>Прокачать ебало</button>
+            <button class="action-btn pay" onclick="payDebt()"><i class="fa-solid fa-money-bill-transfer"></i>Отдать долг</button>
+            <button class="action-btn escape" onclick="attemptEscape()"><i class="fa-solid fa-plane-departure"></i>Свалить нахуй</button>
         </div>
         
         <div class="events card" id="events"></div>
@@ -310,7 +388,14 @@
     <div id="food-modal" class="modal"><div class="modal-content card"><h3>🍔 Пожрать (Заткнуть ебало)</h3><div id="food-options"></div><button class="modal-close" onclick="hideModal('food-modal')">Закрыть</button></div></div>
     <div id="shady-deals-modal" class="modal"><div class="modal-content card"><h3>😈 Мутные схемы (Наебать судьбу)</h3><div id="shady-deals-options"></div><button class="modal-close" onclick="hideModal('shady-deals-modal')">Закрыть</button></div></div>
     <div id="upgrade-modal" class="modal"><div class="modal-content card"><h3>🧠 Прокачай Ебало (Скиллы)</h3><div id="upgrade-options"></div><button class="modal-close" onclick="hideModal('upgrade-modal')">Закрыть</button></div></div>
-    <div id="game-over-modal" class="modal"><div class="modal-content game-over card"><h2 id="game-over-title" style="color:var(--danger); font-size: 1.8rem; margin-bottom: 10px;"></h2><p id="game-over-text" style="font-size: 1rem; line-height: 1.4;"></p><button class="modal-close" onclick="restartGame()" style="background: var(--secondary);">Начать эту хуйню заново</button></div></div>
+    
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content game-over card" style="border-color: var(--danger);">
+            <h2 id="game-over-title" style="color:var(--danger); font-size: 2rem; margin-bottom: 10px; text-shadow: 0 0 15px var(--danger); text-align: center;"></h2>
+            <p id="game-over-text" style="font-size: 1rem; line-height: 1.4; text-align: center;"></p>
+            <button class="modal-close" onclick="restartGame()" style="background: var(--danger);">Начать эту хуйню заново</button>
+        </div>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -383,9 +468,9 @@
             { name: "Сдать Коллектору Злому Лёху Мутного", desc: "Предательство за 15к. Удар по здоровью и репутации.", cost: 0, reward: 15000, chance: 0.9, penalty: 0, stress: 50, health: -15}
         ];
         const UPGRADES = [
-            { id: 'health', name: 'Прокачать Ебало (Здоровье)', cost: 10000, bonus: 10, limit: 5, desc: "Увеличивает твою выживаемость. +10 к базовому здоровью." },
-            { id: 'stress', name: 'Прокачать Мозг (Стресс)', cost: 15000, bonus: 5, limit: 3, desc: "Уменьшает ежедневный прирост стресса. -5% ежедневного стресса." },
-            { id: 'friends', name: 'Прокачать Связи (Кенты)', cost: 20000, bonus: 0.15, limit: 2, desc: "Увеличивает шанс, что кенты дадут в долг. +15% к шансу." },
+            { id: 'health', name: 'Прокачать Тело (Здоровье)', icon: 'fa-heart-pulse', cost: 10000, bonus: 10, limit: 5, desc: "Увеличивает твою выживаемость. +10 к базовому здоровью." },
+            { id: 'stress', name: 'Прокачать Мозг (Стресс)', icon: 'fa-brain', cost: 15000, bonus: 5, limit: 3, desc: "Уменьшает ежедневный прирост стресса. -5% ежедневного стресса." },
+            { id: 'friends', name: 'Прокачать Связи (Кенты)', icon: 'fa-users-line', cost: 20000, bonus: 0.15, limit: 2, desc: "Увеличивает шанс, что кенты дадут в долг. +15% к шансу." },
         ];
         const phrases = {
             work: ["Въебывал как раб на галерах. Заработал.", "Горбатился за гроши, проклиная всё на свете.", "Продал еще один день жизни за ебучие копейки.", "Имитировал бурную деятельность, заебался, но деньги получил."],
@@ -397,12 +482,12 @@
             friendReject: ["послал тебя нахуй.", "сказал, что его жена против. Тряпка.", "сделал вид, что не узнал тебя, пидора.", "сказал, долг платежом красен и съебался в закат."],
             gameOver: {
                 health: "Ты сдох от какой-ТО хуйни, потому что не следил за здоровьем, мудак. Твои долги перешли коту. Мяу. 😿",
-                stress: "Твоя кукуха окончательно улетела. Остаток жизни ты проведешь, пуская слюни в дурке и крича Где деньги, Лебовски?. Ебать, позорище. 🤡",
+                stress: "Твоя кукуха окончательно улетела. Остаток жизни ты проведешь, пуская слюни в дурке и крича 'Где деньги, Лебовски?'. Ебать, позорище. 🤡",
                 debt: "Терпение Коллектора Злого лопнуло. Тебя вывезли в лес и креативно обьяснили, что так делать нельзя. Твои останки до сих пор ищут, лол. 🔪",
                 win: "Ебать, ты реально смог! Отдал все долги Коллектору Злому. Теперь ты легенда Курска. Можешь съебать отсюда с чистой совестью, красава. 🎉",
                 escape: "Ты свалил из Курска в Ростов! Коллектор Злой в бешенстве. Тебя ищут, но ты на свободе! Новая жизнь начинается с шаурмы на вокзале. Свобода, блядь! 🕊️"
             },
-            relieveStress: ["Просадил 1000 ₽ в баре. Стало легче, но печень передает привет. Хули, похуй.", "Бутылка пива и Давай поженимся - идеальная терапия. -40 стресса."]
+            relieveStress: ["Просадил 1000 ₽ в баре. Стало легче, но печень передает привет. Хули, похуй.", "Бутылка пива и 'Давай поженимся' - идеальная терапия. -40 стресса."]
         };
 
         // --- Управление UI ---
@@ -427,10 +512,15 @@
         }
 
         function updateUI() {
-            ui.day.textContent = `${gameState.day} (Из ${gameState.maxDays})`;
-            animateStatUpdate(ui.money, gameState.money.toLocaleString('ru-RU') + ' ₽');
-            animateStatUpdate(ui.debt, gameState.debt.toLocaleString('ru-RU') + ' ₽');
-            animateStatUpdate(ui.job, gameState.job.name);
+            // Анимация денег и долга
+            animateStatUpdate(ui.day, `${gameState.day} (Из ${gameState.maxDays})`, 'day');
+            animateStatUpdate(ui.money, gameState.money.toLocaleString('ru-RU') + ' ₽', 'money');
+            animateStatUpdate(ui.debt, gameState.debt.toLocaleString('ru-RU') + ' ₽', 'debt');
+            
+            // Анимация смены работы
+            if (ui.job.textContent !== gameState.job.name) {
+                animateStatUpdate(ui.job, gameState.job.name, 'job');
+            }
             
             // Расчет максимального здоровья/стресса с учетом прокачки
             const maxHealth = 100 + gameState.skills.health * 10;
@@ -443,21 +533,17 @@
             ui.satiety.textContent = gameState.satiety; ui.satietyBar.style.width = `${gameState.satiety}%`;
             ui.stress.textContent = gameState.stress; ui.stressBar.style.width = `${stressPercent}%`;
 
-            // Обновление цвета баров в зависимости от состояния
-            ui.healthBar.querySelector('.progress-fill').style.backgroundColor = gameState.health < 20 ? 'var(--danger)' : '';
-            ui.satietyBar.querySelector('.progress-fill').style.backgroundColor = gameState.satiety < 20 ? 'var(--danger)' : '';
-            ui.stressBar.querySelector('.progress-fill').style.backgroundColor = gameState.stress > 80 ? 'var(--danger)' : '';
-
             updateStepaEmoji();
         }
 
         let statUpdateTimers = {};
-        function animateStatUpdate(element, newValue) {
-            const key = element.id;
+        function animateStatUpdate(element, newValue, key) {
             const oldValue = element.textContent;
+            
+            // Если текст не меняется, не запускаем анимацию
             if (oldValue === String(newValue)) return;
 
-            // Извлечение чисел для сравнения
+            // Извлечение чисел для сравнения (учитываем, что тут могут быть проценты или просто текст)
             const oldNum = parseFloat(oldValue.replace(/[^\d.-]/g, '')) || 0;
             const newNum = parseFloat(String(newValue).replace(/[^\d.-]/g, '')) || 0;
             
@@ -476,9 +562,10 @@
             element.textContent = newValue;
 
             if (changeClass) {
+                // Очистка предыдущего таймера и класса
                 clearTimeout(statUpdateTimers[key]);
                 element.classList.remove('flash-green', 'flash-red');
-                void element.offsetWidth; 
+                void element.offsetWidth; // Триггер рефлоу для сброса анимации
                 element.classList.add(changeClass);
                 statUpdateTimers[key] = setTimeout(() => element.classList.remove(changeClass), 700);
             }
@@ -495,7 +582,7 @@
             else if (stat === 'stress') gameState[stat] = Math.min(Math.max(0, gameState[stat]), 100);
             else if (stat === 'money' || stat === 'debt') gameState[stat] = Math.max(0, gameState[stat]);
 
-            // Проверка на анимацию
+            // Проверка на эмоцию/анимацию Степы
             if (stat === 'health' && gameState.health < 30 && oldValue >= 30) {
                 setStepaAnimation('danger-shake', 2);
             } else if (stat === 'stress' && gameState.stress > 70 && oldValue <= 70) {
@@ -508,8 +595,8 @@
             void ui.stepaEmoji.offsetWidth; 
             ui.stepaEmoji.style.animation = `${animation} ${duration}s ease-in-out`;
             
+            // Возвращаем стандартную анимацию
             setTimeout(() => {
-                // Возвращаем стандартную анимацию только если не было новой
                 if (ui.stepaEmoji.style.animationName === animation) {
                      ui.stepaEmoji.style.animation = 'idle-bob 4s ease-in-out infinite';
                      updateStepaEmoji();
@@ -518,7 +605,7 @@
         }
         
         function updateStepaEmoji() {
-            if (ui.stepaEmoji.style.animationName !== 'idle-bob' && ui.stepaEmoji.style.animationName !== 'none') return; 
+            if (ui.stepaEmoji.style.animationName !== 'idle-bob' && ui.stepaEmoji.style.animationName !== 'none' && ui.stepaEmoji.style.animationName !== '') return; 
 
             if (gameState.debt <= 0) ui.stepaEmoji.textContent = '🥳'; 
             else if (gameState.stress >= 85) ui.stepaEmoji.textContent = '🤯';
@@ -530,10 +617,10 @@
             else ui.stepaEmoji.textContent = '😐'; 
         }
 
-        function addEvent(message, type = "default") {
+        function addEvent(message, type = "default", icon = 'fa-circle-info') {
             const eventEl = document.createElement('div');
             eventEl.className = `event ${type}`;
-            eventEl.innerHTML = `День ${gameState.day}: ${message}`;
+            eventEl.innerHTML = `<i class="fa-solid ${icon} event-icon"></i> <span>День ${gameState.day}: ${message}</span>`;
             ui.events.prepend(eventEl);
             if(ui.events.children.length > 20) ui.events.lastChild.remove();
         }
@@ -567,7 +654,7 @@
 
             if (gameState.satiety <= 0) {
                 changeStat('health', -15);
-                addEvent("От голода сводит живот. Теряешь здоровье, хуила.", "danger");
+                addEvent("От голода сводит живот. Теряешь здоровье, хуила.", "danger", 'fa-drumstick-bite');
                 audioSystem.play('fail');
             }
             if(gameState.stress > 0) changeStat('stress', -3); 
@@ -585,6 +672,7 @@
             const { salary, stress, health, satiety, isHomeless } = gameState.job;
             let finalSalary = salary;
             let eventMsg = phrases.work[Math.floor(Math.random() * phrases.work.length)];
+            let icon = 'fa-money-bill-wave';
             
             const rand = Math.random();
 
@@ -593,6 +681,7 @@
                 eventMsg = "Начальник был в запое и случайно выписал премию. Повезло, хули.";
                 showToast(`Премия, сука! +${(finalSalary - salary).toLocaleString()} ₽`, 'success');
                 audioSystem.play('money');
+                icon = 'fa-sack-dollar';
             } else if (rand < 0.15) { 
                 const fine = isHomeless ? 0 : 500; 
                 if (gameState.money >= fine) { 
@@ -601,9 +690,11 @@
                      showToast(`Штраф! Минус бабки, уебок. -${fine.toLocaleString()} ₽`, 'danger');
                      eventMsg = "Опоздал на смену, получил штраф. Ебать, ты лох.";
                      audioSystem.play('fail');
+                     icon = 'fa-hand-holding-dollar';
                 } else {
                     eventMsg = "Чудом избежал штрафа, но и зарплата сегодня не светит.";
                     finalSalary = 0;
+                    icon = 'fa-user-slash';
                 }
             } else if (isHomeless && rand < 0.3) {
                 finalSalary += 200;
@@ -618,7 +709,7 @@
 
             haptic('medium');
             setStepaAnimation('money-bounce', 1);
-            addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`);
+            addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`, (finalSalary > 0 ? 'success' : 'warning'), icon);
             
             nextDay(); 
         }
@@ -635,7 +726,7 @@
                 const newJob = jobs[Math.floor(Math.random() * jobs.length)];
                 gameState.job = newJob;
                 showToast(`Ты нашел новую работу: ${newJob.name}! Наконец-то, блядь! 👍`, 'success');
-                addEvent(`Наконец-то ты не бомж, а ${newJob.name}. Зарплата ${newJob.salary.toLocaleString()} ₽/день.`);
+                addEvent(`Наконец-то ты не бомж, а ${newJob.name}. Зарплата ${newJob.salary.toLocaleString()} ₽/день.`, 'success', 'fa-briefcase');
                 audioSystem.play('success');
             } else {
                 showToast("Никому ты нахуй не нужен, неудачник. Ищи дальше. 💩", 'danger');
@@ -653,7 +744,7 @@
             haptic('medium');
             ui.stepaEmoji.textContent = '🥴';
             setStepaAnimation('dizzy', 2);
-            addEvent(phrases.relieveStress[Math.floor(Math.random() * phrases.relieveStress.length)]);
+            addEvent(phrases.relieveStress[Math.floor(Math.random() * phrases.relieveStress.length)], 'success', 'fa-cocktail');
             audioSystem.play('success');
             nextDay(); 
         }
@@ -662,7 +753,8 @@
             const payment = Math.min(gameState.money, gameState.debt); 
             if (payment <= 0) { showToast("Нечем платить Коллектору Злому, ты нищий кусок говна! 🤡", "danger"); audioSystem.play('fail'); return; }
             
-            const effectivePayment = Math.min(payment, 30000); // Ограничим максимальный платеж для драматизма
+            // Ограничение платежа убрано, платим столько, сколько можем (до лимита долга)
+            const effectivePayment = payment;
             
             changeStat('money', -effectivePayment); 
             changeStat('debt', -effectivePayment); 
@@ -670,6 +762,7 @@
             
             showToast(`Отдал ${effectivePayment.toLocaleString()} ₽. Коллектор Злой сегодня не будет ломать тебе ноги. Пока что. 🙏`, "success");
             audioSystem.play('money');
+            addEvent(`Отдал часть долга: ${effectivePayment.toLocaleString()} ₽. Стало легче дышать.`, 'success', 'fa-money-bill-transfer');
             updateUI(); checkGameOver(); saveGame();
         }
 
@@ -681,12 +774,12 @@
             }
 
             // Шанс на провал
-            if (gameState.debt > 50000 && Math.random() < 0.15) { // Увеличили шанс провала при большом долге
+            if (gameState.debt > 50000 && Math.random() < 0.15) { 
                 changeStat('money', -ESCAPE_COST / 2); 
                 changeStat('stress', 50);
                 showToast("Побег провалился. Тебя скрутили на вокзале, но отпустили. Потерял половину бабок и нервов! 🚨", 'danger');
                 audioSystem.play('threat');
-                addEvent("Попытка побега провалена. Придется договариваться с Коллектором или копить заново.", "danger");
+                addEvent("Попытка побега провалена. Потерял часть денег и нервов.", "danger", 'fa-user-secret');
                 nextDay();
                 return;
             }
@@ -712,7 +805,7 @@
                     button = `<button ${gameState.money < item.cost ? 'disabled' : ''} onclick="buyUpgrade('${item.id}', ${item.cost})">Купить (${item.cost.toLocaleString()} ₽)</button>`;
                 }
 
-                el.innerHTML = `<strong>${item.name} (Уровень ${level}/${item.limit})</strong><br><small style="color:var(--primary)">${item.desc}</small>${button}`;
+                el.innerHTML = `<strong><i class="fa-solid ${item.icon}"></i> ${item.name} (Уровень ${level}/${item.limit})</strong><br><small style="color:var(--primary)">${item.desc}</small>${button}`;
                 container.appendChild(el);
             });
             showModal('upgrade-modal');
@@ -735,10 +828,10 @@
             gameState.skills[id]++;
             
             showToast(`Прокачка ${upgrade.name} завершена! +1 Уровень! 💪`, 'success');
-            addEvent(`Прокачал ${upgrade.name}. Теперь ты чуть менее бесполезен.`, 'success');
+            addEvent(`Прокачал ${upgrade.name}. Теперь ты чуть менее бесполезен.`, 'success', upgrade.icon);
 
             if (id === 'health') {
-                changeStat('health', upgrade.bonus); // Восстановление + увеличение лимита
+                changeStat('health', upgrade.bonus);
             }
 
             hideModal('upgrade-modal');
@@ -798,7 +891,7 @@
                 changeStat('money', loanAmount); 
                 friend.debtAmount = repaymentAmount; 
                 showToast(`${friend.name} одолжил ${loanAmount.toLocaleString()} ₽. Верни ${repaymentAmount.toLocaleString()} ₽, сука!`, 'success');
-                addEvent(`Занял у ${friend.name}: ${loanAmount.toLocaleString()} ₽. Вернуть: ${repaymentAmount.toLocaleString()} ₽.`);
+                addEvent(`Занял у ${friend.name}: ${loanAmount.toLocaleString()} ₽. Вернуть: ${repaymentAmount.toLocaleString()} ₽.`, 'success', 'fa-handshake-angle');
                 audioSystem.play('money');
             } else {
                 changeStat('stress', 15);
@@ -815,6 +908,7 @@
              
              changeStat('money', -friend.debtAmount);
              showToast(`Ты вернул долг ${friend.name}. Он снова считает тебя человеком. Красава. 🤝`, 'success');
+             addEvent(`Вернул долг ${friend.name}: ${friend.debtAmount.toLocaleString()} ₽.`, 'success', 'fa-money-bill-transfer');
              friend.debtAmount = 0;
              audioSystem.play('success');
              hideModal('friends-modal'); updateUI(); saveGame();
@@ -843,7 +937,7 @@
             changeStat('health', foodItem.health); 
             changeStat('stress', foodItem.stress);
             
-            addEvent(`Поел: ${foodItem.name}. Заткнул свое ебало. Хоть какая-то радость.`);
+            addEvent(`Поел: ${foodItem.name}. Заткнул свое ебало. Хоть какая-то радость.`, 'success', 'fa-burger');
             audioSystem.play('success');
             hideModal('food-modal'); 
             nextDay(); 
@@ -880,18 +974,19 @@
 
             changeStat('stress', deal.stress);
             if (deal.health) changeStat('health', deal.health);
+            let icon = 'fa-bolt-lightning';
 
             if (Math.random() <= deal.chance) {
                 const profit = deal.reward;
                 changeStat('money', profit);
                 showToast(`Афера удалась, красава! Ты поднял ${profit.toLocaleString()} ₽! 🤘`, 'success');
-                addEvent(`Ты провернул ${deal.name} и сорвал куш. Коллектор Злой в ахуе.`, 'success');
+                addEvent(`Ты провернул ${deal.name} и сорвал куш. Коллектор Злой в ахуе.`, 'success', 'fa-hand-holding-dollar');
                 audioSystem.play('money');
                 setStepaAnimation('money-bounce', 1);
             } else {
                 changeStat('money', deal.penalty);
                 showToast(`Тебя кинули, лох ебаный! Потеряно ${Math.abs(deal.penalty).toLocaleString()} ₽ 🤡`, 'danger');
-                addEvent(`Схема ${deal.name} провалилась. Ты в еще большей жопе, мудак.`, 'danger');
+                addEvent(`Схема ${deal.name} провалилась. Ты в еще большей жопе, мудак.`, 'danger', 'fa-skull-crossbones');
                 audioSystem.play('fail');
                 setStepaAnimation('danger-shake', 1.5);
             }
@@ -902,12 +997,12 @@
         // --- Случайные события и конец игры ---
         function randomEvent() {
             const events = [
-                () => { changeStat('money', 1500); addEvent("Нашёл 1500 ₽ у ларька! Сегодня фартит. 👍", 'success'); audioSystem.play('money'); },
-                () => { if(gameState.money > 2000) { changeStat('money', -2000); showToast("Цыгане развели на 2000 ₽. Лох - это судьба, хули. 🤦‍♂️", 'danger'); audioSystem.play('fail'); addEvent("Цыгане развели на 2к. Пиздец.", 'danger'); }},
-                () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак. 🤧", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда.", 'warning');},
-                () => { changeStat('stress', -25); showToast("По телеку показали Бригаду. На душе стало тепло. Эх, времена... 😌", 'success'); addEvent("Посмотрел любимый сериал, на время отпустило.", 'success'); },
-                () => { changeStat('health', 5); changeStat('satiety', -5); addEvent("Нашел в мусорке почти целую булку. Слегка подзарядился.", 'success'); audioSystem.play('success'); },
-                () => { changeStat('stress', 15); showToast("Вспомнил, как Коллектор Злой смотрел на тебя. Ух, аж пропотел. 🥵", 'danger'); setStepaAnimation('danger-shake', 1.5); addEvent("Тревога, сука. Я должен бабки.", 'danger'); } 
+                () => { changeStat('money', 1500); addEvent("Нашёл 1500 ₽ у ларька! Сегодня фартит. 👍", 'success', 'fa-sack-dollar'); audioSystem.play('money'); },
+                () => { if(gameState.money > 2000) { changeStat('money', -2000); showToast("Цыгане развели на 2000 ₽. Лох - это судьба, хули. 🤦‍♂️", 'danger'); audioSystem.play('fail'); addEvent("Цыгане развели на 2к. Пиздец.", 'danger', 'fa-comments-dollar'); }},
+                () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак. 🤧", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда.", 'warning', 'fa-temperature-low');},
+                () => { changeStat('stress', -25); showToast("По телеку показали Бригаду. На душе стало тепло. Эх, времена... 😌", 'success'); addEvent("Посмотрел любимый сериал, на время отпустило.", 'success', 'fa-tv'); },
+                () => { changeStat('health', 5); changeStat('satiety', -5); addEvent("Нашел в мусорке почти целую булку. Слегка подзарядился.", 'success', 'fa-utensils'); audioSystem.play('success'); },
+                () => { changeStat('stress', 15); showToast("Вспомнил, как Коллектор Злой смотрел на тебя. Ух, аж пропотел. 🥵", 'danger'); setStepaAnimation('danger-shake', 1.5); addEvent("Тревога, сука. Я должен бабки.", 'danger', 'fa-face-anxious-sweat'); } 
             ];
             events[Math.floor(Math.random() * events.length)]();
         }
@@ -918,7 +1013,7 @@
             changeStat('stress', 30);
             setStepaAnimation('danger-shake', 1.5);
             audioSystem.play('threat');
-            addEvent("Кредиторский звонок: Коллектор Злой шлет угрозы. Надо платить.", 'danger');
+            addEvent("Кредиторский звонок: Коллектор Злой шлет угрозы. Надо платить.", 'danger', 'fa-phone-volume');
         }
 
         function checkGameOver() {
@@ -994,9 +1089,12 @@
             document.getElementById('welcome-escape').textContent = ESCAPE_COST.toLocaleString('ru-RU');
 
             if (gameState.day === 1 || forceWelcome) {
-              addEvent("Проснулся с бодуна. Кажется, я должен Коллектору Злому... Пиздец.", "warning");
+              addEvent("Проснулся с бодуна. Кажется, я должен Коллектору Злому... Пиздец.", "warning", 'fa-face-sad-cry');
               ui.welcomeModal.classList.add('show');
             }
+
+            // Обновляем текст на кнопке побега после загрузки/инициализации
+            document.querySelector('.action-btn.escape').innerHTML = `<i class="fa-solid fa-plane-departure"></i>Свалить нахуй (${ESCAPE_COST.toLocaleString('ru-RU')} ₽)`;
 
             updateUI();
         }
