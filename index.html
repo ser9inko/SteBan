@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Стёпа: АД И ЭСТЕТИКА</title>
+    <title>Стёпа: ФИНАЛЬНЫЙ РАЗЪЕБ</title>
     <style>
-        /* ==================== CSS: КИБЕРПАНК СТИЛЬ ==================== */
+        /* ==================== CSS: КИБЕРПАНК СТИЛЬ V9 ==================== */
 
         /* Базовый сброс и контрастный стиль */
         body {
-            font-family: 'Consolas', 'Courier New', monospace; /* Кибер-шрифт */
+            font-family: 'Consolas', 'Courier New', monospace;
             margin: 0;
             padding: 0;
-            background-color: #0d0d0d; /* Ультра-темный фон */
-            color: #00ff90; /* Неоновый зеленый текст */
+            background-color: #0d0d0d;
+            color: #00ff90;
             transition: background-color 0.4s;
             touch-action: manipulation;
             overflow-x: hidden;
@@ -26,9 +26,11 @@
             --tg-theme-button-text-color: #ffffff;
             --tg-theme-hint-color: #555555;
             --tg-theme-secondary-bg-color: #1a1a1a;
-            --tg-theme-success-color: #00ff90; /* Неоновый зеленый */
-            --tg-theme-danger-color: #ff0077; /* Неоновый розовый/красный */
-            --neon-glow: 0 0 5px #ff0077, 0 0 10px #ff0077;
+            --success-color: #00ff90; /* Зеленый */
+            --warning-color: #FFD700; /* Желтый */
+            --danger-color: #ff0077; /* Розовый/Критический */
+            --neon-glow-danger: 0 0 5px var(--danger-color), 0 0 10px var(--danger-color);
+            --neon-glow-success: 0 0 5px var(--success-color), 0 0 10px var(--success-color);
         }
 
         /* Анимации УДАРА/Тряски */
@@ -43,14 +45,29 @@
 
         /* Анимация неонового пульса (для долга) */
         @keyframes neon-pulse {
-            0% { box-shadow: var(--neon-glow); }
+            0% { box-shadow: var(--neon-glow-danger); }
             50% { box-shadow: 0 0 10px #00ff90, 0 0 20px #00ff90, 0 0 30px #ff0077; }
-            100% { box-shadow: var(--neon-glow); }
+            100% { box-shadow: var(--neon-glow-danger); }
         }
         .critical-debt {
             animation: neon-pulse 1.5s infinite;
-            border: 2px solid var(--tg-theme-danger-color) !important;
+            border: 2px solid var(--danger-color) !important;
         }
+
+        /* Анимация мигания денег при транзакции */
+        @keyframes money-flash-in {
+            0% { color: #fff; text-shadow: 0 0 10px #fff; }
+            50% { color: var(--success-color); text-shadow: var(--neon-glow-success); }
+            100% { color: inherit; text-shadow: none; }
+        }
+        @keyframes money-flash-out {
+            0% { color: #fff; text-shadow: 0 0 10px #fff; }
+            50% { color: var(--danger-color); text-shadow: var(--neon-glow-danger); }
+            100% { color: inherit; text-shadow: none; }
+        }
+        .money-in { animation: money-flash-in 0.8s ease-out; }
+        .money-out { animation: money-flash-out 0.8s ease-out; }
+
 
         /* Контейнер для монеток */
         .coin-burst-container {
@@ -102,8 +119,8 @@
             justify-content: space-between;
             align-items: center;
         }
-        .debt-mini { color: var(--tg-theme-danger-color); font-weight: bold; text-shadow: var(--neon-glow); }
-        .mood-text { color: #FFFF00; font-weight: bold; }
+        .debt-mini { color: var(--danger-color); font-weight: bold; text-shadow: var(--neon-glow-danger); }
+        .mood-text { color: var(--warning-color); font-weight: bold; }
 
         /* Настроение/Стресс бар */
         #mood-bar-container {
@@ -120,11 +137,13 @@
         }
         .progress-bar-fill {
             height: 100%;
-            background-color: var(--tg-theme-success-color);
-            transition: width 0.5s ease-in-out;
-            box-shadow: 0 0 5px var(--tg-theme-success-color);
+            background-color: var(--success-color);
+            transition: width 0.5s ease-in-out, background-color 0.3s;
+            box-shadow: 0 0 5px var(--success-color);
         }
-        .low-mood { background-color: var(--tg-theme-danger-color); box-shadow: var(--neon-glow); }
+        .low-mood { background-color: var(--danger-color); box-shadow: var(--neon-glow-danger); }
+        .medium-mood { background-color: var(--warning-color); box-shadow: 0 0 5px var(--warning-color); }
+
 
         /* Кнопки */
         .actions {
@@ -148,7 +167,8 @@
         }
         button:not([disabled]):active {
             transform: translateY(1px);
-            box-shadow: 0 0 10px #00ff90;
+            box-shadow: none;
+            opacity: 0.8;
         }
         button:disabled {
             background-color: #444;
@@ -156,11 +176,12 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
-        button.action-btn { background-color: #333333; color: #00ff90; border: 1px solid #00ff90; }
-        button.job-btn { background-color: #008080; box-shadow: 0 0 10px #00ff90; }
-        button.debt-btn { background-color: var(--tg-theme-danger-color); box-shadow: var(--neon-glow); }
+        button.action-btn { background-color: #333333; color: var(--success-color); border: 1px solid var(--success-color); }
+        button.job-btn { background-color: #008080; box-shadow: 0 0 10px var(--success-color); }
+        button.debt-btn { background-color: var(--danger-color); box-shadow: var(--neon-glow-danger); }
         button.risk-btn { background-color: #FF6600; box-shadow: 0 0 10px #FF6600; } 
-        button.mood-btn { background-color: #5500FF; box-shadow: 0 0 10px #5500FF; } /* Фиолетовый */
+        button.mood-btn { background-color: #5500FF; box-shadow: 0 0 10px #5500FF; }
+        button.reset-btn { background-color: #222; color: #fff; margin-top: 20px; border: 1px solid #777; }
 
         /* Окно сообщений/событий */
         #message-area {
@@ -169,8 +190,8 @@
             border-radius: 8px;
             margin-top: 10px;
             min-height: 120px;
-            border: 1px solid var(--tg-theme-danger-color);
-            box-shadow: var(--neon-glow);
+            border: 1px solid #333;
+            box-shadow: 0 0 5px #111;
         }
         
         .message-title {
@@ -185,33 +206,11 @@
             color: #ccc;
         }
 
-        /* Модальное окно */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        .modal-content {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 90%;
-            text-align: center;
-            box-shadow: 0 0 20px var(--tg-theme-danger-color);
-            border: 2px solid var(--tg-theme-danger-color);
-        }
-        .modal-content h2 {
-            color: var(--tg-theme-danger-color);
-            font-size: 24px;
-            text-shadow: var(--neon-glow);
-        }
+        /* Цветовые схемы для сообщений */
+        .msg-success { border: 1px solid var(--success-color); box-shadow: var(--neon-glow-success); }
+        .msg-warning { border: 1px solid var(--warning-color); box-shadow: 0 0 10px var(--warning-color); }
+        .msg-danger { border: 1px solid var(--danger-color); box-shadow: var(--neon-glow-danger); }
+
         
     </style>
 </head>
@@ -237,8 +236,8 @@
             <div><span>💼 Работа:</span> <span id="job-stat">Безработный</span></div>
         </div>
 
-        <div id="message-area">
-            <div class="message-title">ЗАГРУЗКА БЛЯДЬ...</div>
+        <div id="message-area" class="msg-warning">
+            <div class="message-title">ЗАГРУЗКА...</div>
             <div class="message-text">Ожидание данных...</div>
         </div>
 
@@ -254,13 +253,15 @@
             <button id="stocks-btn" class="risk-btn" onclick="tradeStocks()">📈 Инвест (10к)</button>
             <button id="escape-btn" class="risk-btn" onclick="takeAction('tryToEscape')">🚂 СЪЕБАТЬ (15к, ДЕНЬ)</button>
             
-            <div id="pay-debt-interface" style="grid-column: 1 / 3; display: none;">
-                <input type="number" id="payment-input" placeholder="Сумма (₽)">
-                <button class="debt-btn" onclick="payDebt()">ПЛАТИТЬ, СУКА</button>
+            <div id="pay-debt-interface" style="grid-column: 1 / 3; display: none; display: flex; gap: 5px;">
+                <input type="number" id="payment-input" placeholder="Сумма (₽)" style="flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #00ff90; background-color: #222; color: #fff;">
+                <button class="debt-btn" onclick="payDebt()" style="flex-grow: 0.5;">ПЛАТИТЬ, СУКА</button>
             </div>
         </div>
         
         <button id="toggle-pay-btn" class="debt-btn" style="margin-top: 10px;" onclick="togglePayInterface()">💵 ОТДАТЬ ДОЛГ</button>
+        
+        <button class="reset-btn" onclick="confirmReset()">💀 СБРОСИТЬ ВСЕ ДАННЫЕ (ПИЗДЕЦ)</button>
 
     </div>
 
@@ -273,9 +274,8 @@
     </div>
 
     <script>
-        // ==================== JAVASCRIPT: Логика игры (V8) ====================
+        // ==================== JAVASCRIPT: Логика игры (V9) ====================
 
-        // Инициализация Telegram WebApp API
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
         }
@@ -288,7 +288,7 @@
             job: "Безработный",
             jobSalary: 0,
             day: 1,
-            mood: 50,          // Настроение (1-100)
+            mood: 50,          
             isBusiness: false,
             stocksInvested: 0, 
             stocksValue: 0,
@@ -300,13 +300,13 @@
         const MAX_DAYS = 100;
         const ESCAPE_COST = 15000;
         const STOCKS_INVEST = 10000;
-        const MOOD_COST = 1000; // Стоимость "Отдыха"
-        const DAILY_EXPENSE_BASE = 500; // Базовые ежедневные расходы (вода, свет)
+        const MOOD_COST = 1000;
+        const DAILY_EXPENSE_BASE = 500;
 
         const el = (id) => document.getElementById(id);
         const formatMoney = (amount) => amount.toLocaleString('ru-RU');
+        const GAME_STORAGE_KEY = 'stepaGameV9';
 
-        // Список городов и их параметры
         const CITIES = {
             "Курск": { interestBank: 0.005, interestMini: 0.05, expenseMultiplier: 1.0, jobMultiplier: 1.0, escapeTo: ["Тверь"] },
             "Тверь": { interestBank: 0.004, interestMini: 0.04, expenseMultiplier: 1.2, jobMultiplier: 1.2, escapeTo: ["Москва", "Питер"] },
@@ -315,14 +315,15 @@
             "Владивосток": { interestBank: 0.002, interestMini: 0.02, expenseMultiplier: 1.8, jobMultiplier: 1.8, escapeTo: ["Курск"] }
         };
 
-        // --- ЛЮТЫЕ ФРАЗЫ КОЛЛЕКТОРОВ (V8) ---
+        // --- ЛЮТЫЕ ФРАЗЫ КОЛЛЕКТОРОВ (V9) ---
         const COLLECTOR_PHRASES = [
-            "Звонок: «Твоя жопа — наша собственность! Долг +%INTEREST% ₽. Завтра приедем за твоей головой, **уёбок**!»",
-            "Тебе пришла СМС: «**МЫ У ТЕБЯ ПОД КРОВАТЬЮ**, Стёпа. Мы заберем твою квартиру, **если она есть**. Долг +%INTEREST% ₽.»",
-            "Нашел записку, написанную **говном** на двери: «**ИДИ НА ХУЙ, НИЩЕБРОД**. Плати или умри. Долг +%INTEREST% ₽.»",
-            "Внезапно: «Ты **конченый**, Стёпа. Мы приедем и **вырвем тебе ноги**. Долг +%INTEREST% ₽.»",
-            "Соседка шепчет: «Твой подъезд исписали угрозами. Они знают, где ты прячешься, **мразь**. Долг +%INTEREST% ₽.»",
-            "Угроза от **ГЛАВНОГО БОССА МФО**: «Ты **наш раб**, иди работай, **тварь**. Долг +%INTEREST% ₽.»"
+            "Звонок: «Твоя жопа — наша собственность! Долг +%INTEREST% ₽. Завтра приедем за твоей головой, уёбок!»",
+            "Тебе пришла СМС: «МЫ У ТЕБЯ ПОД КРОВАТЬЮ, Стёпа. Мы заберем твою квартиру, если она есть. Долг +%INTEREST% ₽.»",
+            "Нашел записку, написанную говном на двери: «ИДИ НА ХУЙ, НИЩЕБРОД. Плати или умри. Долг +%INTEREST% ₽.»",
+            "Внезапно: «Ты конченый, Стёпа. Мы приедем и вырвем тебе ноги. Долг +%INTEREST% ₽.»",
+            "Соседка шепчет: «Твой подъезд исписали угрозами. Они знают, где ты прячешься, мразь. Долг +%INTEREST% ₽.»",
+            "Угроза от ГЛАВНОГО БОССА МФО: «Ты наш раб, иди работай, тварь. Долг +%INTEREST% ₽.»",
+            "Нам насрать на твой стресс. Плати, или мы придем за твоей душой, пидорас! Долг +%INTEREST% ₽."
         ];
         
         // --- Анимации ---
@@ -360,19 +361,43 @@
             }, 100);
         };
         
-        // --- Сохранение/Загрузка (V8) ---
+        const animateMoneyChange = (amount) => {
+            const moneyEl = el('money-stat');
+            moneyEl.classList.remove('money-in', 'money-out');
+            
+            // Запускаем анимацию на следующий кадр
+            requestAnimationFrame(() => {
+                if (amount > 0) {
+                    moneyEl.classList.add('money-in');
+                } else if (amount < 0) {
+                    moneyEl.classList.add('money-out');
+                }
+            });
+        };
+
+        // --- Сохранение/Загрузка ---
         const saveGame = () => {
-            localStorage.setItem('stepaGameV8', JSON.stringify(gameState));
+            localStorage.setItem(GAME_STORAGE_KEY, JSON.stringify(gameState));
         };
 
         const loadGame = () => {
-            const savedState = localStorage.getItem('stepaGameV8');
+            const savedState = localStorage.getItem(GAME_STORAGE_KEY);
             if (savedState) {
                 gameState = JSON.parse(savedState);
                 return true;
             }
             return false;
         };
+        
+        // --- Аварийный сброс ---
+        window.confirmReset = () => {
+            if (confirm("ТЫ УВЕРЕН, ЧТО ХОЧЕШЬ НАЖАТЬ ЭТУ КНОПКУ? ВСЕ ДАННЫЕ БУДУТ СТЕРТЫ НАХУЙ!")) {
+                localStorage.removeItem(GAME_STORAGE_KEY);
+                alert("ДАННЫЕ СТЕРТЫ! ТЫ СВОБОДЕН! (Но ненадолго).");
+                resetGame();
+            }
+        };
+
 
         // --- Обновление интерфейса ---
         const updateStats = () => {
@@ -388,7 +413,9 @@
             el('mood-stat').textContent = `${moodPercent}%`;
             const moodBarFill = el('mood-bar-fill');
             moodBarFill.style.width = `${moodPercent}%`;
-            moodBarFill.className = moodPercent < 25 ? 'progress-bar-fill low-mood' : 'progress-bar-fill';
+            moodBarFill.className = 'progress-bar-fill';
+            if (moodPercent < 25) moodBarFill.classList.add('low-mood');
+            else if (moodPercent < 50) moodBarFill.classList.add('medium-mood');
 
             const isJob = gameState.job !== "Безработный";
             const isBusiness = gameState.isBusiness;
@@ -423,19 +450,30 @@
             saveGame();
         };
 
-        const updateMessage = (title, text, isProblem = true) => {
+        const updateMessage = (title, text, type = 'warning') => {
             const area = el('message-area');
-            const color = isProblem ? 'var(--tg-theme-danger-color)' : 'var(--tg-theme-success-color)';
-            area.style.borderColor = color;
-            area.style.boxShadow = isProblem ? 'var(--neon-glow)' : `0 0 5px ${color}, 0 0 10px ${color}`;
+            let color;
+            area.className = '';
+            
+            if (type === 'success') {
+                color = 'var(--success-color)';
+                area.classList.add('msg-success');
+            } else if (type === 'danger') {
+                color = 'var(--danger-color)';
+                area.classList.add('msg-danger');
+                triggerScreenShake(); // Критическое сообщение = тряска
+            } else { // warning/neutral
+                color = 'var(--warning-color)';
+                area.classList.add('msg-warning');
+            }
+
             area.innerHTML = `
                 <div class="message-title" style="color: ${color}">${title} (ДЕНЬ ${gameState.day})</div>
                 <div class="message-text">${text}</div>
             `;
-            if (window.Telegram && window.Telegram.WebApp && isProblem) {
-                Telegram.WebApp.HapticFeedback.notificationOccurred('warning');
+            if (window.Telegram && window.Telegram.WebApp && type === 'danger') {
+                Telegram.WebApp.HapticFeedback.notificationOccurred('failure');
             }
-            // Анимация fade-in
             area.style.animation = 'none'; 
             void area.offsetWidth; 
             area.style.animation = 'fadeIn 0.5s'; 
@@ -443,21 +481,17 @@
 
         const checkWinLoss = () => {
             const totalDebt = gameState.debtBank + gameState.debtMini;
-            // Проигрыш: Долг слишком велик
             if (totalDebt >= DEBT_LIMIT_FOR_LOSS || gameState.money < -50000) {
-                triggerScreenShake();
-                showModal("ПРОИГРЫШ: ПИЗДЕЦ", `Общий долг ${formatMoney(totalDebt)} ₽! Твоя печень уже на аукционе. Ты **сдох**, Стёпа.`, false);
+                showModal("ПРОИГРЫШ: ПИЗДЕЦ", `Общий долг ${formatMoney(totalDebt)} ₽! Твоя печень уже на аукционе. Ты сдох, Стёпа.`, false);
                 return true;
             }
-            // Проигрыш: Истек срок
             if (gameState.day > MAX_DAYS && totalDebt > 0) {
-                showModal("ПРОИГРЫШ: СРОК ВЫШЕЛ", `Прошло 100 дней, **уебок**! Ты не вернул ${formatMoney(totalDebt)} ₽! Коллекторы уже **стоят у твоей кровати**.`, false);
+                showModal("ПРОИГРЫШ: СРОК ВЫШЕЛ", `Прошло 100 дней, уебок! Ты не вернул ${formatMoney(totalDebt)} ₽! Коллекторы уже стоят у твоей кровати.`, false);
                 return true;
             }
-            // Победа: Успешный бизнес и капитал
             if (gameState.isBusiness && gameState.money >= 350000) {
                 triggerCoinBurst(50);
-                showModal("ПОБЕДА: ТЫ БЛЯДЬ ОХУЕЛ!", `Ты не только выплатил долг, но и скопил ${formatMoney(gameState.money)} ₽! **МОЖНО ПОСЛАТЬ ВСЕХ НА ХУЙ!**`, true);
+                showModal("ПОБЕДА: ТЫ БЛЯДЬ ОХУЕЛ!", `Ты не только выплатил долг, но и скопил ${formatMoney(gameState.money)} ₽! МОЖНО ПОСЛАТЬ ВСЕХ НА ХУЙ!`, true);
                 return true;
             }
             return false;
@@ -478,24 +512,22 @@
             togglePayInterface();
 
             if (gameState.debtBank + gameState.debtMini <= 0) {
-                 updateMessage("✅ ДОЛГ ЗАКРЫТ", "Ты никому ничего не должен, **ёбаный гений**.", false);
+                 updateMessage("✅ ДОЛГ ЗАКРЫТ", "Ты никому ничего не должен, ёбаный гений.", 'success');
                  input.value = '';
-                 triggerFlash(true);
                  return;
             }
             if (payment < 1000) {
-                 updateMessage("❌ СЛИШКОМ МАЛО", "Ты что, **издеваешься**? Хотя бы 1000 ₽ внеси, **жалкий нищеброд**!", true);
-                 triggerScreenShake();
+                 updateMessage("❌ СЛИШКОМ МАЛО", "Ты что, издеваешься? Хотя бы 1000 ₽ внеси, жалкий нищеброд!", 'danger');
                  return;
             }
             if (payment > gameState.money) {
                 payment = gameState.money; 
-                updateMessage("❌ НЕТ ДЕНЕГ", `Ты попытался заплатить ${formatMoney(payment)} ₽, но у тебя только ${formatMoney(gameState.money)} ₽! Плачу, сколько есть.`, true);
+                updateMessage("❌ НЕТ ДЕНЕГ", `Ты попытался заплатить ${formatMoney(payment)} ₽, но у тебя только ${formatMoney(gameState.money)} ₽! Плачу, сколько есть.`, 'warning');
             }
 
             let amountPaid = 0;
             
-            // 1. Сначала платим МФО (самый злой долг)
+            // Сначала платим МФО (самый злой долг)
             if (gameState.debtMini > 0) {
                 const miniPayment = Math.min(payment, gameState.debtMini);
                 gameState.debtMini -= miniPayment;
@@ -503,7 +535,7 @@
                 amountPaid += miniPayment;
             }
 
-            // 2. Если остались деньги, платим Банку
+            // Если остались деньги, платим Банку
             if (payment > 0 && gameState.debtBank > 0) {
                 const bankPayment = Math.min(payment, gameState.debtBank);
                 gameState.debtBank -= bankPayment;
@@ -511,30 +543,29 @@
             }
             
             gameState.money -= amountPaid;
+            animateMoneyChange(-amountPaid);
             
-            updateMessage("✅ ПЛАТЕЖ ПРОШЕЛ", `Ты скинул ${formatMoney(amountPaid)} ₽. **Микрозаймы сжимают ебало**.`, false);
+            updateMessage("✅ ПЛАТЕЖ ПРОШЕЛ", `Ты скинул ${formatMoney(amountPaid)} ₽. Микрозаймы сжимают ебало.`, 'success');
             input.value = '';
-            triggerFlash(false);
             updateStats(); 
         };
         
         window.askForLoan = () => {
             if (!gameState.canTakeAction) return;
-            // Успех зависит от настроения и долга
             const successChance = (gameState.mood / 100) * (gameState.debtMini < 40000 ? 0.7 : 0.4);
             
             if (Math.random() < successChance) { 
                 const amount = Math.floor(Math.random() * 15000) + 5000;
                 gameState.money += amount;
                 gameState.mood = Math.min(100, gameState.mood + 5);
-                updateMessage("🤝 УСПЕХ (ВРЕМЕННО)", `Твой кореш дал тебе ${formatMoney(amount)} ₽. На этот раз без процентов. **Ты ему должен, сука!**`, false);
+                updateMessage("🤝 УСПЕХ (ВРЕМЕННО)", `Твой кореш дал тебе ${formatMoney(amount)} ₽. На этот раз без процентов. Ты ему должен, сука!`, 'success');
                 triggerCoinBurst(5);
+                animateMoneyChange(amount);
             } else {
                  const penalty = Math.floor(Math.random() * 5000) + 5000;
                  gameState.debtMini += penalty;
                  gameState.mood = Math.max(1, gameState.mood - 10);
-                 updateMessage("❌ КОРЕШ-КРЫСА", `Друг тебе отказал и позвонил коллекторам. Держи +${formatMoney(penalty)} ₽ к долгу МФО. **Нехуй звонить**!`, true);
-                 triggerScreenShake();
+                 updateMessage("❌ КОРЕШ-КРЫСА", `Друг тебе отказал и позвонил коллекторам. Держи +${formatMoney(penalty)} ₽ к долгу МФО. Нехуй звонить!`, 'danger');
             }
             updateStats();
         };
@@ -544,66 +575,69 @@
             const currentCityData = CITIES[gameState.city];
             const cost = Math.floor(Math.random() * 5000) + (1000 * currentCityData.expenseMultiplier);
             if (gameState.money < cost) {
-                updateMessage("🚫 НЕТ ДЕНЕГ", "**Ты бомж**, Стёпа. Иди работай, **пидорас**!", true);
-                triggerScreenShake();
+                updateMessage("🚫 НЕТ ДЕНЕГ", "Ты бомж, Стёпа. Иди работай, пидорас!", 'danger');
                 return;
             }
             gameState.money -= cost;
             gameState.mood = Math.min(100, gameState.mood + 15);
-            updateMessage("🍻 ПРОЕБ", `Ты купил пивас, шаурму и какую-то **ебалу**. Потрачено ${formatMoney(cost)} ₽. Настроение +15%. **Зато похуй**.`, false);
+            updateMessage("🍻 ПРОЕБ", `Ты купил пивас, шаурму и какую-то ебалу. Потрачено ${formatMoney(cost)} ₽. Зато на душе полегчало.`, 'warning');
+            animateMoneyChange(-cost);
             updateStats();
         };
 
         window.buyLotteryTicket = () => {
             if (!gameState.canTakeAction) return;
             if (gameState.money < 1000) {
-                 updateMessage("🚫 НЕТ ДЕНЕГ", "На лотерею нужен косарь. **Иди нахуй**!", true);
+                 updateMessage("🚫 НЕТ ДЕНЕГ", "На лотерею нужен косарь. Иди нахуй!", 'danger');
                  return;
             }
             gameState.money -= 1000;
-            gameState.mood = Math.max(1, gameState.mood - 5); // Нервы
+            animateMoneyChange(-1000);
+            gameState.mood = Math.max(1, gameState.mood - 5); 
             const chance = Math.random();
             let msgTitle = "🎰 ЛОТЕРЕЯ: МИМО";
-            let msgText = "Ты порвал билет. Просто минус 1000 ₽. **Ты лох**.";
-            let isProblem = true;
+            let msgText = "Ты порвал билет. Просто минус 1000 ₽. Ты лох.";
+            let type = 'danger';
             
-            if (chance < 0.03) { // 3%
+            if (chance < 0.03) { 
                 const win = Math.floor(Math.random() * 100000) + 50000;
                 gameState.money += win;
                 gameState.mood = Math.min(100, gameState.mood + 30);
-                msgTitle = "🎉 ЛОТЕРЕЯ: ДЖЕКПОТ! **ТЫ ОХУЕЛ**";
-                msgText = `Твою мать! Ты выиграл ${formatMoney(win)} ₽! Это **ЕБАНЫЙ ПРАЗДНИК**!`;
-                isProblem = false;
+                msgTitle = "🎉 ЛОТЕРЕЯ: ДЖЕКПОТ! ТЫ ОХУЕЛ";
+                msgText = `Твою мать! Ты выиграл ${formatMoney(win)} ₽! Это ЕБАНЫЙ ПРАЗДНИК!`;
+                type = 'success';
                 triggerCoinBurst(20);
-            } else if (chance < 0.2) { // 17%
+                animateMoneyChange(win);
+            } else if (chance < 0.2) { 
                 const win = Math.floor(Math.random() * 3000) + 1000;
                 gameState.money += win;
                 gameState.mood = Math.min(100, gameState.mood + 5);
                 msgTitle = "🍀 ЛОТЕРЕЯ: МЕЛКИЙ ВЫИГРЫШ";
                 msgText = `Ты отбил свои 1000 ₽ и еще ${formatMoney(win - 1000)} ₽ сверху. На пиво хватит.`;
-                isProblem = false;
-                triggerFlash(true);
+                type = 'success';
+                animateMoneyChange(win);
             }
 
-            updateMessage(msgTitle, msgText, isProblem);
+            updateMessage(msgTitle, msgText, type);
             updateStats();
         };
 
         window.tradeStocks = () => {
             if (!gameState.canTakeAction) return;
             if (gameState.stocksInvested > 0) {
-                updateMessage("🚫 НЕЛЬЗЯ", "Ты уже вложил деньги в акции. Жди, **долбоёб**.", true);
+                updateMessage("🚫 НЕЛЬЗЯ", "Ты уже вложил деньги в акции. Жди, долбоёб.", 'warning');
                 return;
             }
             if (gameState.money < STOCKS_INVEST) {
-                updateMessage("🚫 НЕТ ДЕНЕГ", `Нужно ${formatMoney(STOCKS_INVEST)} ₽ для старта. **Иди работай**!`, true);
+                updateMessage("🚫 НЕТ ДЕНЕГ", `Нужно ${formatMoney(STOCKS_INVEST)} ₽ для старта. Иди работай!`, 'danger');
                 return;
             }
 
             gameState.money -= STOCKS_INVEST;
+            animateMoneyChange(-STOCKS_INVEST);
             gameState.stocksInvested = STOCKS_INVEST;
-            gameState.stocksValue = STOCKS_INVEST; // Начальное значение
-            updateMessage("📈 АКЦИИ: ВЛОЖЕНО", `Ты вложил ${formatMoney(STOCKS_INVEST)} ₽. Молись, чтобы завтра они не рухнули, **уёбок**!`, true);
+            gameState.stocksValue = STOCKS_INVEST; 
+            updateMessage("📈 АКЦИИ: ВЛОЖЕНО", `Ты вложил ${formatMoney(STOCKS_INVEST)} ₽. Молись, чтобы завтра они не рухнули, уёбок!`, 'warning');
             updateStats();
         };
 
@@ -612,7 +646,6 @@
              if (!gameState.canTakeAction) return;
              gameState.canTakeAction = false; 
              
-             // Вызываем основное действие
              switch (actionName) {
                  case 'findOfficialJob': findOfficialJob(); break;
                  case 'takeSideJob': takeSideJob(); break;
@@ -621,7 +654,6 @@
                  case 'manageMood': manageMood(); break;
              }
              
-             // И в конце дня пропускаем день
              setTimeout(() => {
                  if (!checkWinLoss()) {
                     nextDay(true);
@@ -634,44 +666,40 @@
 
         const manageMood = () => {
             if (gameState.money < MOOD_COST) {
-                updateMessage("🚫 НЕТ ДЕНЕГ", "На бухло/психолога нужно 1000 ₽. Иди, **пострадай**.", true);
+                updateMessage("🚫 НЕТ ДЕНЕГ", "На бухло/психолога нужно 1000 ₽. Иди, пострадай.", 'danger');
                 return;
             }
             
             gameState.money -= MOOD_COST;
+            animateMoneyChange(-MOOD_COST);
             
             const moodIncrease = Math.floor(Math.random() * 20) + 10;
             gameState.mood = Math.min(100, gameState.mood + moodIncrease);
 
-            updateMessage("🧘‍♂️ ОТДЫХ", `Ты **нахрюкался** / **медитировал**. Потрачено ${formatMoney(MOOD_COST)} ₽. Настроение +${moodIncrease}%. **Почти человек!**`, false);
+            updateMessage("🧘‍♂️ ОТДЫХ", `Ты нахрюкался / медитировал. Потрачено ${formatMoney(MOOD_COST)} ₽. Настроение +${moodIncrease}%. Почти человек!`, 'success');
         };
         
         const takeSideJob = () => {
             const currentCityData = CITIES[gameState.city];
             
-            // Награда и риск
             const baseIncome = Math.floor(Math.random() * 8001) + (2000 * currentCityData.jobMultiplier);
             let income = baseIncome;
             let moodPenalty = 10;
-            let isProblem = false;
-            let msgTitle = "💸 ШАБАШКА";
+            let type = 'success';
             
-            // Провал из-за низкого настроения
             if (gameState.mood < 25 && Math.random() < 0.3) {
                  const loss = baseIncome * 0.5;
                  income -= loss;
                  moodPenalty = 20;
-                 msgTitle = "❌ ШАБАШКА: ПРОВАЛ";
-                 updateMessage("❌ ШАБАШКА: ПРОВАЛ", `Ты **облажался** из-за стресса. Получил только ${formatMoney(income)} ₽. Настроение **-20%**.`, true);
-                 isProblem = true;
-                 triggerScreenShake();
+                 updateMessage("❌ ШАБАШКА: ПРОВАЛ", `Ты облажался из-за стресса. Получил только ${formatMoney(income)} ₽. Настроение -20%.`, 'danger');
             } else {
-                 updateMessage("💸 ШАБАШКА", `Ты **въебывал** 8 часов. Спина в ахуе, но ты заработал ${formatMoney(income)} ₽. **Слава, блядь, труду!**`, false);
+                 updateMessage("💸 ШАБАШКА", `Ты въебывал 8 часов. Спина в ахуе, но ты заработал ${formatMoney(income)} ₽. Слава, блядь, труду!`, 'success');
                  triggerCoinBurst(10);
             }
             
             gameState.money += income;
-            gameState.mood = Math.max(1, gameState.mood - moodPenalty); // Работа - это стресс
+            animateMoneyChange(income);
+            gameState.mood = Math.max(1, gameState.mood - moodPenalty); 
         };
 
         const findOfficialJob = () => {
@@ -679,47 +707,42 @@
             const baseSalary = 60000 * currentCityData.jobMultiplier;
 
             if (gameState.job !== "Безработный") {
-                // Если есть работа, работать
                 const income = gameState.jobSalary / 30;
                 let finalIncome = income;
                 let moodChange = -10;
-                let isProblem = false;
-                let msgTitle = "💼 РАБОТА";
+                let type = 'success';
                 
-                // Прогул/Штраф из-за настроения
                 if (gameState.mood < 30 && Math.random() < 0.2) {
                     finalIncome = 0;
                     gameState.debtMini += 5000;
                     moodChange = -20;
-                    msgTitle = "❌ ШТРАФ/УВОЛ. РИСК";
-                    isProblem = true;
-                    updateMessage(msgTitle, `Тебя спалили за **пьянством** / **ты уснул**. Зарплата за день **СГОРЕЛА**. +5000 ₽ к долгу МФО!`, true);
-                    triggerScreenShake();
+                    type = 'danger';
+                    updateMessage("❌ ШТРАФ/УВОЛ. РИСК", `Тебя спалили за пьянством / ты уснул. Зарплата за день СГОРЕЛА. +5000 ₽ к долгу МФО!`, 'danger');
                 } else {
-                    updateMessage(msgTitle, `Ты отработал день (${gameState.job}). Получил ${formatMoney(finalIncome)} ₽.`, false);
+                    updateMessage("💼 РАБОТА", `Ты отработал день (${gameState.job}). Получил ${formatMoney(finalIncome)} ₽.`, 'success');
                 }
                 
                 gameState.money += finalIncome;
+                animateMoneyChange(finalIncome);
                 gameState.mood = Math.max(1, gameState.mood + moodChange);
 
             } else {
-                // Логика поиска работы
                 const chance = Math.random();
 
                 if (chance < 0.3) {
                     gameState.job = `Грузчик (${formatMoney(baseSalary * 2)}/мес)`;
                     gameState.jobSalary = baseSalary * 2;
                     gameState.mood = Math.min(100, gameState.mood + 10);
-                    updateMessage("🎉 УСПЕХ", `Тебя взяли грузчиком на **ЕБАНЫЙ СКЛАД**! Зарплата - ${formatMoney(gameState.jobSalary)} ₽.`, false);
+                    updateMessage("🎉 УСПЕХ", `Тебя взяли грузчиком на ЕБАНЫЙ СКЛАД! Зарплата - ${formatMoney(gameState.jobSalary)} ₽.`, 'success');
                     triggerFlash(true);
                 } else if (chance < 0.6) {
                     gameState.mood = Math.max(1, gameState.mood - 5);
-                    updateMessage("😒 ПРОВАЛ", `Тебе отказали. Сказали: "**Ты выглядишь как долбоёб**". Пиздуй дальше.`, true);
+                    updateMessage("😒 ПРОВАЛ", `Тебе отказали. Сказали: "Ты выглядишь как долбоёб". Пиздуй дальше.`, 'warning');
                 } else {
                     gameState.job = `Охранник (${formatMoney(baseSalary)}/мес)`;
                     gameState.jobSalary = baseSalary;
                     gameState.mood = Math.min(100, gameState.mood + 5);
-                    updateMessage("😐 ОХРАННИК", `Ты нашел работу охранником за ${formatMoney(gameState.jobSalary)} ₽. **Скучно и уныло**!`, false);
+                    updateMessage("😐 ОХРАННИК", `Ты нашел работу охранником за ${formatMoney(gameState.jobSalary)} ₽. Скучно и уныло!`, 'success');
                 }
             }
         };
@@ -728,37 +751,36 @@
             if (!gameState.isBusiness) {
                 if (gameState.money < MONEY_FOR_BUSINESS) return;
                 
-                // Старт бизнеса
                 gameState.money -= MONEY_FOR_BUSINESS;
+                animateMoneyChange(-MONEY_FOR_BUSINESS);
                 gameState.isBusiness = true;
                 gameState.job = "БИЗНЕСМЕН";
                 gameState.mood = Math.min(100, gameState.mood + 20);
-                updateMessage("🚀 БИЗНЕС: СТАРТ", `Ты вложил ${formatMoney(MONEY_FOR_BUSINESS)} ₽ в свой **ЕБАНЫЙ ЛАРЕК**. **ТЫ БОСС**! Настроение +20%.`, false);
+                updateMessage("🚀 БИЗНЕС: СТАРТ", `Ты вложил ${formatMoney(MONEY_FOR_BUSINESS)} ₽ в свой ЕБАНЫЙ ЛАРЕК. ТЫ БОСС!`, 'success');
                 return;
             }
             
             const currentCityData = CITIES[gameState.city];
             const baseProfit = 30000 * currentCityData.jobMultiplier;
             let profit = Math.floor(Math.random() * baseProfit) + 15000;
-            let msgTitle = "💸 БИЗНЕС";
-            let msgText = `Твой ларек принес ${formatMoney(profit)} ₽! **ТЫ БОСС**!`;
-            let isProblem = false;
+            let type = 'success';
             let moodChange = 10;
 
             if (Math.random() < 0.25 || gameState.mood < 20) { 
                 const loss = Math.floor(Math.random() * 50000) + 25000;
                 profit -= loss;
                 moodChange = -20;
-                msgTitle = "💥 ПРОВАЛ БИЗНЕСА! **ПИЗДЕЦ**";
-                msgText = `Мент пришел за "крышей", или товар сгнил. Потеря ${formatMoney(loss)} ₽! Чистый доход: ${formatMoney(profit)} ₽. Настроение -20%.`;
-                isProblem = true;
-                triggerScreenShake();
+                type = 'danger';
+                updateMessage("💥 ПРОВАЛ БИЗНЕСА! ПИЗДЕЦ", `Мент пришел за "крышей", или товар сгнил. Потеря ${formatMoney(loss)} ₽! Чистый доход: ${formatMoney(profit)} ₽.`, 'danger');
+            } else {
+                 updateMessage("💸 БИЗНЕС", `Твой ларек принес ${formatMoney(profit)} ₽! ТЫ БОСС!`, 'success');
+                 triggerCoinBurst(15);
             }
             
             gameState.money += profit;
+            animateMoneyChange(profit);
             gameState.mood = Math.min(100, Math.max(1, gameState.mood + moodChange));
-            updateMessage(msgTitle, msgText, isProblem);
-            if (!isProblem) triggerCoinBurst(15);
+            updateStats();
         };
         
         const tryToEscape = () => {
@@ -766,23 +788,23 @@
             const nextCity = currentCityData.escapeTo[Math.floor(Math.random() * currentCityData.escapeTo.length)];
 
             if (gameState.money < ESCAPE_COST) {
-                 updateMessage("🚄 НЕ ХВАТАЕТ", `Поезд стоит ${formatMoney(ESCAPE_COST)} ₽, **ТУПИЦА**! Иди заработай!`, true);
-                 triggerScreenShake();
+                 updateMessage("🚄 НЕ ХВАТАЕТ", `Поезд стоит ${formatMoney(ESCAPE_COST)} ₽, ТУПИЦА! Иди заработай!`, 'danger');
                  return;
             }
             
             gameState.money -= ESCAPE_COST;
+            animateMoneyChange(-ESCAPE_COST);
             
             gameState.city = nextCity;
             gameState.job = "Безработный";
             gameState.jobSalary = 0;
-            gameState.mood = Math.min(100, gameState.mood + 25); // Радость от побега
+            gameState.mood = Math.min(100, gameState.mood + 25); 
 
-            updateMessage("✈️ ПОБЕГ!", `Ты съебал в ${nextCity}! Потеря ${formatMoney(ESCAPE_COST)} ₽. **Начни новую жизнь, УЁБОК**! Настроение +25%.`, false);
+            updateMessage("✈️ ПОБЕГ!", `Ты съебал в ${nextCity}! Потеря ${formatMoney(ESCAPE_COST)} ₽. Начни новую жизнь, УЁБОК!`, 'success');
             triggerFlash(true);
         };
         
-        // --- Логика следующего дня (Вызывается только после рабочего/циклового действия) ---
+        // --- Логика следующего дня ---
         
         const nextDay = (isDayChange) => {
             if (!isDayChange) {
@@ -799,8 +821,8 @@
         const applyDailyPassiveEvents = () => {
             const currentCityData = CITIES[gameState.city];
             let eventsText = '';
-            let isProblem = false;
-            let msgTitle = "ИЗВЕСТИЯ";
+            let type = 'warning';
+            let totalMoneyChange = 0;
 
             // 1. Проценты
             const interestBank = Math.ceil(gameState.debtBank * currentCityData.interestBank);
@@ -816,59 +838,79 @@
             // 2. Базовые расходы
             const dailyExpense = Math.floor(Math.random() * 500) + (DAILY_EXPENSE_BASE * currentCityData.expenseMultiplier);
             gameState.money -= dailyExpense;
-            gameState.mood = Math.max(1, gameState.mood - 2); // Бытовые проблемы
-            eventsText += `<br>🔴 **РАСХОДЫ!** Минус ${formatMoney(dailyExpense)} ₽. На жизнь, **ебать**!`;
+            totalMoneyChange -= dailyExpense;
+            gameState.mood = Math.max(1, gameState.mood - 2); 
+            eventsText += `<br>🔴 РАСХОДЫ! Минус ${formatMoney(dailyExpense)} ₽. На жизнь, ебать!`;
             
             // 3. Рынок акций (если вложено)
             if (gameState.stocksInvested > 0) {
+                // ... (логика акций без изменений) ...
                 let result = 0;
                 let moodChange = 0;
                 if (Math.random() < 0.1) { 
                     const multiplier = Math.floor(Math.random() * 3) + 2; 
                     result = gameState.stocksValue * multiplier;
-                    msgTitle = "🎉 АКЦИИ: ЕБАНЫЙ УСПЕХ!";
-                    eventsText += `<br>Акции взлетели **НАХУЙ**! Твои ${formatMoney(gameState.stocksInvested)} ₽ превратились в ${formatMoney(result)} ₽!`;
-                    isProblem = false;
+                    eventsText += `<br>🎉 АКЦИИ: ЕБАНЫЙ УСПЕХ! Акции взлетели НАХУЙ! Твои ${formatMoney(gameState.stocksInvested)} ₽ превратились в ${formatMoney(result)} ₽!`;
+                    type = 'success';
                     moodChange = 25;
                     triggerFlash(true);
                 } else if (Math.random() < 0.3) { 
                     const multiplier = Math.random() * 0.4 + 0.3; 
                     result = gameState.stocksValue * multiplier;
-                    msgTitle = "📉 АКЦИИ: КРАХ, СУКА!";
-                    eventsText += `<br>Рынок рухнул! Потерял **дохуя**. На руки: ${formatMoney(Math.floor(result))} ₽.`;
-                    isProblem = true;
+                    eventsText += `<br>📉 АКЦИИ: КРАХ, СУКА! Рынок рухнул! Потерял дохуя. На руки: ${formatMoney(Math.floor(result))} ₽.`;
+                    type = 'danger';
                     moodChange = -20;
                     triggerScreenShake();
                 } else { 
                     const multiplier = Math.random() * 0.4 + 0.8; 
                     result = gameState.stocksValue * multiplier;
                     moodChange = (multiplier > 1) ? 5 : -5;
+                    eventsText += `<br>📈 АКЦИИ: Ты продал бумаги. Получил ${formatMoney(Math.floor(result))} ₽.`;
+                    type = (moodChange > 0) ? 'success' : 'warning';
                 }
+                totalMoneyChange += Math.floor(result);
                 gameState.money += Math.floor(result);
                 gameState.stocksInvested = 0;
                 gameState.stocksValue = 0;
                 gameState.mood = Math.min(100, Math.max(1, gameState.mood + moodChange));
             }
             
-            // 4. Коллекторы (если долг МФО)
-            // Шанс коллекторов увеличивается при низком настроении
+            // 4. СЛУЧАЙНЫЙ ПИЗДЕЦ/ПОДАРОК
+            if (Math.random() < 0.15) {
+                const event = Math.random();
+                if (event < 0.4) { // Пиздец
+                    const tax = Math.floor(Math.random() * 8000) + 2000;
+                    gameState.money -= tax;
+                    totalMoneyChange -= tax;
+                    eventsText += `<br>💥 ВНЕЗАПНЫЙ НАЛОГ! Тебе пришел штраф за неправильный переход улицы. Минус ${formatMoney(tax)} ₽! Полный разъеб.`;
+                    type = 'danger';
+                } else if (event < 0.7) { // Подарок
+                    const gift = Math.floor(Math.random() * 10000) + 5000;
+                    gameState.money += gift;
+                    totalMoneyChange += gift;
+                    eventsText += `<br>🎁 НЕОЖИДАННО! Бабушка перевела ${formatMoney(gift)} ₽. ТЫ АХУЕЛ!`;
+                    type = 'success';
+                }
+            }
+
+            // 5. Коллекторы (если долг МФО)
             const collectorChance = 0.3 + (1 - gameState.mood / 100) * 0.2; 
             if (gameState.debtMini > 0 && Math.random() < collectorChance) {
                 const phrase = COLLECTOR_PHRASES[Math.floor(Math.random() * COLLECTOR_PHRASES.length)];
-                msgTitle = "📞 УГРОЗЫ ОТ МФО! **ЖЕСТЬ**";
-                eventsText = phrase.replace('%INTEREST%', formatMoney(interestMini)) + eventsText;
-                isProblem = true;
-                gameState.mood = Math.max(1, gameState.mood - 15); // Стресс от угроз
-                triggerScreenShake();
+                eventsText += `<br>📞 ${phrase.replace('%INTEREST%', formatMoney(interestMini))}`;
+                if (type !== 'danger') type = 'danger';
+                gameState.mood = Math.max(1, gameState.mood - 15); 
             }
 
+            // Анимация изменения денег
+            if (totalMoneyChange !== 0) {
+                 animateMoneyChange(totalMoneyChange);
+            }
             // Обновление итогового сообщения
-            updateMessage(msgTitle, eventsText, isProblem);
+            updateMessage("ИЗВЕСТИЯ (НОЧЬ)", eventsText, type);
         };
 
         // --- Управление Модальным окном и Запуск ---
-        
-        // ... (Функции showModal, startGame, resetGame, closeApp без изменений в логике, но с новым стилем)
         
         const showModal = (title, text, isWin) => {
             const modalEl = el('modal');
@@ -877,16 +919,16 @@
             modalEl.style.display = 'flex';
             
             const btn = el('modal-start-btn');
-            btn.textContent = isWin ? "**ЗАКРЫТЬ НАХУЙ**" : "**НАЧАТЬ ЭТОТ АД ЗАНОВО**";
+            btn.textContent = isWin ? "ЗАКРЫТЬ НАХУЙ" : "НАЧАТЬ ЭТОТ АД ЗАНОВО";
             btn.onclick = isWin ? closeApp : resetGame;
         };
 
         window.startGame = () => {
             el('modal').style.display = 'none';
             if (!loadGame()) {
-                updateMessage("НАЧАЛО ИГРЫ!", "Стёпа, ты в **ГЛУБОКОЙ ЖОПЕ**! 80к Банку и 20к **СУКА** Микрозаймам. Работай, **УЁБОК**!", true);
+                updateMessage("НАЧАЛО ИГРЫ!", "Стёпа, ты в ГЛУБОКОЙ ЖОПЕ! 80к Банку и 20к СУКА Микрозаймам. Работай, УЁБОК!", 'danger');
             } else {
-                 updateMessage("ПРОДОЛЖЕНИЕ", `С возвращением, герой. День ${gameState.day}. Давай, **ебашь**!`, false);
+                 updateMessage("ПРОДОЛЖЕНИЕ", `С возвращением, герой. День ${gameState.day}. Давай, ебашь!`, 'warning');
             }
             updateStats();
         };
@@ -897,7 +939,7 @@
                 day: 1, mood: 50, isBusiness: false, stocksInvested: 0, stocksValue: 0, canTakeAction: true,
             };
             el('modal').style.display = 'none';
-            updateMessage("НОВАЯ ИГРА!", "Стёпа снова в Курске, **СНОВА В ДОЛГАХ**! Начинай **крутиться нахуй**!", true);
+            updateMessage("НОВАЯ ИГРА!", "Стёпа снова в Курске, СНОВА В ДОЛГАХ! Начинай крутиться нахуй!", 'danger');
             updateStats();
         };
         
