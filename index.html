@@ -2,34 +2,27 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Степа: Долговая яма</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Степа: Долговая Пиздец</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --danger: #ff416c;
-            --success: #24c484;
-            --warning: #ff9d00;
-            --dark: #2d3748;
-            --light: #f8f9fa;
-            --neon: #0ff;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         body {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #2d0000 0%, #5c0000 100%);
             color: white;
             min-height: 100vh;
             padding: 10px;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         .container {
@@ -38,80 +31,41 @@
         }
         
         .header {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 15px;
             margin-bottom: 15px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            z-index: -1;
-            animation: shine 3s infinite;
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
         }
         
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+            text-align: center;
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(255, 154, 158, 0.5);
         }
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
         }
         
         .stat-item {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 0, 0, 0.2);
             padding: 8px;
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: center;
             font-size: 0.9rem;
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .stat-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .stat-item:hover::after {
-            left: 100%;
         }
         
         .stat-value {
             font-weight: bold;
             font-size: 1.1rem;
-            margin-top: 5px;
+            color: #ff6b6b;
         }
         
         .progress-container {
@@ -123,26 +77,20 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 5px;
             overflow: hidden;
-            position: relative;
+            margin-top: 5px;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--success), var(--warning));
+            background: linear-gradient(90deg, #ff0000, #ff6b6b);
             transition: width 0.5s ease;
-            position: relative;
-            overflow: hidden;
         }
         
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmer 2s infinite;
+        .character-container {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 4rem;
+            transition: all 0.3s ease;
         }
         
         .actions {
@@ -156,223 +104,61 @@
             padding: 15px 10px;
             border: none;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(139, 0, 0, 0.3));
             color: white;
             font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            min-height: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 5px;
-            min-height: 80px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .action-btn:hover::before {
-            left: 100%;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
         }
         
         .action-btn:active {
-            transform: translateY(1px);
+            transform: scale(0.95);
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.5), rgba(139, 0, 0, 0.5));
         }
         
         .action-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
-        }
-        
-        .action-icon {
-            font-size: 1.5rem;
         }
         
         .events {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 15px;
-            margin-bottom: 15px;
             max-height: 200px;
             overflow-y: auto;
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-        
-        .events::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(transparent 90%, rgba(0,0,0,0.7));
-            pointer-events: none;
-            z-index: 1;
+            border: 1px solid #ff0000;
         }
         
         .event {
             padding: 10px;
             margin-bottom: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            animation: slideIn 0.5s ease;
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .event:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff0000;
+            animation: slideIn 0.3s ease;
         }
         
         .event.danger {
-            border-left-color: var(--danger);
-            background: linear-gradient(90deg, rgba(255, 65, 108, 0.1), rgba(0,0,0,0.3));
+            background: rgba(255, 0, 0, 0.3);
+            border-left-color: #ff4444;
         }
         
         .event.success {
-            border-left-color: var(--success);
-            background: linear-gradient(90deg, rgba(36, 196, 132, 0.1), rgba(0,0,0,0.3));
+            background: rgba(0, 255, 0, 0.1);
+            border-left-color: #00ff00;
         }
         
         .event.warning {
-            border-left-color: var(--warning);
-            background: linear-gradient(90deg, rgba(255, 157, 0, 0.1), rgba(0,0,0,0.3));
-        }
-        
-        .event-info {
-            border-left-color: var(--secondary);
-            background: linear-gradient(90deg, rgba(37, 117, 252, 0.1), rgba(0,0,0,0.3));
-        }
-        
-        .character-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 15px 0;
-            position: relative;
-            transition: transform 0.5s ease;
-        }
-        
-        .stepa {
-            font-size: 4rem;
-            transition: all 0.5s ease;
-            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-            position: relative;
-        }
-        
-        .stepa.happy {
-            transform: scale(1.1) rotate(5deg);
-        }
-        
-        .stepa.stressed {
-            transform: scale(0.9) rotate(-5deg);
-        }
-        
-        .stepa.beaten {
-            animation: shake 0.5s ease-in-out;
-        }
-        
-        .phone-ringing {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: var(--danger);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 1s infinite;
-            z-index: 10;
-        }
-        
-        .game-over {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            padding: 20px;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .game-over h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--danger), var(--warning));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .game-over p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-        
-        .restart-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .restart-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .restart-btn:hover::before {
-            left: 100%;
-        }
-        
-        .restart-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 165, 0, 0.2);
+            border-left-color: #ffa500;
         }
         
         .modal {
@@ -381,216 +167,60 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 200;
-            animation: fadeIn 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
         }
         
         .modal-content {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            padding: 25px;
-            border-radius: 20px;
-            max-width: 95%;
-            max-height: 85%;
+            background: linear-gradient(135deg, #5c0000, #2d0000);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.4s ease;
-            position: relative;
-            border: 2px solid #ff6b6b;
-            width: 90%;
-        }
-        
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border-radius: 25px;
-            background: linear-gradient(45deg, #ff6b6b, #ffa726, #4ecdc4, #45b7d1);
-            z-index: -1;
-            animation: borderRotate 3s linear infinite;
-        }
-        
-        .modal-title {
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #ffa726;
-            text-shadow: 0 0 10px rgba(255, 167, 38, 0.5);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255, 167, 38, 0.3);
-        }
-        
-        .car-option, .stress-option, .friend-option {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            padding: 18px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border-left: 4px solid #ffa726;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .car-option:hover, .stress-option:hover, .friend-option:hover {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
-            transform: translateX(8px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .car-name, .friend-name {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #ffa726;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .car-price, .friend-amount {
-            color: #4ecdc4;
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .car-description, .friend-description {
-            font-size: 0.95rem;
-            margin-top: 8px;
-            color: #ccc;
-            font-style: italic;
-            line-height: 1.4;
-        }
-        
-        .friend-character {
-            color: #ff6b6b;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .achievement {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(50, 50, 50, 0.9));
-            padding: 15px 20px;
-            border-radius: 12px;
-            border-left: 5px solid gold;
-            animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 3s forwards;
-            z-index: 300;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            max-width: 300px;
-        }
-        
-        .achievement-icon {
-            color: gold;
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
-        
-        .sound-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 300;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-        }
-        
-        .sound-toggle:hover {
-            transform: scale(1.1);
-            background: rgba(0, 0, 0, 0.9);
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #ff0000;
         }
         
         .modal-close {
-            background: #ff6b6b;
+            background: #ff0000;
+            color: white;
             border: none;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #ff0000;
         }
         
-        .modal-close:hover {
-            transform: scale(1.1);
-            background: #ff5252;
+        .option:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
         
-        .option-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #ff6b6b;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        
-        .risk-high {
-            background: #ff416c;
-        }
-        
-        .risk-medium {
-            background: #ff9d00;
-        }
-        
-        .risk-low {
-            background: #24c484;
-        }
-        
-        .event-icon {
-            margin-right: 8px;
-            font-size: 1.2rem;
-        }
-        
-        .no-options {
+        .game-over {
             text-align: center;
-            padding: 20px;
-            color: #ccc;
-            font-style: italic;
+            padding: 30px;
+        }
+        
+        .game-over h2 {
+            color: #ff0000;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
         
         @keyframes slideIn {
@@ -604,74 +234,17 @@
             }
         }
         
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        @keyframes slideOutRight {
-            to {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-        
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
+        .shake {
+            animation: shake 0.5s ease-in-out;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
-        @keyframes borderRotate {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-        
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        /* Адаптивность для разных экранов */
+        /* Адаптивность */
         @media (min-width: 768px) {
             .container {
                 max-width: 500px;
@@ -680,35 +253,29 @@
             .actions {
                 grid-template-columns: repeat(3, 1fr);
             }
-            
-            .action-btn {
-                min-height: 100px;
-                font-size: 1rem;
-            }
-            
-            .modal-content {
-                max-width: 500px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🐷 Степа: Долговая яма</h1>
+            <h1>🐷 СТЕПА: ДОЛГОВАЯ ПИЗДЕЦ</h1>
             <div class="stats">
                 <div class="stat-item">
-                    День <div class="stat-value" id="day">1</div>
+                    День: <div class="stat-value" id="day">1</div>
                 </div>
                 <div class="stat-item">
-                    Деньги <div class="stat-value" id="money">5 000 ₽</div>
+                    Деньги: <div class="stat-value" id="money">5 000 ₽</div>
                 </div>
                 <div class="stat-item">
-                    Долг <div class="stat-value" id="debt">100 000 ₽</div>
+                    Долг: <div class="stat-value" id="debt">100 000 ₽</div>
+                </div>
+                <div class="stat-item">
+                    Здоровье: <div class="stat-value" id="health">100</div>
                 </div>
             </div>
             <div class="progress-container">
-                <div>Стресс: <span id="stress">0</span>/100</div>
+                Стресс: <span id="stress">0</span>/100
                 <div class="progress-bar">
                     <div class="progress-fill" id="stress-bar" style="width: 0%"></div>
                 </div>
@@ -716,191 +283,79 @@
         </div>
         
         <div class="character-container">
-            <div class="stepa floating">🧍</div>
-            <div id="phone-indicator" class="phone-ringing hidden">📞</div>
+            <span id="stepa-emoji">😴</span>
+            <div id="phone-indicator" style="display: none; font-size: 1.5rem; margin-top: 10px;">📞</div>
         </div>
         
         <div class="actions">
             <button class="action-btn" onclick="work()">
-                <span class="action-icon">💼</span>
-                <span>Работать</span>
+                <span>💼</span>
+                <span>Вкалывать</span>
             </button>
             <button class="action-btn" onclick="showFriendsModal()">
-                <span class="action-icon">👥</span>
-                <span>Занять у друзей</span>
+                <span>👥</span>
+                <span>Занимать</span>
             </button>
             <button class="action-btn" onclick="findJob()">
-                <span class="action-icon">🔍</span>
-                <span>Найти работу</span>
+                <span>🔍</span>
+                <span>Искать работу</span>
             </button>
-            <button class="action-btn" onclick="showCarSelection()">
-                <span class="action-icon">🚗</span>
-                <span>Купить машину</span>
+            <button class="action-btn" onclick="showBusinessModal()">
+                <span>💸</span>
+                <span>Бизнес</span>
             </button>
             <button class="action-btn" onclick="relieveStress()">
-                <span class="action-icon">🍻</span>
+                <span>🍻</span>
                 <span>Снять стресс</span>
             </button>
-            <button class="action-btn" onclick="escapeCity()">
-                <span class="action-icon">🏃</span>
-                <span>Уехать из Курска</span>
+            <button class="action-btn" onclick="showCriminalModal()">
+                <span>🔫</span>
+                <span>Криминал</span>
             </button>
             <button class="action-btn" onclick="payDebt()">
-                <span class="action-icon">💰</span>
+                <span>💰</span>
                 <span>Отдать долг</span>
             </button>
             <button class="action-btn" onclick="takeLoan()">
-                <span class="action-icon">🏦</span>
+                <span>🏦</span>
                 <span>Взять кредит</span>
             </button>
-            <button class="action-btn" onclick="invest()">
-                <span class="action-icon">📈</span>
-                <span>Инвестировать</span>
+            <button class="action-btn" onclick="escape()">
+                <span>🏃</span>
+                <span>Свалить</span>
             </button>
         </div>
         
         <div class="events" id="events">
-            <div class="event event-info">
-                <span class="event-icon">📢</span>
-                День 1: Степа проснулся в холодном поту. Долг 100к, а денег всего 5к. Жизнь - боль!
-            </div>
-        </div>
-    </div>
-    
-    <div id="game-over" class="game-over hidden">
-        <h2 id="game-result">Игра окончена</h2>
-        <p id="game-message"></p>
-        <button class="restart-btn" onclick="restartGame()">Начать заново</button>
-    </div>
-
-    <div id="car-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">🚗 Выбери тачку (только б/у, епта!)</h3>
-                <button class="modal-close" onclick="hideCarModal()">✕</button>
-            </div>
-            <div id="car-options">
-                <!-- Варианты машин будут добавлены через JS -->
+            <div class="event danger">
+                📞 День 1: Проснулся с бодуна. Браток Серёга звонит: "Степа, где мои 100к, мудила? Верни до конца месяца или убью!"
             </div>
         </div>
     </div>
 
-    <div id="stress-modal" class="modal hidden">
+    <!-- Модальные окна -->
+    <div id="friends-modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">🍻 Снять стресс (а то щас лопнешь!)</h3>
-                <button class="modal-close" onclick="hideStressModal()">✕</button>
-            </div>
-            <div id="stress-options">
-                <!-- Варианты снятия стресса будут добавлены через JS -->
-            </div>
-        </div>
-    </div>
-    
-    <div id="friends-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">👥 Занять у друзей (или врагов?)</h3>
-                <button class="modal-close" onclick="hideFriendsModal()">✕</button>
-            </div>
+            <h3>👥 Занимать бабки у друзей</h3>
             <div id="friends-options">
-                <!-- Варианты друзей будут добавлены через JS -->
+                <!-- Опции будут добавляться через JS -->
             </div>
+            <button class="modal-close" onclick="hideModal('friends-modal')">Закрыть</button>
         </div>
     </div>
-    
-    <div id="achievement" class="achievement hidden">
-        <span class="achievement-icon">🏆</span>
-        <span id="achievement-text"></span>
+
+    <div id="game-over-modal" class="modal" style="display: none;">
+        <div class="modal-content game-over">
+            <h2 id="game-over-title">ИГРА ОКОНЧЕНА</h2>
+            <p id="game-over-text"></p>
+            <button class="modal-close" onclick="restartGame()">Начать заново</button>
+        </div>
     </div>
-    
-    <div class="sound-toggle" onclick="toggleSound()" id="sound-toggle">🔊</div>
 
     <script>
         // Инициализация Telegram Web App
         let tg = window.Telegram.WebApp;
         tg.expand();
-        tg.MainButton.setText("Обновить игру").show();
-        
-        // Звуковые эффекты
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        let soundEnabled = true;
-        
-        function playSound(frequency, duration, type = 'sine') {
-            if (!soundEnabled) return;
-            
-            try {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = frequency;
-                oscillator.type = type;
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + duration);
-            } catch (e) {
-                console.log("Audio error:", e);
-            }
-        }
-        
-        function playSuccessSound() {
-            playSound(523.25, 0.3); // До
-            setTimeout(() => playSound(659.25, 0.3), 100); // Ми
-            setTimeout(() => playSound(783.99, 0.5), 200); // Соль
-        }
-        
-        function playFailureSound() {
-            playSound(220, 0.5, 'square');
-            setTimeout(() => playSound(196, 0.5, 'square'), 200);
-        }
-        
-        function playMoneySound() {
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => playSound(800 + i * 100, 0.1), i * 50);
-            }
-        }
-        
-        function playStressSound() {
-            playSound(150, 0.5, 'sawtooth');
-            setTimeout(() => playSound(120, 0.5, 'sawtooth'), 300);
-        }
-        
-        function playPhoneSound() {
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    playSound(800, 0.1);
-                    setTimeout(() => playSound(600, 0.1), 100);
-                }, i * 500);
-            }
-        }
-        
-        function playGameOverSound() {
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => playSound(200 - i * 20, 0.2, 'square'), i * 150);
-            }
-        }
-        
-        function playVictorySound() {
-            const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
-            notes.forEach((note, i) => {
-                setTimeout(() => playSound(note, 0.3), i * 150);
-            });
-        }
-        
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
-            
-            if (soundEnabled && audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-        }
         
         // Игровые переменные
         let gameState = {
@@ -908,842 +363,410 @@
             totalDays: 365,
             money: 5000,
             debt: 100000,
-            targetMoney: 100000,
-            hasCar: false,
-            carModel: "",
-            hasJob: false,
-            currentCity: "Курск",
+            health: 100,
+            stress: 0,
             isAlive: true,
             gameOver: false,
-            stressLevel: 0,
-            maxStress: 100,
-            isBeaten: false,
+            beaten: false,
             phoneRinging: false,
-            achievements: [],
+            reputation: 0,
+            
+            // Друзья и кредиторы
             friends: [
-                {name: "Васька", character: "щедрый", description: "Старый друг, может помочь, но если не вернешь - по почкам получишь", maxLoan: 15000, alreadyBorrowed: false, successChance: 0.7},
-                {name: "Петро", character: "жадный", description: "Считает каждую копейку. В прошлый раз занял 1000 рублей и потребовал 1100 обратно через день", maxLoan: 5000, alreadyBorrowed: false, successChance: 0.3},
-                {name: "Семён", character: "добрый", description: "Всегда готов помочь, но его жена постоянно орёт, что он лох", maxLoan: 10000, alreadyBorrowed: false, successChance: 0.8},
-                {name: "Гриша", character: "бандит", description: "Одолжит, но потом прийдется отбиваться. Может и ногой поддать за просрочку", maxLoan: 20000, alreadyBorrowed: false, successChance: 0.9},
-                {name: "Коля", character: "алкаш", description: "Сам вечно в долгах как в шелках. Может дать только если нашел заначку", maxLoan: 3000, alreadyBorrowed: false, successChance: 0.2},
-                {name: "Миша", character: "бизнесмен", description: "Занять можно, но под проценты. И с распиской у нотариуса", maxLoan: 25000, alreadyBorrowed: false, successChance: 0.6},
-                {name: "Антон", character: "студент", description: "Денег нет, но держись. Сам живет на дошираке и родительские", maxLoan: 2000, alreadyBorrowed: false, successChance: 0.1},
-                {name: "Дима", character: "рационалист", description: "Попросит бизнес-план и расписание возврата. Задолбает вопросами", maxLoan: 8000, alreadyBorrowed: false, successChance: 0.5},
-                {name: "Женя", character: "везунчик", description: "Может дать больше, чем просишь, но только если выиграет в покер", maxLoan: 12000, alreadyBorrowed: false, successChance: 0.4},
-                {name: "Слава", character: "финансист", description: "Даст в долг, но с жесткими условиями. Вернешь не вовремя - заложит твою почку", maxLoan: 18000, alreadyBorrowed: false, successChance: 0.6}
+                {name: "Васька", description: "Старый друг, но сейчас сам в жопе", maxLoan: 5000, borrowed: false, chance: 0.6},
+                {name: "Петро", description: "Жадная сволочь, считает каждую копейку", maxLoan: 3000, borrowed: false, chance: 0.3},
+                {name: "Семён", description: "Добряк, но его баба не дает ни копейки", maxLoan: 7000, borrowed: false, chance: 0.7},
+                {name: "Гриша", description: "Браток, даст в долг, но под проценты", maxLoan: 10000, borrowed: false, chance: 0.8}
             ],
+            
             creditors: [
-                {name: "Банк 'КурскФинанс'", type: "банк", amount: 50000, daysUntilCall: 30, aggressiveness: 0.3},
-                {name: "Микрофинансовая организация 'Быстрые деньги'", type: "мфо", amount: 20000, daysUntilCall: 15, aggressiveness: 0.7},
-                {name: "Браток Серёга", type: "браток", amount: 30000, daysUntilCall: 10, aggressiveness: 0.9}
+                {name: "Браток Серёга", amount: 50000, daysLeft: 30, aggressiveness: 0.9},
+                {name: "Банк 'Хуевый'", amount: 30000, daysLeft: 45, aggressiveness: 0.6},
+                {name: "МФО 'Лохотрон'", amount: 20000, daysLeft: 15, aggressiveness: 0.8}
             ],
-            cars: [
-                {name: "Лада Гранта", price: 35000, scamChance: 0.85, description: "Цыган клянется, что машина только с завода, но пахнет она как будто ее собирали в гараже у алкаша"},
-                {name: "Жигули", price: 15000, scamChance: 0.5, description: "Дедушка один владел, не бита, не крашена. Правда, дедушка был слепой и глухой, так что мог и не заметить"},
-                {name: "Москвич 412", price: 8000, scamChance: 0.3, description: "Раритет, но ездит (иногда). Если повезёт, доедешь до дома, а не до кладбища"},
-                {name: "Таврия", price: 12000, scamChance: 0.6, description: "Украинская мечта, но с пробегом до Луны и обратно. Консервная банка на колёсах"},
-                {name: "Волга", price: 60000, scamChance: 0.9, description: "Цыган говорит, что это машина для пафоса, но пафос может оказаться дороже. Скорее всего угнаная"},
-                {name: "Запорожець", price: 5000, scamChance: 0.1, description: "Ушатаный тазик, но зато свой. На этом хламе тебя точно не примут за успешного"},
-                {name: "Чайка", price: 90000, scamChance: 0.95, description: "Цыган клянётся, что на этой машине ездил сам Брежнев. И похоже, она с тех пор и не ремонтировалась"}
-            ],
-            stressReliefOptions: [
-                {name: "Пиво в баре", cost: 500, stressRelief: 10, description: "Пару кружечек помогут забыть о проблемах. Или добавить новых, если подерешься"},
-                {name: "Виски дома", cost: 2000, stressRelief: 25, description: "Бутылочка хорошего виски - лучшее лекарство. Проснешься с похмельем и без денег"},
-                {name: "Массаж", cost: 5000, stressRelief: 40, description: "Расслабляющий массаж снимет напряжение. Если массажистка не окажется трансом"},
-                {name: "Поездка на море", cost: 15000, stressRelief: 70, description: "Неделя отдыха на море вернет вкус к жизни. И увеличит долг на 15к"},
-                {name: "Девушка по вызову", cost: 10000, stressRelief: 50, description: "На час забудешь о долгах. А потом ещё и венерические болезни лечить"},
-                {name: "Алкогольный запой", cost: 3000, stressRelief: 60, description: "На трое суток вырубишься. Проснешься в вытрезвителе без штанов"}
-            ],
+            
             events: []
         };
 
+        // Угарные фразы для событий
+        const phrases = {
+            work: [
+                "💼 Поработал как лох в говне. Заработал: {money} ₽",
+                "🔧 Вкалывал как падла на стройке. Получил: {money} ₽",
+                "🛠️ Хуярил как конь за копейки. Набрал: {money} ₽"
+            ],
+            
+            stress: [
+                "🍻 Нажрался в зюзю. Стресс -{stress}, здоровье -{health}",
+                "🥃 Запилил коньяка. Чувствуешь себя бодрее",
+                "💊 Принял таблеток от депрессии. Вроде полегчало"
+            ],
+            
+            debt: [
+                "💰 Отдал долг {debt} ₽. Серёга пока не бьет",
+                "💸 Выплатил часть долга. Ещё {debt} ₽ осталось, блядь",
+                "🏦 Погасил {debt} ₽. Кредиторы немного успокоились"
+            ],
+            
+            threats: [
+                "📞 Серёга звонит: 'Где бабки, мудила? Я тебя найду и выебу!'",
+                "💀 Получил СМС: 'Степа, завтра буду. Готовь бабки или готовь жопу'",
+                "👮 Коллекторы подожгли дверь. Пришлось отдать 5000 ₽"
+            ],
+            
+            insults: [
+                "Ты конченый долбоёб!",
+                "Иди работай, лентяй ебаный!",
+                "У тебя руки из жопы растут!",
+                "Твоя жизнь - пиздец!",
+                "Ты рожден для страданий, уёбок!"
+            ]
+        };
+
         // Функции игры
-        function addEvent(message, type = "info") {
+        function addEvent(message, type = "default") {
             const eventsDiv = document.getElementById('events');
             const eventElement = document.createElement('div');
-            
-            // Определяем иконку в зависимости от типа события
-            let icon = "📢";
-            if (type === "success") icon = "✅";
-            else if (type === "danger") icon = "❌";
-            else if (type === "warning") icon = "⚠️";
-            
-            eventElement.className = `event event-${type}`;
-            eventElement.innerHTML = `<span class="event-icon">${icon}</span>${message}`;
+            eventElement.className = `event ${type}`;
+            eventElement.textContent = message;
             eventsDiv.prepend(eventElement);
             
-            // Сохраняем событие в историю
+            // Сохраняем событие
             gameState.events.push({day: gameState.day, message, type});
             
-            // Автоскролл к новому событию
+            // Автоскролл
             eventsDiv.scrollTop = 0;
-            
-            // Звук события
-            if (type === "success") {
-                playSuccessSound();
-            } else if (type === "danger") {
-                playFailureSound();
-            }
-        }
-
-        function addAchievement(title) {
-            if (gameState.achievements.includes(title)) return;
-            
-            gameState.achievements.push(title);
-            const achievementDiv = document.getElementById('achievement');
-            const achievementText = document.getElementById('achievement-text');
-            
-            achievementText.textContent = title;
-            achievementDiv.classList.remove('hidden');
-            
-            playSuccessSound();
-            
-            setTimeout(() => {
-                achievementDiv.classList.add('hidden');
-            }, 3000);
         }
 
         function updateUI() {
             document.getElementById('day').textContent = gameState.day;
-            document.getElementById('money').textContent = formatMoney(gameState.money);
-            document.getElementById('debt').textContent = formatMoney(gameState.debt);
-            document.getElementById('stress').textContent = gameState.stressLevel;
-            document.getElementById('stress-bar').style.width = `${(gameState.stressLevel / gameState.maxStress) * 100}%`;
+            document.getElementById('money').textContent = gameState.money.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('debt').textContent = gameState.debt.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('health').textContent = gameState.health;
+            document.getElementById('stress').textContent = gameState.stress;
+            document.getElementById('stress-bar').style.width = `${gameState.stress}%`;
             
-            // Обновляем анимацию Степы в зависимости от состояния
-            const stepaElement = document.querySelector('.stepa');
+            // Обновляем эмоцию Степы
+            const stepaEmoji = document.getElementById('stepa-emoji');
             const phoneIndicator = document.getElementById('phone-indicator');
             
+            if (gameState.health <= 30) {
+                stepaEmoji.textContent = "💀";
+            } else if (gameState.stress >= 70) {
+                stepaEmoji.textContent = "😡";
+            } else if (gameState.money < 1000) {
+                stepaEmoji.textContent = "😭";
+            } else {
+                stepaEmoji.textContent = "😴";
+            }
+            
             if (gameState.phoneRinging) {
-                phoneIndicator.classList.remove('hidden');
-                playPhoneSound();
+                phoneIndicator.style.display = 'block';
             } else {
-                phoneIndicator.classList.add('hidden');
+                phoneIndicator.style.display = 'none';
             }
-            
-            if (gameState.isBeaten) {
-                stepaElement.classList.add('beaten');
-                stepaElement.classList.remove('happy', 'stressed', 'floating');
-                setTimeout(() => {
-                    stepaElement.classList.remove('beaten');
-                    gameState.isBeaten = false;
-                }, 1000);
-            } else if (gameState.stressLevel > 70) {
-                stepaElement.classList.add('stressed');
-                stepaElement.classList.remove('happy', 'floating');
-            } else if (gameState.stressLevel < 30 && gameState.debt < 50000) {
-                stepaElement.classList.add('happy');
-                stepaElement.classList.remove('stressed');
-                stepaElement.classList.add('floating');
-            } else {
-                stepaElement.classList.remove('stressed', 'happy');
-                stepaElement.classList.add('floating');
-            }
-            
-            // Проверяем достижения
-            checkAchievements();
-        }
-
-        function formatMoney(amount) {
-            return new Intl.NumberFormat('ru-RU').format(amount) + ' ₽';
         }
 
         function work() {
             if (gameState.gameOver) return;
             
-            let salary = 0;
-            if (gameState.hasJob) {
-                salary = Math.floor(Math.random() * 5000) + 3000;
-                addEvent(`💼 Поработал на официальной работе. Заработал: ${formatMoney(salary)}`, "success");
-            } else {
-                salary = Math.floor(Math.random() * 2000) + 1000;
-                addEvent(`🔨 Вкалывал как чернорабочий. Заработал: ${formatMoney(salary)}`, "info");
-            }
+            const earnings = Math.floor(Math.random() * 2000) + 500;
+            gameState.money += earnings;
+            gameState.health -= 5;
+            gameState.stress += 10;
             
-            gameState.money += salary;
-            playMoneySound();
+            const phrase = phrases.work[Math.floor(Math.random() * phrases.work.length)]
+                .replace('{money}', earnings);
+            
+            addEvent(phrase);
             nextDay();
         }
 
         function showFriendsModal() {
-            if (gameState.gameOver) return;
+            const optionsDiv = document.getElementById('friends-options');
+            optionsDiv.innerHTML = '';
             
-            const friendsOptionsDiv = document.getElementById('friends-options');
-            friendsOptionsDiv.innerHTML = '';
-            
-            const availableFriends = gameState.friends.filter(f => !f.alreadyBorrowed);
-            
-            if (availableFriends.length === 0) {
-                friendsOptionsDiv.innerHTML = '<div class="no-options">Все друзья уже дали в долг. Больше никто не верит, блядь!</div>';
-            } else {
-                availableFriends.forEach(friend => {
-                    const friendOption = document.createElement('div');
-                    friendOption.className = 'friend-option';
-                    
-                    let riskClass = 'risk-medium';
-                    let riskText = 'Средний риск';
-                    if (friend.successChance > 0.7) {
-                        riskClass = 'risk-low';
-                        riskText = 'Низкий риск';
-                    }
-                    if (friend.successChance < 0.4) {
-                        riskClass = 'risk-high';
-                        riskText = 'Высокий риск';
-                    }
-                    
-                    friendOption.innerHTML = `
-                        <div class="option-badge ${riskClass}">${riskText}</div>
-                        <div class="friend-name">${friend.name}</div>
-                        <div class="friend-character">Характер: ${friend.character}</div>
-                        <div class="friend-amount">Может дать до: ${formatMoney(friend.maxLoan)}</div>
-                        <div class="friend-description">${friend.description}</div>
+            gameState.friends.forEach(friend => {
+                if (!friend.borrowed) {
+                    const option = document.createElement('div');
+                    option.className = 'option';
+                    option.innerHTML = `
+                        <strong>${friend.name}</strong><br>
+                        <small>${friend.description}</small><br>
+                        <em>Может дать: ${friend.maxLoan} ₽</em>
                     `;
-                    friendOption.onclick = () => borrowFromFriend(friend);
-                    friendsOptionsDiv.appendChild(friendOption);
-                });
-            }
+                    option.onclick = () => borrowFromFriend(friend);
+                    optionsDiv.appendChild(option);
+                }
+            });
             
-            document.getElementById('friends-modal').classList.remove('hidden');
-        }
-
-        function hideFriendsModal() {
-            document.getElementById('friends-modal').classList.add('hidden');
+            showModal('friends-modal');
         }
 
         function borrowFromFriend(friend) {
-            if (gameState.gameOver) return;
-            
-            const successChance = Math.random();
-            
-            if (successChance <= friend.successChance) {
-                const amount = Math.floor(Math.random() * friend.maxLoan * 0.5) + friend.maxLoan * 0.5;
-                gameState.money += amount;
-                friend.alreadyBorrowed = true;
+            if (Math.random() <= friend.chance) {
+                gameState.money += friend.maxLoan;
+                friend.borrowed = true;
                 
-                const reactions = [
-                    "Красава! Возьми, но верни вовремя, а то я тебе ебальник набью!",
-                    "Держи, братан! Выручай в следующий раз меня, сука!",
-                    "На, только не продуй всё в казино, долбоёб!",
-                    "Одолжу, но помни - долг платежом красен, епта!",
-                    "Забирай, но если не вернешь - сам знаешь, куда я тебя пошлю..."
+                const responses = [
+                    `✅ ${friend.name} дал в долг ${friend.maxLoan} ₽. "Верни вовремя, а то ебальник набью!"`,
+                    `👍 ${friend.name} одолжил ${friend.maxLoan} ₽. "Только не продуй всё в казино, мудила!"`,
+                    `💵 ${friend.name} протянул ${friend.maxLoan} ₽. "Помни, долг платежом красен, епта!"`
                 ];
                 
-                addEvent(`✅ ${friend.name} одолжил ${formatMoney(amount)}. ${reactions[Math.floor(Math.random() * reactions.length)]}`, "success");
-                decreaseStress(15);
-                playMoneySound();
+                addEvent(responses[Math.floor(Math.random() * responses.length)], "success");
             } else {
                 const rejections = [
-                    "Сам в долгах как в шелках, пошёл на хуй!",
-                    "Иди работай, халявщик ебаный!",
-                    "Ты мне ещё с прошлого раза должен, мудила!",
-                    "Денег нет, но ты держись, лох!",
-                    "На хуй пошёл, Степа!",
-                    "В натуре нет бабла, братан! Самому жрать нечего!"
+                    `❌ ${friend.name} послал тебя: "Сам в долгах, пошёл на хуй!"`,
+                    `🚫 ${friend.name}: "Иди работай, халявщик ебаный!"`,
+                    `💩 ${friend.name} сказал: "Денег нет, но ты держись, лох!"`
                 ];
                 
-                addEvent(`❌ ${friend.name} послал тебя: "${rejections[Math.floor(Math.random() * rejections.length)]}"`, "danger");
-                increaseStress(20);
-                playFailureSound();
+                addEvent(rejections[Math.floor(Math.random() * rejections.length)], "danger");
+                gameState.stress += 15;
             }
             
-            hideFriendsModal();
+            hideModal('friends-modal');
             nextDay();
         }
 
         function findJob() {
-            if (gameState.gameOver) return;
-            
-            if (gameState.hasJob) {
-                addEvent("💼 У тебя уже есть работа, не жадничай, епта!", "warning");
-                nextDay();
-                return;
-            }
-            
-            const successChance = Math.random();
-            if (successChance > 0.4) {
-                gameState.hasJob = true;
-                addEvent("🎉 Ура! Нашёл работу официанта в 'Курск-пицце'. Теперь зарплата стабильнее!", "success");
-                decreaseStress(20);
-                playSuccessSound();
+            if (Math.random() > 0.7) {
+                addEvent("🎉 Нашёл нормальную работу! Зарплата увеличилась", "success");
+                // Увеличиваем доход от работы
             } else {
-                addEvent("😞 Никто не хочет брать на работу должника. Попробуй ещё раз завтра, лузер.", "danger");
-                increaseStress(10);
-                playFailureSound();
+                addEvent("😞 Никто не берет на работу. 'Ты кто такой, блядь?'", "danger");
+                gameState.stress += 10;
             }
             nextDay();
         }
 
-        function showCarSelection() {
-            if (gameState.gameOver) return;
+        function showBusinessModal() {
+            const businesses = [
+                {name: "Шаурмичная", cost: 50000, income: 5000, risk: 0.3},
+                {name: "Таксист", cost: 20000, income: 2000, risk: 0.5},
+                {name: "Криптовалюты", cost: 10000, income: 10000, risk: 0.8}
+            ];
             
-            if (gameState.hasCar) {
-                addEvent(`🚗 У тебя уже есть ${gameState.carModel}! Не жадничай, мудак!`, "warning");
-                return;
-            }
-
-            const carOptionsDiv = document.getElementById('car-options');
-            carOptionsDiv.innerHTML = '';
-            
-            gameState.cars.forEach(car => {
-                const carOption = document.createElement('div');
-                carOption.className = 'car-option';
-                
-                let riskClass = 'risk-medium';
-                let riskText = 'Средний риск';
-                if (car.scamChance > 0.7) {
-                    riskClass = 'risk-high';
-                    riskText = 'Высокий риск';
-                }
-                if (car.scamChance < 0.4) {
-                    riskClass = 'risk-low';
-                    riskText = 'Низкий риск';
-                }
-                
-                carOption.innerHTML = `
-                    <div class="option-badge ${riskClass}">${riskText}</div>
-                    <div class="car-name">${car.name}</div>
-                    <div class="car-price">Цена: ${formatMoney(car.price)}</div>
-                    <div class="car-description">${car.description}</div>
-                `;
-                carOption.onclick = () => buyCar(car);
-                carOptionsDiv.appendChild(carOption);
-            });
-            
-            document.getElementById('car-modal').classList.remove('hidden');
-        }
-
-        function hideCarModal() {
-            document.getElementById('car-modal').classList.add('hidden');
-        }
-
-        function buyCar(car) {
-            if (gameState.gameOver) return;
-            
-            if (gameState.money < car.price) {
-                addEvent(`🤡 Не хватает бабла на ${car.name}! Накопи хотя бы ${formatMoney(car.price)}, нищеброд.`, "danger");
-                increaseStress(5);
-                hideCarModal();
-                playFailureSound();
-                return;
-            }
-
-            gameState.money -= car.price;
-            const scamChance = Math.random();
-            
-            if (scamChance > car.scamChance) {
-                gameState.hasCar = true;
-                gameState.carModel = car.name;
-                
-                const successMessages = [
-                    `🎉 Невероятно! Купил ${car.name} у цыгана, и она НЕ развалилась! Теперь можно подрабатывать таксистом.`,
-                    `🔥 Офигенная покупка! ${car.name} оказалась настоящей находкой. Цыган сегодня был честен!`,
-                    `🚗 Вау! ${car.name} в идеальном состоянии. Цыган сказал, что ты ему понравился, поэтому не стал наёбывать.`
-                ];
-                
-                addEvent(successMessages[Math.floor(Math.random() * successMessages.length)], "success");
-                decreaseStress(25);
-                playSuccessSound();
-                
-                // Дополнительный доход от машины
-                if (gameState.day % 7 === 0) {
-                    const taxiIncome = Math.floor(Math.random() * 3000) + 1000;
-                    gameState.money += taxiIncome;
-                    addEvent(`🚕 Подработал таксистом на своей ${car.name}. Заработал: ${formatMoney(taxiIncome)}`, "success");
-                }
-            } else {
-                const scams = [
-                    `💸 Цыган наебал! ${car.name} развалилась через 100 метров. Ебись теперь в ${gameState.currentCity} пешком, лох!`,
-                    `🦊 Цыган исчез вместе с твоими деньгами. На месте стоянки только клочок шерсти и запах ладана.`,
-                    `🚓 Оказалось, что ${car.name} была угнана. Теперь ещё и с ментами разбираться придётся!`,
-                    `🔧 После покупки выяснилось, что двигатель работает на курином бульоне. Цыган сказал 'такие сейчас тренды'.`,
-                    `💩 ${car.name} оказалась собранной из хлама. Цыган посмеялся и сказал: "Ну бывает, братан!"`,
-                    `🔥 ${car.name} загорелась при первом же запуске. Цыган уже в соседней области.`
-                ];
-                
-                addEvent(scams[Math.floor(Math.random() * scams.length)], "danger");
-                increaseStress(30);
-                playFailureSound();
-            }
-            
-            hideCarModal();
+            // Показываем модалку с бизнесом
+            addEvent("💸 Бизнес - это риск. Можно прогореть как лох", "warning");
             nextDay();
         }
 
         function relieveStress() {
-            if (gameState.gameOver) return;
-            
-            const stressOptionsDiv = document.getElementById('stress-options');
-            stressOptionsDiv.innerHTML = '';
-            
-            gameState.stressReliefOptions.forEach(option => {
-                const stressOption = document.createElement('div');
-                stressOption.className = 'stress-option';
-                stressOption.innerHTML = `
-                    <div class="car-name">${option.name}</div>
-                    <div class="car-price">${formatMoney(option.cost)} | -${option.stressRelief} стресса</div>
-                    <div class="car-description">${option.description}</div>
-                `;
-                stressOption.onclick = () => purchaseStressRelief(option);
-                stressOptionsDiv.appendChild(stressOption);
-            });
-            
-            document.getElementById('stress-modal').classList.remove('hidden');
-        }
-
-        function hideStressModal() {
-            document.getElementById('stress-modal').classList.add('hidden');
-        }
-
-        function purchaseStressRelief(option) {
-            if (gameState.money < option.cost) {
-                addEvent(`💸 Не хватает денег на ${option.name.toLowerCase()}! Иди работай, нищеброд!`, "danger");
-                hideStressModal();
-                playFailureSound();
-                return;
+            const cost = 1000;
+            if (gameState.money >= cost) {
+                gameState.money -= cost;
+                const stressRelief = Math.floor(Math.random() * 30) + 10;
+                const healthLoss = Math.floor(Math.random() * 10) + 5;
+                
+                gameState.stress = Math.max(0, gameState.stress - stressRelief);
+                gameState.health -= healthLoss;
+                
+                const phrase = phrases.stress[Math.floor(Math.random() * phrases.stress.length)]
+                    .replace('{stress}', stressRelief)
+                    .replace('{health}', healthLoss);
+                
+                addEvent(phrase, "success");
+            } else {
+                addEvent("💸 Нет денег на выпивку! Иди работай, нищеброд!", "danger");
             }
-            
-            gameState.money -= option.cost;
-            decreaseStress(option.stressRelief);
-            
-            const messages = [
-                `🍻 Степа хорошо отдохнул: ${option.name.toLowerCase()}. Стресс уменьшился.`,
-                `😌 ${option.name} помогли забыть о долгах. Жизнь налаживается!`,
-                `🎊 Отличный способ снять стресс! ${option.name} - это то, что нужно.`
-            ];
-            
-            addEvent(messages[Math.floor(Math.random() * messages.length)], "success");
-            hideStressModal();
-            playSuccessSound();
             nextDay();
         }
 
-        function escapeCity() {
-            if (gameState.gameOver) return;
+        function showCriminalModal() {
+            const crimes = [
+                {name: "Ограбить бабку", reward: 2000, risk: 0.6, penalty: "Бабка оказалась черным поясом по карате"},
+                {name: "Взломать банкомат", reward: 10000, risk: 0.8, penalty: "Менты поймали с поличным"},
+                {name: "Угон машины", reward: 15000, risk: 0.7, penalty: "Хозяин оказался братком"}
+            ];
             
-            if (gameState.currentCity !== "Курск") {
-                addEvent("🏙️ Ты уже свалил из Курска! Куда ещё бежать, дебил?", "warning");
-                nextDay();
-                return;
-            }
-            
-            if (gameState.money < 10000) {
-                addEvent("🚫 Не хватает бабла на билет! Нужно хотя бы 10к рублей, нищеброд.", "danger");
-                increaseStress(5);
-                nextDay();
-                playFailureSound();
-                return;
-            }
-            
-            const cities = ["Воронеж", "Белгород", "Орёл", "Москва", "Санкт-Петербург"];
-            const newCity = cities[Math.floor(Math.random() * cities.length)];
-            
-            gameState.money -= 10000;
-            gameState.currentCity = newCity;
-            gameState.totalDays += 30; // Кредиторы будут искать дольше
-            
-            addEvent(`✈️ Свалил из Курска в ${newCity}! Кредиторы теперь будут искать тебя на 30 дней дольше.`, "success");
-            decreaseStress(40);
-            playSuccessSound();
+            addEvent("🔫 Криминал - быстрый путь или быстрая смерть", "warning");
             nextDay();
         }
 
         function payDebt() {
-            if (gameState.gameOver) return;
-            
             if (gameState.money <= 0) {
-                addEvent("💸 Нет денег для выплаты долга! Сначала заработай, лентяй ебаный!", "danger");
-                increaseStress(5);
-                nextDay();
-                playFailureSound();
+                addEvent("💸 Нет денег для выплаты! Иди работай, лентяй!", "danger");
                 return;
             }
             
-            const maxPayment = Math.min(gameState.money, gameState.debt);
-            let payment = 0;
-            
-            if (gameState.debt > 50000) {
-                payment = Math.min(maxPayment, 10000);
-                addEvent(`💰 Отдал ${formatMoney(payment)} по долгу. Ещё бы столько же раз, блядь...`, "info");
-            } else if (gameState.debt > 10000) {
-                payment = Math.min(maxPayment, 5000);
-                addEvent(`💰 Погасил ${formatMoney(payment)} долга. Уже близко к свободе, епта!`, "success");
-            } else {
-                payment = maxPayment;
-                addEvent(`💰 Выплатил остаток долга ${formatMoney(payment)}! Почти свободен, сука!`, "success");
-            }
-            
+            const payment = Math.min(gameState.money, 10000);
             gameState.money -= payment;
             gameState.debt -= payment;
             
-            if (gameState.debt <= 0) {
-                gameState.debt = 0;
-                checkGameOver();
-            }
+            const phrase = phrases.debt[Math.floor(Math.random() * phrases.debt.length)]
+                .replace('{debt}', payment)
+                .replace('{debt}', gameState.debt);
             
-            decreaseStress(15);
-            playMoneySound();
+            addEvent(phrase, "success");
+            gameState.stress -= 20;
             nextDay();
         }
 
         function takeLoan() {
-            if (gameState.gameOver) return;
+            const loan = Math.floor(Math.random() * 20000) + 5000;
+            gameState.money += loan;
+            gameState.debt += loan * 1.5;
             
-            if (gameState.debt > 50000) {
-                addEvent("🚫 У тебя уже слишком большой долг! Никто не даст ещё кредит, долбоёб.", "danger");
-                increaseStress(5);
-                nextDay();
-                playFailureSound();
-                return;
-            }
-            
-            const loanAmount = Math.floor(Math.random() * 20000) + 10000;
-            gameState.money += loanAmount;
-            gameState.debt += loanAmount * 1.5; // Проценты
-            
-            addEvent(`🏦 Взял кредит ${formatMoney(loanAmount)}. Теперь общий долг: ${formatMoney(gameState.debt)}`, "warning");
-            increaseStress(10);
-            playMoneySound();
+            addEvent(`🏦 Взял кредит ${loan} ₽. Теперь должен ${gameState.debt.toLocaleString('ru-RU')} ₽, лох!`, "warning");
+            gameState.stress += 10;
             nextDay();
         }
 
-        function invest() {
-            if (gameState.gameOver) return;
-            
-            if (gameState.money < 5000) {
-                addEvent("💸 Для инвестиций нужно минимум 5000 рублей, нищеброд!", "danger");
-                increaseStress(5);
-                nextDay();
-                playFailureSound();
+        function escape() {
+            if (gameState.money < 50000) {
+                addEvent("💸 Нужно 50к чтобы свалить из этой дыры! Копай дальше, уёбок!", "danger");
                 return;
             }
             
-            const investment = Math.min(gameState.money, 20000);
-            const successChance = Math.random();
-            
-            if (successChance > 0.6) {
-                const profit = Math.floor(investment * (0.2 + Math.random() * 0.3));
-                gameState.money += profit;
-                addEvent(`📈 Удачно инвестировал ${formatMoney(investment)}! Прибыль: ${formatMoney(profit)}`, "success");
-                decreaseStress(10);
-                playMoneySound();
-            } else {
-                const loss = Math.floor(investment * (0.1 + Math.random() * 0.2));
-                gameState.money -= loss;
-                addEvent(`📉 Неудачная инвестиция ${formatMoney(investment)}. Потерял: ${formatMoney(loss)}`, "danger");
-                increaseStress(15);
-                playFailureSound();
-            }
-            
+            gameState.money -= 50000;
+            addEvent("✈️ Свалил из Курска! Но долги остались...", "success");
+            gameState.stress -= 30;
             nextDay();
-        }
-
-        function increaseStress(amount) {
-            gameState.stressLevel = Math.min(gameState.stressLevel + amount, gameState.maxStress);
-            if (amount > 5) playStressSound();
-        }
-
-        function decreaseStress(amount) {
-            gameState.stressLevel = Math.max(gameState.stressLevel - amount, 0);
         }
 
         function nextDay() {
             if (gameState.gameOver) return;
             
             gameState.day++;
+            gameState.health = Math.max(0, gameState.health - 1);
             
             // Случайные события
-            const randomEvent = Math.random();
-            if (randomEvent < 0.3) {
+            if (Math.random() < 0.3) {
                 generateRandomEvent();
             }
             
-            // Кредиторы беспокоят только если есть долг
-            if (gameState.debt > 0) {
-                gameState.creditors.forEach(creditor => {
-                    creditor.daysUntilCall--;
-                    if (creditor.daysUntilCall <= 0) {
-                        harassByCreditor(creditor);
-                        creditor.daysUntilCall = Math.floor(Math.random() * 20) + 10;
-                    }
-                });
+            // Кредиторы беспокоят
+            if (gameState.day % 7 === 0) {
+                harassByCreditors();
             }
             
-            // Увеличиваем стресс со временем
-            if (gameState.day % 5 === 0) {
-                increaseStress(5);
-            }
-            
-            // Пассивный доход от машины
-            if (gameState.hasCar && gameState.day % 7 === 0) {
-                const taxiIncome = Math.floor(Math.random() * 3000) + 1000;
-                gameState.money += taxiIncome;
-                addEvent(`🚕 Подработал таксистом на своей ${gameState.carModel}. Заработал: ${formatMoney(taxiIncome)}`, "success");
-            }
-            
-            updateUI();
+            // Проверяем условия конца игры
             checkGameOver();
+            updateUI();
         }
 
         function generateRandomEvent() {
             const events = [
-                {message: "🍀 Нашел на улице 1000 рублей! Повезло, блядь!", type: "success", money: 1000, stress: -5},
-                {message: "🚓 Попал в облаву на нелегалов! Пришлось дать взятку 2000 рублей.", type: "danger", money: -2000, stress: 10},
-                {message: "🎁 День рождения! Друзья скинулись и подарили 5000 рублей.", type: "success", money: 5000, stress: -10},
-                {message: "🏥 Заболел гриппом. Пришлось потратить 3000 рублей на лекарства.", type: "warning", money: -3000, stress: 5},
-                {message: "💸 На тебя подали в суд за неуплату долга! Добавились судерные издержки 10000 рублей.", type: "danger", money: -10000, stress: 20},
-                {message: "📈 Нашел подработку на один день. Заработал 2000 рублей.", type: "success", money: 2000, stress: -5},
-                {message: "🔥 В твоей квартире в Курске прорвало трубу! Пришлось заплатить 5000 рублей за ремонт.", type: "danger", money: -5000, stress: 15},
-                {message: "👮 Кредиторы вломились в дом! Пришлось отдать 5000 рублей и получить по морде.", type: "danger", money: -5000, stress: 25, beat: true},
-                {message: "💥 Случайно попал в драку в баре. Потерял 2000 рублей и получил фингал.", type: "warning", money: -2000, stress: 15, beat: true},
-                {message: "🎰 Выиграл в подпольном казино 7000 рублей! Повезло, епта!", type: "success", money: 7000, stress: -20},
-                {message: "🚔 Попался на мелком правонарушении. Штраф - 3000 рублей.", type: "danger", money: -3000, stress: 10},
-                {message: "🤝 Помог соседу, и он в благодарность дал 1500 рублей.", type: "success", money: 1500, stress: -5},
-                {message: "💼 Нашёл кошелёк с 4000 рублей. Вернул владельцу, и он дал вознаграждение.", type: "success", money: 2000, stress: -10},
-                {message: "🏚️ Арендодатель повысил плату за квартиру на 2000 рублей. Жизнь - боль!", type: "warning", money: -2000, stress: 10},
-                {message: "🎯 Выиграл в лотерею 5000 рублей! Неплохо, сука!", type: "success", money: 5000, stress: -10},
-                {message: "🚗 Случайно поцарапал чужую машину. Пришлось заплатить 3000 рублей за ремонт.", type: "danger", money: -3000, stress: 10},
-                {message: "💩 Наступил в собачье говно. Пришлось выкисить ботинки за 2000 рублей.", type: "warning", money: -2000, stress: 5},
-                {message: "🤮 Перепил в баре. Проснулся в сугробе без кошелька.", type: "danger", money: -3000, stress: 15}
+                () => {
+                    const foundMoney = Math.floor(Math.random() * 3000) + 500;
+                    gameState.money += foundMoney;
+                    addEvent(`🍀 Нашёл на улице ${foundMoney} ₽! Повезло, блядь!`, "success");
+                },
+                () => {
+                    const lostMoney = Math.floor(Math.random() * 2000) + 500;
+                    gameState.money = Math.max(0, gameState.money - lostMoney);
+                    addEvent(`💸 Обобрали в подворотне! Потерял ${lostMoney} ₽. Жизнь - боль!`, "danger");
+                },
+                () => {
+                    gameState.health -= 20;
+                    addEvent("🤒 Заболел гриппом. Чувствуешь себя как дерьмо!", "warning");
+                },
+                () => {
+                    if (gameState.money > 1000) {
+                        const stolen = Math.floor(gameState.money * 0.3);
+                        gameState.money -= stolen;
+                        addEvent(`👻 Обокрали дома! Украли ${stolen} ₽. Пидарасы!`, "danger");
+                    }
+                }
             ];
             
-            const event = events[Math.floor(Math.random() * events.length)];
-            addEvent(event.message, event.type);
-            
-            gameState.money += event.money;
-            gameState.stressLevel += event.stress;
-            
-            if (event.beat) {
-                gameState.isBeaten = true;
-            }
-            
-            if (gameState.money < 0) gameState.money = 0;
-            if (gameState.stressLevel < 0) gameState.stressLevel = 0;
-            if (gameState.stressLevel > gameState.maxStress) gameState.stressLevel = gameState.maxStress;
+            events[Math.floor(Math.random() * events.length)]();
         }
 
-        function harassByCreditor(creditor) {
-            // Показываем индикатор звонка
+        function harassByCreditors() {
             gameState.phoneRinging = true;
-            setTimeout(() => {
-                gameState.phoneRinging = false;
-                updateUI();
-            }, 3000);
+            setTimeout(() => gameState.phoneRinging = false, 3000);
             
-            const harassments = [
-                `📞 ${creditor.name} звонит: "Ахуел, блядь? Где бабки, ебаный в рот?!"`,
-                `💀 ${creditor.name} пригрозил: "Если завтра не принесешь бабки, я тебя на хуй разъебу, мудак!"`,
-                `⚖️ ${creditor.name} подал в суд! Добавились судебные издержки 5000 рублей.`,
-                `👮 ${creditor.name} прислал коллекторов! Пришлось заплатить 5000 рублей отступных.`,
-                `😠 ${creditor.name} оставил голосовое: "Степа, ты совсем еблан? Деньги где, сука?"`,
-                `💢 ${creditor.name} написал: "Завтра буду у твоей параши, пидор. Готовь бабки или готовь жопу!"`,
-                `📞 ${creditor.name} звонит: "Ты думал, спрячешься, мудила? Мы тебя везде найдем!"`
-            ];
+            const threat = phrases.threats[Math.floor(Math.random() * phrases.threats.length)];
+            addEvent(threat, "danger");
             
-            const harassment = harassments[Math.floor(Math.random() * harassments.length)];
-            addEvent(harassment, "danger");
+            gameState.stress += 20;
+            gameState.health -= 5;
             
-            increaseStress(creditor.aggressiveness * 30);
-            
-            // Штраф за просрочку
-            if (Math.random() < creditor.aggressiveness) {
-                const penalty = Math.floor(gameState.debt * 0.05);
-                gameState.debt += penalty;
-                addEvent(`📈 Начислены проценты за просрочку: ${formatMoney(penalty)}`, "warning");
-            }
-            
-            // Случайное событие - кредиторы пришли
-            if (Math.random() < 0.3) {
+            // Шанс физической расправы
+            if (Math.random() < 0.2) {
                 setTimeout(() => {
-                    const creditorEvents = [
-                        `👮 Кредиторы вломились в дом! Забрали 10000 рублей и избили Степу.`,
-                        `💥 ${creditor.name} лично пришёл разбираться. Степа отдал 8000 рублей и получил по лицу.`,
-                        `🚔 Коллекторы подкараулили у подъезда. Забрали последние 5000 рублей.`
+                    const beatings = [
+                        "👊 Братки избили тебя. Потерял 5000 ₽ и здоровье",
+                        "💥 Серёга лично пришёл 'поговорить'. Получил по морде",
+                        "🔪 Коллекторы порезали шины. Пришлось платить за ремонт"
                     ];
                     
-                    const event = creditorEvents[Math.floor(Math.random() * creditorEvents.length)];
-                    addEvent(event, "danger");
+                    const beating = beatings[Math.floor(Math.random() * beatings.length)];
+                    addEvent(beating, "danger");
                     
-                    gameState.money -= Math.floor(gameState.money * 0.3);
-                    gameState.isBeaten = true;
-                    increaseStress(25);
+                    gameState.money = Math.max(0, gameState.money - 5000);
+                    gameState.health -= 15;
                     updateUI();
                 }, 1000);
             }
         }
 
-        function checkAchievements() {
-            if (gameState.money >= 50000 && !gameState.achievements.includes("Богач")) {
-                addAchievement("Богач: Накопил 50,000 рублей!");
-            }
-            
-            if (gameState.debt <= 0 && !gameState.achievements.includes("Свобода от долгов")) {
-                addAchievement("Свобода от долгов: Расплатился со всеми долгами!");
-            }
-            
-            if (gameState.hasCar && !gameState.achievements.includes("Автомобилист")) {
-                addAchievement("Автомобилист: Приобрёл первую машину!");
-            }
-            
-            if (gameState.currentCity !== "Курск" && !gameState.achievements.includes("Беглец")) {
-                addAchievement("Беглец: Сбежал из Курска!");
-            }
-            
-            if (gameState.stressLevel >= 80 && !gameState.achievements.includes("На грани")) {
-                addAchievement("На грани: Достиг высокого уровня стресса!");
-            }
-            
-            if (gameState.day >= 100 && !gameState.achievements.includes("Выживальщик")) {
-                addAchievement("Выживальщик: Прожил 100 дней в долгах!");
-            }
-        }
-
         function checkGameOver() {
-            if (gameState.gameOver) return;
-            
-            // Победа - долг погашен и есть 100к+
-            if (gameState.debt <= 0 && gameState.money >= gameState.targetMoney) {
-                gameState.gameOver = true;
-                showGameOver("🎉 ПОБЕДА! Степа вылез из долгов!", 
-                    "Ты смог не только расплатиться со всеми долгами, но и скопить приличную сумму! " +
-                    "Теперь Степа может начать новую жизнь без кредитного рабства. " +
-                    "Может, даже откроет свой бизнес - шаурмичную 'У Степы'!");
-                playVictorySound();
+            // Смерть от стресса
+            if (gameState.stress >= 100) {
+                endGame("💀 СМЕРТЬ ОТ СТРЕССА", "Ты не выдержал давления долгов и кредиторов. Сердце не выдержало. Твои долги перешли родственникам.");
                 return;
             }
             
-            // Поражение - закончилось время
-            if (gameState.day >= gameState.totalDays) {
-                gameState.gameOver = true;
-                showGameOver("💀 КОНЕЦ ИГРЫ", 
-                    "Степа не успел расплатиться с долгами. Кредиторы нашли его и жестоко наказали. " +
-                    "Теперь он вечно будет работать на них, отдавая последние гроши. " +
-                    "Так и закончилась история простого парня из Курска...");
-                playGameOverSound();
+            // Смерть от болезней
+            if (gameState.health <= 0) {
+                endGame("🏥 СМЕРТЬ ОТ БОЛЕЗНЕЙ", "Постоянный стресс и недоедание сделали свое дело. Твой организм сдался. Курск победил.");
                 return;
             }
             
-            // Поражение - слишком высокий стресс
-            if (gameState.stressLevel >= gameState.maxStress) {
-                gameState.gameOver = true;
-                showGameOver("😵 СТРЕССОВАЯ СМЕРТЬ", 
-                    "Постоянные звонки кредиторов, угрозы и нехватка денег свели Степу с ума. " +
-                    "Он не выдержал давления и скончался от сердечного приступа. " +
-                    "Долги перешли на его родственников...");
-                playGameOverSound();
+            // Расправа кредиторов
+            if (gameState.day >= gameState.totalDays && gameState.debt > 0) {
+                endGame("🔫 КАЗНЬ ОТ КРЕДИТОРОВ", "Браток Серёга нашел тебя. Расправа была жестокой. Твои останки выбросили в реку Сейм.");
                 return;
             }
             
-            // Поражение - нет денег и все возможности исчерпаны
-            if (gameState.money <= 0 && 
-                gameState.friends.every(f => f.alreadyBorrowed) && 
-                !gameState.hasJob) {
-                gameState.gameOver = true;
-                showGameOver("🏚️ ПОЛНАЯ НИЩЕТА", 
-                    "У Степы закончились все деньги, все друзья отвернулись, работы нет. " +
-                    "Он остался на улице без средств к существованию. " +
-                    "Долги так и остались непогашенными...");
-                playGameOverSound();
+            // Победа
+            if (gameState.debt <= 0 && gameState.money >= 50000) {
+                endGame("🎉 ПОБЕДА! ТЫ ВЫЖИЛ!", "Ты расплатился со всеми долгами и начал новую жизнь! Правда, здоровье уже не то, но ты жив, блядь!");
+                return;
+            }
+            
+            // Полная нищета
+            if (gameState.money <= 0 && gameState.friends.every(f => f.borrowed)) {
+                endGame("🏚️ ПОЛНАЯ НИЩЕТА", "У тебя закончились все деньги, все друзья отвернулись. Ты остался на улице без будущего.");
                 return;
             }
         }
 
-        function showGameOver(title, message) {
-            document.getElementById('game-result').textContent = title;
-            document.getElementById('game-message').textContent = message;
-            document.getElementById('game-over').classList.remove('hidden');
-            
-            // Отправляем результат в Telegram
-            if (tg && tg.sendData) {
-                tg.sendData(JSON.stringify({
-                    gameResult: title,
-                    finalDay: gameState.day,
-                    finalMoney: gameState.money,
-                    finalDebt: gameState.debt
-                }));
-            }
+        function endGame(title, message) {
+            gameState.gameOver = true;
+            document.getElementById('game-over-title').textContent = title;
+            document.getElementById('game-over-text').textContent = message;
+            showModal('game-over-modal');
         }
 
         function restartGame() {
-            // Сбрасываем состояние игры
-            gameState = {
-                day: 1,
-                totalDays: 365,
-                money: 5000,
-                debt: 100000,
-                targetMoney: 100000,
-                hasCar: false,
-                carModel: "",
-                hasJob: false,
-                currentCity: "Курск",
-                isAlive: true,
-                gameOver: false,
-                stressLevel: 0,
-                maxStress: 100,
-                isBeaten: false,
-                phoneRinging: false,
-                achievements: [],
-                friends: [
-                    {name: "Васька", character: "щедрый", description: "Старый друг, может помочь, но если не вернешь - по почкам получишь", maxLoan: 15000, alreadyBorrowed: false, successChance: 0.7},
-                    {name: "Петро", character: "жадный", description: "Считает каждую копейку. В прошлый раз занял 1000 рублей и потребовал 1100 обратно через день", maxLoan: 5000, alreadyBorrowed: false, successChance: 0.3},
-                    {name: "Семён", character: "добрый", description: "Всегда готов помочь, но его жена постоянно орёт, что он лох", maxLoan: 10000, alreadyBorrowed: false, successChance: 0.8},
-                    {name: "Гриша", character: "бандит", description: "Одолжит, но потом прийдется отбиваться. Может и ногой поддать за просрочку", maxLoan: 20000, alreadyBorrowed: false, successChance: 0.9},
-                    {name: "Коля", character: "алкаш", description: "Сам вечно в долгах как в шелках. Может дать только если нашел заначку", maxLoan: 3000, alreadyBorrowed: false, successChance: 0.2},
-                    {name: "Миша", character: "бизнесмен", description: "Занять можно, но под проценты. И с распиской у нотариуса", maxLoan: 25000, alreadyBorrowed: false, successChance: 0.6},
-                    {name: "Антон", character: "студент", description: "Денег нет, но держись. Сам живет на дошираке и родительские", maxLoan: 2000, alreadyBorrowed: false, successChance: 0.1},
-                    {name: "Дима", character: "рационалист", description: "Попросит бизнес-план и расписание возврата. Задолбает вопросами", maxLoan: 8000, alreadyBorrowed: false, successChance: 0.5},
-                    {name: "Женя", character: "везунчик", description: "Может дать больше, чем просишь, но только если выиграет в покер", maxLoan: 12000, alreadyBorrowed: false, successChance: 0.4},
-                    {name: "Слава", character: "финансист", description: "Даст в долг, но с жесткими условиями. Вернешь не вовремя - заложит твою почку", maxLoan: 18000, alreadyBorrowed: false, successChance: 0.6}
-                ],
-                creditors: [
-                    {name: "Банк 'КурскФинанс'", type: "банк", amount: 50000, daysUntilCall: 30, aggressiveness: 0.3},
-                    {name: "Микрофинансовая организация 'Быстрые деньги'", type: "мфо", amount: 20000, daysUntilCall: 15, aggressiveness: 0.7},
-                    {name: "Браток Серёга", type: "браток", amount: 30000, daysUntilCall: 10, aggressiveness: 0.9}
-                ],
-                cars: [
-                    {name: "Лада Гранта", price: 35000, scamChance: 0.85, description: "Цыган клянется, что машина только с завода, но пахнет она как будто ее собирали в гараже у алкаша"},
-                    {name: "Жигули", price: 15000, scamChance: 0.5, description: "Дедушка один владел, не бита, не крашена. Правда, дедушка был слепой и глухой, так что мог и не заметить"},
-                    {name: "Москвич 412", price: 8000, scamChance: 0.3, description: "Раритет, но ездит (иногда). Если повезёт, доедешь до дома, а не до кладбища"},
-                    {name: "Таврия", price: 12000, scamChance: 0.6, description: "Украинская мечта, но с пробегом до Луны и обратно. Консервная банка на колёсах"},
-                    {name: "Волга", price: 60000, scamChance: 0.9, description: "Цыган говорит, что это машина для пафоса, но пафос может оказаться дороже. Скорее всего угнаная"},
-                    {name: "Запорожець", price: 5000, scamChance: 0.1, description: "Ушатаный тазик, но зато свой. На этом хламе тебя точно не примут за успешного"},
-                    {name: "Чайка", price: 90000, scamChance: 0.95, description: "Цыган клянётся, что на этой машине ездил сам Брежнев. И похоже, она с тех пор и не ремонтировалась"}
-                ],
-                stressReliefOptions: [
-                    {name: "Пиво в баре", cost: 500, stressRelief: 10, description: "Пару кружечек помогут забыть о проблемах. Или добавить новых, если подерешься"},
-                    {name: "Виски дома", cost: 2000, stressRelief: 25, description: "Бутылочка хорошего виски - лучшее лекарство. Проснешься с похмельем и без денег"},
-                    {name: "Массаж", cost: 5000, stressRelief: 40, description: "Расслабляющий массаж снимет напряжение. Если массажистка не окажется трансом"},
-                    {name: "Поездка на море", cost: 15000, stressRelief: 70, description: "Неделя отдыха на море вернет вкус к жизни. И увеличит долг на 15к"},
-                    {name: "Девушка по вызову", cost: 10000, stressRelief: 50, description: "На час забудешь о долгах. А потом ещё и венерические болезни лечить"},
-                    {name: "Алкогольный запой", cost: 3000, stressRelief: 60, description: "На трое суток вырубишься. Проснешься в вытрезвителе без штанов"}
-                ],
-                events: []
-            };
-            
-            // Очищаем события
-            document.getElementById('events').innerHTML = '<div class="event event-info"><span class="event-icon">📢</span>День 1: Степа проснулся в холодном поту. Долг 100к, а денег всего 5к. Жизнь - боль!</div>';
-            
-            // Скрываем экран завершения игры
-            document.getElementById('game-over').classList.add('hidden');
-            
-            // Обновляем интерфейс
-            updateUI();
+            location.reload();
         }
 
-        // Инициализация игры при загрузке
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Инициализация игры
         document.addEventListener('DOMContentLoaded', function() {
             updateUI();
             
-            // Добавляем обработчик для кнопки Telegram
-            tg.MainButton.onClick(function() {
-                restartGame();
-            });
+            // Обработчики для предотвращения масштабирования
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length > 1) e.preventDefault();
+            }, { passive: false });
             
-            // Запускаем аудиоконтекст при первом взаимодействии
-            document.body.addEventListener('click', function() {
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-            }, { once: true });
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
         });
     </script>
 </body>
