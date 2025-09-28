@@ -8,20 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- ЦВЕТА И ПЕРЕМЕННЫЕ (Cyberpunk Glass 2.0) --- */
+        /* --- ЦВЕТА И ПЕРЕМЕННЫЕ (Modern Smooth UI) --- */
         :root {
-            --bg-start: #060610; /* Ультра-темный фон */
-            --bg-end: #0c0c1b;
-            --primary: #5c62ed; /* Неоновый синий (акцент) */
-            --secondary: #ed5c62; /* Неоново-розовый (опасность/действие) */
-            --text: #e0e0e0;
-            --text-low: #a0a0a0;
-            --glass-bg: rgba(20, 20, 40, 0.85); /* Более плотное, но прозрачное стекло */
-            --glass-border: rgba(92, 98, 237, 0.5); /* Более яркий неоновый бордюр */
-            --success: #39d353;
+            --bg-start: #f0f0f4; /* Светлый, мягкий фон */
+            --bg-end: #e0e0e4;
+            --primary: #5c62ed; /* Ярко-синий (акцент) */
+            --secondary: #ed5c62; /* Ярко-розовый (опасность/действие) */
+            --text-dark: #2c2c34;
+            --text-low: #6a6a70;
+            --card-bg: #ffffff; /* Белые карточки */
+            --shadow-light: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.8);
+            --shadow-btn: 2px 2px 5px rgba(0, 0, 0, 0.1), -2px -2px 5px rgba(255, 255, 255, 0.7);
+            --success: #1fa536;
             --danger: #ff4757;
             --warning: #ffab00;
         }
@@ -31,14 +32,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Orbitron', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, -apple-system, BlinkMacSystemFont;
+            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
         
         body {
             background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 100%);
-            color: var(--text);
+            color: var(--text-dark);
             min-height: 100vh;
             min-height: 100dvh;
             padding: 10px;
@@ -49,27 +50,26 @@
         
         .container { max-width: 500px; margin: 0 auto; }
         
-        /* --- GLASSMORHISM КАРТОЧКА --- */
+        /* --- CARD (Neumorphism Lite) --- */
         .card {
-            background: var(--glass-bg);
+            background: var(--card-bg);
             padding: 16px;
             border-radius: 20px; 
             margin-bottom: 12px;
-            border: 2px solid var(--glass-border);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 0 25px rgba(92, 98, 237, 0.1), 0 0 10px rgba(92, 98, 237, 0.4) inset;
+            box-shadow: var(--shadow-light);
             transition: all 0.3s ease;
         }
         
         /* --- ЗАГОЛОВОК --- */
         h1 {
+            font-family: 'Orbitron', sans-serif;
             font-size: clamp(1.4rem, 6vw, 1.8rem);
             text-align: center;
             color: var(--primary);
-            text-shadow: 0 0 20px rgba(92, 98, 237, 0.8), 0 0 5px var(--primary); 
+            text-shadow: 0 2px 5px rgba(92, 98, 237, 0.3); 
             margin-bottom: 15px;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
         
         /* --- СТАТИСТИКА В ШАПКЕ --- */
@@ -77,83 +77,80 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-bottom: 15px;
         }
         
         .stat-item {
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--bg-start);
             padding: 10px 8px;
             border-radius: 12px;
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--text-low);
-            border-left: 4px solid var(--secondary);
-            overflow: hidden; /* Для анимации флэша */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
         }
-        .stat-item:nth-child(1) { border-left-color: var(--primary); }
-        .stat-item:nth-child(2) { border-left-color: var(--success); }
-
+        
         .stat-value {
+            font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: clamp(1.1rem, 4.5vw, 1.3rem);
-            color: var(--text);
+            font-size: clamp(1.2rem, 5vw, 1.4rem);
+            color: var(--text-dark);
             margin-top: 3px;
             word-break: break-word;
-            display: block; /* Для анимации */
+            display: block;
         }
 
-        /* --- ПРОГРЕСС БАРЫ --- */
+        /* --- ПРОГРЕСС БАРЫ (Отдельная карточка, более крупные) --- */
+        .progress-card { padding: 10px 16px; }
         .progress-container { 
-            margin-top: 8px; 
-            font-size: 0.8rem; 
-            font-weight: 500; 
+            margin: 12px 0; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
             display: flex; 
             flex-direction: column;
             gap: 3px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
+        .progress-label { display: flex; justify-content: space-between; align-items: center; }
         .progress-bar { 
-            height: 8px;
-            background: rgba(0, 0, 0, 0.5); 
-            border-radius: 4px; 
+            height: 12px;
+            background: var(--bg-end); 
+            border-radius: 6px; 
             overflow: hidden; 
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7); 
-            border: 1px solid var(--glass-border);
+            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         .progress-fill { 
             height: 100%; 
             transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
-            border-radius: 4px;
-            box-shadow: 0 0 5px currentColor;
+            border-radius: 6px;
         }
         /* Цвета */
         #stress-bar .progress-fill { background: linear-gradient(90deg, #ffc107, var(--danger)); }
-        #health-bar .progress-fill { background: linear-gradient(90deg, #1fa536, var(--success)); }
-        #satiety-bar .progress-fill { background: linear-gradient(90deg, #7c4dff, #ffab00); }
+        #health-bar .progress-fill { background: linear-gradient(90deg, #7cfc00, var(--success)); }
+        #satiety-bar .progress-fill { background: linear-gradient(90deg, #5c62ed, #ffab00); }
         
         /* --- ПЕРСОНАЖ: СТЕПА --- */
         .character-container {
             text-align: center;
             margin: 15px 0;
-            font-size: clamp(5rem, 18vw, 6rem);
+            font-size: clamp(5.5rem, 20vw, 7rem);
             transition: transform 0.3s ease;
         }
 
-        /* --- КНОПКИ ДЕЙСТВИЙ --- */
+        /* --- КНОПКИ ДЕЙСТВИЙ (Мягкий Неуморфизм) --- */
         .actions {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 20px;
         }
         
         .action-btn {
             padding: 10px 5px;
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            background: rgba(30, 30, 50, 0.6);
-            color: var(--text);
+            border: none;
+            border-radius: 18px;
+            background: var(--bg-start);
+            color: var(--text-dark);
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
@@ -163,52 +160,49 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
-            min-height: 90px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            min-height: 95px;
+            box-shadow: var(--shadow-btn);
             line-height: 1.1;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .action-btn i { 
             font-size: clamp(1.5rem, 4vw, 1.8rem); 
             color: var(--primary); 
-            transition: color 0.2s ease, text-shadow 0.2s ease; 
-            text-shadow: 0 0 10px var(--primary);
+            transition: color 0.2s ease; 
         }
         .action-btn:not(:disabled):hover { 
-            background: rgba(92, 98, 237, 0.2); 
-            transform: translateY(-2px) scale(1.01); 
-            box-shadow: 0 0 20px rgba(92, 98, 237, 0.3);
+            background: var(--bg-end);
+            transform: translateY(-1px); 
+            box-shadow: var(--shadow-light);
         }
-        .action-btn:not(:disabled):active { transform: translateY(-1px) scale(0.98); background: rgba(92, 98, 237, 0.3); }
-        .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .action-btn:not(:disabled):active { 
+            transform: scale(0.98); 
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+        }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .action-btn.pay, .action-btn.escape {
+        /* Специальные кнопки с градиентом */
+        .action-btn.pay {
             grid-column: span 3;
-            min-height: 50px;
-            flex-direction: row;
-            justify-content: space-around;
-            padding: 10px;
+            background: linear-gradient(45deg, var(--success) 0%, #7cfc00 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(31, 165, 54, 0.5);
         }
         .action-btn.escape {
-            background: linear-gradient(90deg, #a700ff, var(--secondary));
-            border-color: #a700ff;
-            box-shadow: 0 0 15px rgba(255, 71, 87, 0.7), 0 0 15px rgba(167, 0, 255, 0.7);
+            grid-column: span 3;
+            background: linear-gradient(45deg, #a700ff 0%, var(--secondary) 100%);
             color: white;
+            box-shadow: 0 4px 10px rgba(167, 0, 255, 0.5);
         }
-        .action-btn.pay {
-             background: linear-gradient(90deg, #1fa536, var(--success)); 
-             border-color: var(--success);
-             color: white;
-        }
-        .action-btn.escape i, .action-btn.pay i { color: white; text-shadow: 0 0 10px white;}
+        .action-btn.escape i, .action-btn.pay i { color: white; text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);}
 
         /* --- ЛОГ СОБЫТИЙ --- */
         .events {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
             font-size: 0.85rem;
             padding-right: 5px;
+            background-color: var(--bg-end);
         }
         .events::-webkit-scrollbar { width: 5px; }
         .events::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
@@ -216,15 +210,16 @@
         .event { 
             padding: 8px; 
             margin-bottom: 6px; 
-            border-radius: 8px; 
-            background: rgba(0, 0, 0, 0.2); 
-            border-left: 4px solid var(--primary); 
+            border-radius: 10px; 
+            background: var(--card-bg); 
+            border-left: 5px solid var(--primary); 
             animation: slideIn 0.4s ease-out; 
             display: flex;
             gap: 8px;
-            align-items: center;
+            align-items: flex-start;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-        .event-icon { font-size: 1rem; color: var(--primary); }
+        .event-icon { font-size: 1.1rem; color: var(--primary); margin-top: 1px; }
         .event.success { border-left-color: var(--success); }
         .event.success .event-icon { color: var(--success); }
         .event.danger { border-left-color: var(--danger); }
@@ -234,91 +229,92 @@
         
         /* --- МОДАЛЬНОЕ ОКНО --- */
         .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
             display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; 
             opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal.show { 
-            display: flex; 
-            opacity: 1;
-        }
+        .modal.show { display: flex; opacity: 1; }
         
         .modal-content {
-            background: linear-gradient(135deg, var(--bg-end) 50%, #151525); 
-            padding: 20px; border-radius: 20px; max-width: 95%; width: 400px;
+            background: var(--card-bg);
+            padding: 25px; border-radius: 25px; max-width: 95%; width: 450px;
             max-height: 95vh; overflow-y: auto; 
-            border: 2px solid var(--primary); 
-            box-shadow: 0 0 30px rgba(92, 98, 237, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .modal.show .modal-content { transform: scale(1); }
         
         /* --- ОПЦИИ В МОДАЛКАХ --- */
         .option {
-            background: rgba(0, 0, 0, 0.5); 
-            padding: 12px; 
+            background: var(--bg-start);
+            padding: 15px; 
             margin: 10px 0; 
-            border-radius: 12px; 
+            border-radius: 15px; 
             cursor: pointer; 
             transition: all 0.2s ease; 
-            border-left: 5px solid var(--secondary);
-            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.7);
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05), inset -1px -1px 3px rgba(255, 255, 255, 0.5);
             display: flex; flex-direction: column;
         }
         .option:hover { 
-            background: rgba(92, 98, 237, 0.3); 
-            transform: none; 
-            box-shadow: 0 0 10px rgba(92, 98, 237, 0.5); 
+            background: var(--bg-end); 
+            box-shadow: var(--shadow-light); 
         }
-        .option strong { color: var(--primary); font-size: 1rem; }
-        .option small { line-height: 1.3; }
+        .option strong { color: var(--text-dark); font-size: 1rem; margin-bottom: 5px; }
+        .option small { line-height: 1.3; color: var(--text-low); }
 
         .option button { 
-            background-color: var(--secondary); color: white; border: none; border-radius: 8px; padding: 8px 15px; 
-            cursor: pointer; margin-top: 8px; align-self: flex-end; font-size: 0.85rem; font-weight: bold;
-            transition: background 0.2s ease; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 15px; 
+            cursor: pointer; margin-top: 10px; align-self: flex-end; font-size: 0.9rem; font-weight: bold;
+            transition: background 0.2s ease, transform 0.1s ease; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
         }
         .option button.repay { background-color: var(--success); }
-        .option button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .option button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .modal-close {
-            background: var(--primary);
+            background: var(--text-low);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 12px;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 20px;
             font-size: 1rem;
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
         }
         .modal-close:hover { background: var(--secondary); }
         
         /* --- ТОСТЫ --- */
         .toast {
-            background: rgba(0, 0, 0, 0.95); 
-            padding: 10px 15px; 
-            border-radius: 12px; 
-            font-size: 0.85rem; 
-            box-shadow: 0 0 10px rgba(92, 98, 237, 0.7); 
-            border-left: 3px solid var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 18px; 
+            border-radius: 15px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
             animation: fadeInOut 5s ease-in-out forwards;
+            font-weight: 500;
         }
-        .toast.success { border-left-color: var(--success); }
-        .toast.danger { border-left-color: var(--danger); }
-        .toast.warning { border-left-color: var(--warning); }
+        .toast.success { background: linear-gradient(135deg, var(--success), #7cfc00); }
+        .toast.danger { background: linear-gradient(135deg, var(--danger), #ff8a80); }
+        .toast.warning { background: linear-gradient(135deg, var(--warning), #ffd54f); }
 
         /* --- АНИМАЦИИ --- */
-        @keyframes idle-bob { 0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 50% { transform: translateY(-5px) rotate(1deg) scale(1.01); } }
-        @keyframes danger-shake { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: translate(-3px, 0) rotate(-2deg); } 20%, 40%, 60%, 80% { transform: translate(3px, 0) rotate(2deg); } }
-        @keyframes money-bounce { 0% { transform: scale(1) translateY(0); } 30% { transform: scale(1.2) translateY(-15px) rotate(10deg); } 60% { transform: scale(0.95) translateY(3px); } 100% { transform: scale(1) translateY(0); } }
-        @keyframes dizzy { 0% { transform: rotateY(0deg) scale(1.05); } 50% { transform: rotateY(360deg) scale(1.05); } 100% { transform: rotateY(0deg) scale(1.05); } }
-        @keyframes flash-green { 0%, 100% { color: var(--text); } 50% { color: var(--success); transform: scale(1.05); text-shadow: 0 0 15px var(--success);} }
-        @keyframes flash-red { 0%, 100% { color: var(--text); } 50% { color: var(--danger); transform: scale(1.05); text-shadow: 0 0 15px var(--danger);} }
-        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
+        @keyframes idle-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(-1deg); } }
+        @keyframes danger-shake { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: translate(-5px, 0) rotate(-3deg); } 20%, 40%, 60%, 80% { transform: translate(5px, 0) rotate(3deg); } }
+        @keyframes heart-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        @keyframes doge-vibe { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(15deg); } }
+        @keyframes flash-green { 0%, 100% { color: var(--text-dark); } 50% { color: var(--success); transform: scale(1.08); text-shadow: 0 0 5px rgba(31, 165, 54, 0.5);} }
+        @keyframes flash-red { 0%, 100% { color: var(--text-dark); } 50% { color: var(--danger); transform: scale(1.08); text-shadow: 0 0 5px rgba(255, 71, 87, 0.5);} }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-30px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-30px); } }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Применение анимации к классам */
+        .flash-green { animation: flash-green 0.6s ease-out; }
+        .flash-red { animation: flash-red 0.6s ease-out; }
+
     </style>
 </head>
 <body>
@@ -332,22 +328,22 @@
     <audio id="sound-win" src="https://cdns-preview-a.dzcdn.net/stream/c-a81d115e619197c453c06159518a4a58-3.mp3" preload="auto"></audio> 
 
     <div id="welcome-modal" class="modal show">
-        <div class="modal-content welcome-screen card" style="border-color: var(--secondary);">
-            <h3 style="color:var(--secondary); text-shadow: 0 0 10px var(--secondary); text-align: center; font-size: 1.2rem;">🚨 СТЕПА: ЖИЗНЬ ДОЛЖНИКА 🚨</h3>
-            <hr style="margin: 10px 0; border-color: var(--glass-border);"/>
-            <p style="font-style: italic; color: var(--warning); margin-bottom: 15px;">Как все началось: Ты взял кредит на 100к на «девяточку», которая сдохла. Долг выкупил Коллектор Злой.</p>
+        <div class="modal-content welcome-screen card">
+            <h3 style="color:var(--secondary); text-align: center; font-size: 1.2rem; font-family: 'Orbitron';">🚨 СТЕПА: ЖИЗНЬ ДОЛЖНИКА 🚨</h3>
+            <hr style="margin: 10px 0; border: none; height: 1px; background: rgba(0,0,0,0.1);"/>
+            <p style="font-style: italic; color: var(--text-low); margin-bottom: 15px;">**МЕМ:** Ты взял кредит на 100к на «девяточку» с гидроусилителем. Долг выкупил **Коллектор Злой**, и теперь он знает твой адрес в Курске.</p>
             <p style="font-weight: bold; color: var(--primary);">Твоя цель, уебан:</p>
             <ul style="margin-left: 15px; list-style-type: '👉 ';">
-                <li>Вернуть долг: 100 000 ₽ Коллектору Злому. Срок: <span id="welcome-days">30</span> дней.</li>
-                <li>Или свалить нахуй в Ростов за <span id="welcome-escape">65 000</span> ₽, пока не поздно.</li>
+                <li>Вернуть долг: **100 000 ₽** Коллектору Злому. Срок: <span id="welcome-days">30</span> дней.</li>
+                <li>Или свалить нахуй в Ростов за <span id="welcome-escape">65 000</span> ₽, пока не сломал колени.</li>
             </ul>
             <p style="margin-top: 15px; font-weight: bold; color: var(--danger);">ПРАВИЛА (Следи за шкалами):</p>
-            <ul style="color: var(--warning); margin-left: 15px; list-style-type: '🔥 ';">
-                <li>Здоровье 0: Пиздец.</li>
-                <li>Стресс 100: Дубовая палата.</li>
-                <li>Сытость 0: Голодная смерть.</li>
+            <ul style="color: var(--text-dark); margin-left: 15px; list-style-type: '🔥 ';">
+                <li>**Здоровье 0:** Пиздец. Ты сдох.</li>
+                <li>**Стресс 100:** Дубовая палата. Кукуха поехала.</li>
+                <li>**Сытость 0:** Голодная смерть.</li>
             </ul>
-            <p style="margin-top: 20px; text-align: center; color: var(--success); font-weight: bold; font-size: 1.2rem;">ВЪЕБЫВАЙ! ИЛИ УЕБЫВАЙ!</p>
+            <p style="margin-top: 20px; text-align: center; color: var(--success); font-weight: bold; font-size: 1.2rem; font-family: 'Orbitron';">ПОГНАЛИ! ИЛИ УЕБЫВАЙ!</p>
             <button class="modal-close" style="background: var(--secondary);" onclick="hideModal('welcome-modal')">НАЧАТЬ ЭТУ ХУЙНЮ</button>
         </div>
     </div>
@@ -361,10 +357,21 @@
                 <div class="stat-item">ДОЛГ<br><span class="stat-value" id="debt">100000 ₽</span></div>
                 <div class="stat-item">РАБОТА<br><span class="stat-value" id="job">Бомж</span></div>
             </div>
-            
-            <div class="progress-container">Здоровье 💪: <span id="health-value">100</span>%<div class="progress-bar"><div class="progress-fill" id="health-bar" style="width: 100%;"></div></div></div>
-            <div class="progress-container">Сытость 🌭: <span id="satiety-value">100</span>%<div class="progress-bar"><div class="progress-fill" id="satiety-bar" style="width: 100%;"></div></div></div>
-            <div class="progress-container">Стресс 🤯: <span id="stress-value">0</span>%<div class="progress-bar"><div class="progress-fill" id="stress-bar" style="width: 0%;"></div></div></div>
+        </div>
+        
+        <div class="progress-card card">
+            <div class="progress-container">
+                <div class="progress-label">Здоровье 💪: <span id="health-value">100</span>%</div>
+                <div class="progress-bar"><div class="progress-fill" id="health-bar" style="width: 100%;"></div></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">Сытость 🌭: <span id="satiety-value">100</span>%</div>
+                <div class="progress-bar"><div class="progress-fill" id="satiety-bar" style="width: 100%;"></div></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">Стресс 🤯: <span id="stress-value">0</span>%</div>
+                <div class="progress-bar"><div class="progress-fill" id="stress-bar" style="width: 0%;"></div></div>
+            </div>
         </div>
         
         <div class="character-container"><span id="stepa-emoji" style="animation: idle-bob 4s ease-in-out infinite;">😐</span></div>
@@ -390,9 +397,9 @@
     <div id="upgrade-modal" class="modal"><div class="modal-content card"><h3>🧠 Прокачай Ебало (Скиллы)</h3><div id="upgrade-options"></div><button class="modal-close" onclick="hideModal('upgrade-modal')">Закрыть</button></div></div>
     
     <div id="game-over-modal" class="modal">
-        <div class="modal-content game-over card" style="border-color: var(--danger);">
-            <h2 id="game-over-title" style="color:var(--danger); font-size: 2rem; margin-bottom: 10px; text-shadow: 0 0 15px var(--danger); text-align: center;"></h2>
-            <p id="game-over-text" style="font-size: 1rem; line-height: 1.4; text-align: center;"></p>
+        <div class="modal-content game-over card" style="border: 2px solid var(--danger);">
+            <h2 id="game-over-title" style="color:var(--danger); font-size: 2rem; margin-bottom: 15px; text-align: center; font-family: 'Orbitron';"></h2>
+            <p id="game-over-text" style="font-size: 1rem; line-height: 1.4; text-align: center; color: var(--text-dark);"></p>
             <button class="modal-close" onclick="restartGame()" style="background: var(--danger);">Начать эту хуйню заново</button>
         </div>
     </div>
@@ -402,7 +409,7 @@
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // --- АУДИОСИСТЕМА ---
+        // --- АУДИОСИСТЕМА (Обновлены звуки для лучшего эффекта) ---
         const audioSystem = {
             money: document.getElementById('sound-money'), fail: document.getElementById('sound-fail'),
             threat: document.getElementById('sound-threat'), success: document.getElementById('sound-success'),
@@ -410,7 +417,7 @@
             play: function(sound) {
                 const audio = this[sound];
                 if (audio && audio.src && audio.src.includes('http')) {
-                    const clone = audio.cloneNode(); clone.volume = 0.4; clone.currentTime = 0;
+                    const clone = audio.cloneNode(); clone.volume = 0.5; clone.currentTime = 0;
                     clone.play().catch(e => console.log("Audio playback failed:", e));
                 }
             }
@@ -447,11 +454,11 @@
         // --- Константы и данные ---
         const ESCAPE_COST = 65000;
         const food = [
-            { name: "Бутылка кефира (Помогает)", cost: 50, satiety: 10, health: 0, stress: 0 },
-            { name: "Доширак с мазиком", cost: 100, satiety: 25, health: -2, stress: 5 },
-            { name: "Шаурма Пронеси, Господи", cost: 250, satiety: 40, health: 5, stress: 0 },
-            { name: "Бизнес-ланч Как Человек", cost: 600, satiety: 65, health: 10, stress: -10 },
-            { name: "Форель в Курском дворике", cost: 3000, satiety: 100, health: 5, stress: -30 } 
+            { name: "Бутылка кефира (Помогает)", cost: 50, satiety: 10, health: 0, stress: 0, icon: 'fa-bottle-water' },
+            { name: "Доширак с мазиком (Огонь)", cost: 100, satiety: 25, health: -2, stress: 5, icon: 'fa-bowl-food' },
+            { name: "Шаурма Пронеси, Господи", cost: 250, satiety: 40, health: 5, stress: 0, icon: 'fa-sandwich' },
+            { name: "Бизнес-ланч Как Человек", cost: 600, satiety: 65, health: 10, stress: -10, icon: 'fa-utensils' },
+            { name: "Форель в Курском дворике (Панты)", cost: 3000, satiety: 100, health: 5, stress: -30, icon: 'fa-fish-fins' } 
         ];
         const jobs = [
             { name: "Грузчик (ебаный)", salary: 1500, stress: 15, health: -10, satiety: -20, isHomeless: false },
@@ -461,33 +468,33 @@
             { name: "Помощник депутата (Мутка)", salary: 5000, stress: 10, health: 5, satiety: -5, isHomeless: false }
         ];
         const shadyDeals = [
-            { name: "Поставить на Рыжего", desc: "Собачьи бои. Верняк. Ставка - 1к.", cost: 1000, reward: 5000, chance: 0.4, penalty: -1000, stress: 20},
-            { name: "Перевезти диван", desc: "В 3 часа ночи. Вопросы лучше не задавать.", cost: 0, reward: 8000, chance: 0.6, penalty: -5000, stress: 30},
-            { name: "Продать витамины у клуба (Эщкере)", desc: "Какой-то порошок. Профит: 10к, если мусора не примут.", cost: -2000, reward: 10000, chance: 0.3, penalty: -10000, stress: 50},
-            { name: "Взломать игровые автоматы", desc: "Уровень сложности: God Mode. Если прокатит — 20к.", cost: 5000, reward: 20000, chance: 0.15, penalty: -15000, stress: 40},
-            { name: "Сдать Коллектору Злому Лёху Мутного", desc: "Предательство за 15к. Удар по здоровью и репутации.", cost: 0, reward: 15000, chance: 0.9, penalty: 0, stress: 50, health: -15}
+            { name: "Поставить на Рыжего (Дерби)", desc: "Собачьи бои. Верняк. Ставка - 1к. МЕМ: **ВЖУХ!**", cost: 1000, reward: 5000, chance: 0.4, penalty: -1000, stress: 20, icon: 'fa-dog' },
+            { name: "Перевезти диван (Контрабанда)", desc: "В 3 часа ночи. Вопросы лучше не задавать. МЕМ: **ЭТО РОССИЯ**.", cost: 0, reward: 8000, chance: 0.6, penalty: -5000, stress: 30, icon: 'fa-truck-moving' },
+            { name: "Продать витамины у клуба (Эщкере)", desc: "Какой-то порошок. Профит: 10к, если мусора не примут. МЕМ: **ПАНИКА**.", cost: -2000, reward: 10000, chance: 0.3, penalty: -10000, stress: 50, icon: 'fa-capsules' },
+            { name: "Взломать игровые автоматы", desc: "Уровень сложности: God Mode. Если прокатит — 20к. МЕМ: **УДАЧА**.", cost: 5000, reward: 20000, chance: 0.15, penalty: -15000, stress: 40, icon: 'fa-slot-machine' },
+            { name: "Сдать Коллектору Злому Лёху", desc: "Предательство за 15к. Удар по здоровью. МЕМ: **КРЫСА**.", cost: 0, reward: 15000, chance: 0.9, penalty: 0, stress: 50, health: -15, icon: 'fa-user-secret' }
         ];
         const UPGRADES = [
-            { id: 'health', name: 'Прокачать Тело (Здоровье)', icon: 'fa-heart-pulse', cost: 10000, bonus: 10, limit: 5, desc: "Увеличивает твою выживаемость. +10 к базовому здоровью." },
-            { id: 'stress', name: 'Прокачать Мозг (Стресс)', icon: 'fa-brain', cost: 15000, bonus: 5, limit: 3, desc: "Уменьшает ежедневный прирост стресса. -5% ежедневного стресса." },
-            { id: 'friends', name: 'Прокачать Связи (Кенты)', icon: 'fa-users-line', cost: 20000, bonus: 0.15, limit: 2, desc: "Увеличивает шанс, что кенты дадут в долг. +15% к шансу." },
+            { id: 'health', name: 'Прокачать Тело (Здоровье)', icon: 'fa-heart-pulse', cost: 10000, bonus: 10, limit: 5, desc: "Увеличивает твою выживаемость. **+10 к базовому Здоровью.**" },
+            { id: 'stress', name: 'Прокачать Мозг (Стресс)', icon: 'fa-brain', cost: 15000, bonus: 0.05, limit: 3, desc: "Уменьшает ежедневный прирост стресса. **-5% ежедневного стресса.**" },
+            { id: 'friends', name: 'Прокачать Связи (Кенты)', icon: 'fa-users-line', cost: 20000, bonus: 0.15, limit: 2, desc: "Увеличивает шанс, что кенты дадут в долг. **+15% к шансу.**" },
         ];
         const phrases = {
             work: ["Въебывал как раб на галерах. Заработал.", "Горбатился за гроши, проклиная всё на свете.", "Продал еще один день жизни за ебучие копейки.", "Имитировал бурную деятельность, заебался, но деньги получил."],
             debtThreats: [
-                "📞 Коллектор Злой: Слышь, уебан, бабки где? Я твой дом труба шатал!", 
-                "SMS от Злого: Твои почки стоят 100к. У тебя есть выбор, сука. 😈", 
-                "SMS от Злого: Я знаю где живет твоя Приора. Время пошло. Пиздец. 💣"
+                "📞 Коллектор Злой: Слышь, уебан, бабки где? Я твой дом труба шатал! **BRUH!**", 
+                "SMS от Злого: Твои почки стоят 100к. У тебя есть выбор, сука. **ДЕЛАЙ ВЫБОР**.", 
+                "SMS от Злого: Я знаю где живет твоя Приора. Время пошло. Пиздец. **ЗАВТРА ВЫЕЗД**."
             ],
             friendReject: ["послал тебя нахуй.", "сказал, что его жена против. Тряпка.", "сделал вид, что не узнал тебя, пидора.", "сказал, долг платежом красен и съебался в закат."],
             gameOver: {
-                health: "Ты сдох от какой-ТО хуйни, потому что не следил за здоровьем, мудак. Твои долги перешли коту. Мяу. 😿",
-                stress: "Твоя кукуха окончательно улетела. Остаток жизни ты проведешь, пуская слюни в дурке и крича 'Где деньги, Лебовски?'. Ебать, позорище. 🤡",
-                debt: "Терпение Коллектора Злого лопнуло. Тебя вывезли в лес и креативно обьяснили, что так делать нельзя. Твои останки до сих пор ищут, лол. 🔪",
-                win: "Ебать, ты реально смог! Отдал все долги Коллектору Злому. Теперь ты легенда Курска. Можешь съебать отсюда с чистой совестью, красава. 🎉",
-                escape: "Ты свалил из Курска в Ростов! Коллектор Злой в бешенстве. Тебя ищут, но ты на свободе! Новая жизнь начинается с шаурмы на вокзале. Свобода, блядь! 🕊️"
+                health: "Ты сдох от какой-ТО хуйни, потому что не следил за здоровьем, мудак. Твои долги перешли коту. Мяу. **RIP Степа** 😿",
+                stress: "Твоя кукуха окончательно улетела. Остаток жизни ты проведешь, пуская слюни в дурке и крича **'ГДЕ ДЕНЬГИ, ЛЕБОВСКИ?'**. Ебать, позорище. 🤡",
+                debt: "Терпение Коллектора Злого лопнуло. Тебя вывезли в лес и креативно обьяснили, что так делать нельзя. Твои останки до сих пор ищут, лол. **FINISH HIM** 🔪",
+                win: "Ебать, ты реально смог! Отдал все долги Коллектору Злому. Теперь ты легенда Курска. Можешь съебать отсюда с чистой совестью, красава. **ПОТРАЧЕНО** 🎉",
+                escape: "Ты свалил из Курска в Ростов! Коллектор Злой в бешенстве. Тебя ищут, но ты на свободе! Новая жизнь начинается с шаурмы на вокзале. Свобода, блядь! **FREEDOM** 🕊️"
             },
-            relieveStress: ["Просадил 1000 ₽ в баре. Стало легче, но печень передает привет. Хули, похуй.", "Бутылка пива и 'Давай поженимся' - идеальная терапия. -40 стресса."]
+            relieveStress: ["Просадил 1000 ₽ в баре. Стало легче, но печень передает привет. Хули, похуй. **ЗА ЗДОРОВЬЕ**", "Бутылка пива и 'Давай поженимся' - идеальная терапия. -40 стресса. **ЖИЗА**"]
         };
 
         // --- Управление UI ---
@@ -529,9 +536,14 @@
             const healthPercent = (gameState.health / maxHealth) * 100;
             const stressPercent = (gameState.stress / maxStress) * 100;
 
+            // Плавное обновление шкал и анимация
             ui.health.textContent = `${gameState.health} / ${maxHealth}`; ui.healthBar.style.width = `${healthPercent}%`;
             ui.satiety.textContent = gameState.satiety; ui.satietyBar.style.width = `${gameState.satiety}%`;
             ui.stress.textContent = gameState.stress; ui.stressBar.style.width = `${stressPercent}%`;
+            
+            // Дополнительная анимация на критических значениях
+            ui.healthBar.parentNode.parentNode.style.animation = healthPercent < 20 ? 'heart-beat 1.5s infinite' : 'none';
+            ui.stressBar.parentNode.parentNode.style.animation = stressPercent > 80 ? 'danger-shake 1s infinite' : 'none';
 
             updateStepaEmoji();
         }
@@ -543,7 +555,6 @@
             // Если текст не меняется, не запускаем анимацию
             if (oldValue === String(newValue)) return;
 
-            // Извлечение чисел для сравнения (учитываем, что тут могут быть проценты или просто текст)
             const oldNum = parseFloat(oldValue.replace(/[^\d.-]/g, '')) || 0;
             const newNum = parseFloat(String(newValue).replace(/[^\d.-]/g, '')) || 0;
             
@@ -562,7 +573,6 @@
             element.textContent = newValue;
 
             if (changeClass) {
-                // Очистка предыдущего таймера и класса
                 clearTimeout(statUpdateTimers[key]);
                 element.classList.remove('flash-green', 'flash-red');
                 void element.offsetWidth; // Триггер рефлоу для сброса анимации
@@ -587,17 +597,22 @@
                 setStepaAnimation('danger-shake', 2);
             } else if (stat === 'stress' && gameState.stress > 70 && oldValue <= 70) {
                 setStepaAnimation('danger-shake', 2);
+            } else if (stat === 'money' && value > 5000) {
+                setStepaAnimation('doge-vibe', 1.5);
             }
         }
         
         function setStepaAnimation(animation, duration) {
+            // Если анимация уже идет, не прерываем (кроме shake/beat)
+            if (ui.stepaEmoji.style.animationName.includes('shake') || ui.stepaEmoji.style.animationName.includes('beat')) return;
+
             ui.stepaEmoji.style.animation = 'none';
             void ui.stepaEmoji.offsetWidth; 
             ui.stepaEmoji.style.animation = `${animation} ${duration}s ease-in-out`;
             
             // Возвращаем стандартную анимацию
             setTimeout(() => {
-                if (ui.stepaEmoji.style.animationName === animation) {
+                if (ui.stepaEmoji.style.animationName.includes(animation)) {
                      ui.stepaEmoji.style.animation = 'idle-bob 4s ease-in-out infinite';
                      updateStepaEmoji();
                 }
@@ -605,13 +620,14 @@
         }
         
         function updateStepaEmoji() {
-            if (ui.stepaEmoji.style.animationName !== 'idle-bob' && ui.stepaEmoji.style.animationName !== 'none' && ui.stepaEmoji.style.animationName !== '') return; 
+            const currentAnim = ui.stepaEmoji.style.animationName;
+            if (currentAnim !== 'idle-bob' && currentAnim !== 'none' && currentAnim !== '') return; 
 
             if (gameState.debt <= 0) ui.stepaEmoji.textContent = '🥳'; 
             else if (gameState.stress >= 85) ui.stepaEmoji.textContent = '🤯';
             else if (gameState.health <= 20) ui.stepaEmoji.textContent = '💀';
             else if (gameState.satiety <= 20) ui.stepaEmoji.textContent = '🤢';
-            else if (gameState.money > 50000) ui.stepaEmoji.textContent = '💰';
+            else if (gameState.money > 50000) ui.stepaEmoji.textContent = '🤑'; // Новая эмоция: Money Face
             else if (gameState.money < 1000) ui.stepaEmoji.textContent = '😭';
             else if (gameState.debt > gameState.money * 10 && gameState.day > 10) ui.stepaEmoji.textContent = '😱';
             else ui.stepaEmoji.textContent = '😐'; 
@@ -649,12 +665,12 @@
             changeStat('satiety', -10);
             
             let debtStressBase = gameState.debt > 70000 ? 7 : (gameState.debt > 30000 ? 4 : 2);
-            debtStressBase = debtStressBase * (1 - gameState.skills.stress * 0.05); // Снижение от прокачки мозга
+            debtStressBase = debtStressBase * (1 - gameState.skills.stress * UPGRADES.find(u => u.id === 'stress').bonus); // Снижение от прокачки мозга
             changeStat('stress', Math.max(1, Math.round(debtStressBase))); 
 
             if (gameState.satiety <= 0) {
                 changeStat('health', -15);
-                addEvent("От голода сводит живот. Теряешь здоровье, хуила.", "danger", 'fa-drumstick-bite');
+                addEvent("От голода сводит живот. Теряешь здоровье, хуила. **НЕ КОРМИЛИ**.", "danger", 'fa-drumstick-bite');
                 audioSystem.play('fail');
             }
             if(gameState.stress > 0) changeStat('stress', -3); 
@@ -678,7 +694,7 @@
 
             if (rand < 0.1 && !isHomeless) { 
                 finalSalary *= 1.5;
-                eventMsg = "Начальник был в запое и случайно выписал премию. Повезло, хули.";
+                eventMsg = "Начальник был в запое и случайно выписал премию. Повезло, хули. **DOGE VIBE**";
                 showToast(`Премия, сука! +${(finalSalary - salary).toLocaleString()} ₽`, 'success');
                 audioSystem.play('money');
                 icon = 'fa-sack-dollar';
@@ -687,18 +703,18 @@
                 if (gameState.money >= fine) { 
                      changeStat('money', -fine);
                      finalSalary = salary - fine;
-                     showToast(`Штраф! Минус бабки, уебок. -${fine.toLocaleString()} ₽`, 'danger');
+                     showToast(`Штраф! Минус бабки, уебок. -${fine.toLocaleString()} ₽. **ОБИДНО**`, 'danger');
                      eventMsg = "Опоздал на смену, получил штраф. Ебать, ты лох.";
                      audioSystem.play('fail');
                      icon = 'fa-hand-holding-dollar';
                 } else {
-                    eventMsg = "Чудом избежал штрафа, но и зарплата сегодня не светит.";
+                    eventMsg = "Чудом избежал штрафа, но и зарплата сегодня не светит. **ПРОНЕСЛО**";
                     finalSalary = 0;
                     icon = 'fa-user-slash';
                 }
             } else if (isHomeless && rand < 0.3) {
                 finalSalary += 200;
-                eventMsg = "Нашел несколько бутылок и сдал их. Мелочь, но приятно, бомжара.";
+                eventMsg = "Нашел несколько бутылок и сдал их. Мелочь, но приятно, бомжара. **БОМЖ-ЛАЙФ**";
                 audioSystem.play('money');
             }
 
@@ -708,7 +724,7 @@
             changeStat('satiety', satiety);
 
             haptic('medium');
-            setStepaAnimation('money-bounce', 1);
+            setStepaAnimation('doge-vibe', 1);
             addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`, (finalSalary > 0 ? 'success' : 'warning'), icon);
             
             nextDay(); 
@@ -725,11 +741,11 @@
             if (Math.random() > 0.4) {
                 const newJob = jobs[Math.floor(Math.random() * jobs.length)];
                 gameState.job = newJob;
-                showToast(`Ты нашел новую работу: ${newJob.name}! Наконец-то, блядь! 👍`, 'success');
+                showToast(`Ты нашел новую работу: ${newJob.name}! Наконец-то, блядь! **СЧАСТЬЕ** 👍`, 'success');
                 addEvent(`Наконец-то ты не бомж, а ${newJob.name}. Зарплата ${newJob.salary.toLocaleString()} ₽/день.`, 'success', 'fa-briefcase');
                 audioSystem.play('success');
             } else {
-                showToast("Никому ты нахуй не нужен, неудачник. Ищи дальше. 💩", 'danger');
+                showToast("Никому ты нахуй не нужен, неудачник. Ищи дальше. **НЕ ПОВЕЗЛО** 💩", 'danger');
                 changeStat('stress', 10);
                 audioSystem.play('fail');
             }
@@ -753,16 +769,15 @@
             const payment = Math.min(gameState.money, gameState.debt); 
             if (payment <= 0) { showToast("Нечем платить Коллектору Злому, ты нищий кусок говна! 🤡", "danger"); audioSystem.play('fail'); return; }
             
-            // Ограничение платежа убрано, платим столько, сколько можем (до лимита долга)
             const effectivePayment = payment;
             
             changeStat('money', -effectivePayment); 
             changeStat('debt', -effectivePayment); 
             changeStat('stress', -20);
             
-            showToast(`Отдал ${effectivePayment.toLocaleString()} ₽. Коллектор Злой сегодня не будет ломать тебе ноги. Пока что. 🙏`, "success");
+            showToast(`Отдал ${effectivePayment.toLocaleString()} ₽. Коллектор Злой сегодня не будет ломать тебе ноги. Пока что. **ПАЦАН СКАЗАЛ** 🙏`, "success");
             audioSystem.play('money');
-            addEvent(`Отдал часть долга: ${effectivePayment.toLocaleString()} ₽. Стало легче дышать.`, 'success', 'fa-money-bill-transfer');
+            addEvent(`Отдал часть долга: ${effectivePayment.toLocaleString()} ₽. Стало легче дышать. **ОТЛЕГЛО**`, 'success', 'fa-money-bill-transfer');
             updateUI(); checkGameOver(); saveGame();
         }
 
@@ -777,9 +792,9 @@
             if (gameState.debt > 50000 && Math.random() < 0.15) { 
                 changeStat('money', -ESCAPE_COST / 2); 
                 changeStat('stress', 50);
-                showToast("Побег провалился. Тебя скрутили на вокзале, но отпустили. Потерял половину бабок и нервов! 🚨", 'danger');
+                showToast("Побег провалился. Тебя скрутили на вокзале, но отпустили. Потерял половину бабок и нервов! **ПОЙМАН** 🚨", 'danger');
                 audioSystem.play('threat');
-                addEvent("Попытка побега провалена. Потерял часть денег и нервов.", "danger", 'fa-user-secret');
+                addEvent("Попытка побега провалена. Потерял часть денег и нервов. **ЗАСВЕТИЛСЯ**", "danger", 'fa-user-secret');
                 nextDay();
                 return;
             }
@@ -805,7 +820,7 @@
                     button = `<button ${gameState.money < item.cost ? 'disabled' : ''} onclick="buyUpgrade('${item.id}', ${item.cost})">Купить (${item.cost.toLocaleString()} ₽)</button>`;
                 }
 
-                el.innerHTML = `<strong><i class="fa-solid ${item.icon}"></i> ${item.name} (Уровень ${level}/${item.limit})</strong><br><small style="color:var(--primary)">${item.desc}</small>${button}`;
+                el.innerHTML = `<strong><i class="fa-solid ${item.icon}"></i> ${item.name} (Уровень ${level}/${item.limit})</strong><br><small>${item.desc}</small>${button}`;
                 container.appendChild(el);
             });
             showModal('upgrade-modal');
@@ -827,8 +842,8 @@
             changeStat('money', -cost);
             gameState.skills[id]++;
             
-            showToast(`Прокачка ${upgrade.name} завершена! +1 Уровень! 💪`, 'success');
-            addEvent(`Прокачал ${upgrade.name}. Теперь ты чуть менее бесполезен.`, 'success', upgrade.icon);
+            showToast(`Прокачка ${upgrade.name} завершена! +1 Уровень! 💪 **ПРОФИТ**`, 'success');
+            addEvent(`Прокачал ${upgrade.name}. Теперь ты чуть менее бесполезен. **APPLY SKILL**`, 'success', upgrade.icon);
 
             if (id === 'health') {
                 changeStat('health', upgrade.bonus);
@@ -849,7 +864,8 @@
 
         function showFriendsModal() {
             const container = document.getElementById('friends-options'); container.innerHTML = '';
-            const friendChanceBonus = gameState.skills.friends * UPGRADES.find(u => u.id === 'friends').bonus;
+            const upgradeData = UPGRADES.find(u => u.id === 'friends');
+            const friendChanceBonus = gameState.skills.friends * upgradeData.bonus;
 
             gameState.friends.forEach(friend => {
                 const loanAmount = friend.maxLoan;
@@ -868,7 +884,7 @@
                     const extraInfo = friend.repayment ? ` (Вернуть ${repaymentAmount.toLocaleString()} ₽)` : '';
                     const chanceDisplay = `Шанс: ${Math.round(Math.min(finalChance, 0.99) * 100)}%`;
                     button = `<button onclick="borrowFromFriend('${friend.name}')">Занять</button>`;
-                    el.innerHTML = `<strong>${friend.name}</strong> (${loanAmount.toLocaleString()} ₽)${extraInfo}<br><small>${friend.desc}</small><small style="color:var(--warning)">${chanceDisplay}</small>${button}`;
+                    el.innerHTML = `<strong>${friend.name}</strong> (${loanAmount.toLocaleString()} ₽)${extraInfo}<br><small>${friend.desc}</small><small style="color:var(--text-low)">${chanceDisplay}</small>${button}`;
                 }
                 
                 container.appendChild(el);
@@ -879,23 +895,26 @@
         function borrowFromFriend(name) {
             const friend = gameState.friends.find(f => f.name === name);
             const loanAmount = friend.maxLoan;
-            const repaymentAmount = friend.repayment || loanAmount;
             
-            const friendChanceBonus = gameState.skills.friends * UPGRADES.find(u => u.id === 'friends').bonus;
+            const upgradeData = UPGRADES.find(u => u.id === 'friends');
+            const friendChanceBonus = gameState.skills.friends * upgradeData.bonus;
             const finalChance = friend.chance + friendChanceBonus;
 
             if (friend.debtAmount > 0) { showToast(`${friend.name}: Сначала верни старое, пёс!`, 'warning'); audioSystem.play('fail'); return; }
             if (gameState.debt > 150000) { showToast(`${friend.name}: Слышал про твой долг Злому. Нахуй, я пас.`, 'danger'); changeStat('stress', 5); audioSystem.play('threat'); return; }
 
             if (Math.random() <= finalChance) {
-                changeStat('money', loanAmount); 
+                const actualLoan = loanAmount;
+                const repaymentAmount = friend.repayment || actualLoan;
+                
+                changeStat('money', actualLoan); 
                 friend.debtAmount = repaymentAmount; 
-                showToast(`${friend.name} одолжил ${loanAmount.toLocaleString()} ₽. Верни ${repaymentAmount.toLocaleString()} ₽, сука!`, 'success');
-                addEvent(`Занял у ${friend.name}: ${loanAmount.toLocaleString()} ₽. Вернуть: ${repaymentAmount.toLocaleString()} ₽.`, 'success', 'fa-handshake-angle');
+                showToast(`${friend.name} одолжил ${actualLoan.toLocaleString()} ₽. Верни ${repaymentAmount.toLocaleString()} ₽, сука! **УРА**`, 'success');
+                addEvent(`Занял у ${friend.name}: ${actualLoan.toLocaleString()} ₽. Вернуть: ${repaymentAmount.toLocaleString()} ₽.`, 'success', 'fa-handshake-angle');
                 audioSystem.play('money');
             } else {
                 changeStat('stress', 15);
-                showToast(`${friend.name} ${phrases.friendReject[Math.floor(Math.random() * phrases.friendReject.length)]} 🖕`, 'danger');
+                showToast(`${friend.name} ${phrases.friendReject[Math.floor(Math.random() * phrases.friendReject.length)]} 🖕 **ЛОХ**`, 'danger');
                 audioSystem.play('fail');
                 setStepaAnimation('danger-shake', 1);
             }
@@ -907,8 +926,8 @@
              if (gameState.money < friend.debtAmount) { showToast(`Нет бабок, чтобы вернуть долг ${friend.debtAmount.toLocaleString()} ₽, пиздец! 😭`, "danger"); audioSystem.play('fail'); return; }
              
              changeStat('money', -friend.debtAmount);
-             showToast(`Ты вернул долг ${friend.name}. Он снова считает тебя человеком. Красава. 🤝`, 'success');
-             addEvent(`Вернул долг ${friend.name}: ${friend.debtAmount.toLocaleString()} ₽.`, 'success', 'fa-money-bill-transfer');
+             showToast(`Ты вернул долг ${friend.name}. Он снова считает тебя человеком. Красава. **ПАЦАН** 🤝`, 'success');
+             addEvent(`Вернул долг ${friend.debtAmount.toLocaleString()} ₽. ${friend.name} доволен.`, 'success', 'fa-money-bill-transfer');
              friend.debtAmount = 0;
              audioSystem.play('success');
              hideModal('friends-modal'); updateUI(); saveGame();
@@ -922,7 +941,7 @@
                 const stressText = item.stress === 0 ? '0' : (item.stress > 0 ? `+${item.stress}` : `${item.stress}`);
                 const isDisabled = gameState.money < item.cost;
                 
-                el.innerHTML = `<strong>${item.name}</strong> - ${item.cost.toLocaleString()} ₽<br><small style="color:var(--primary)">Сытость: +${item.satiety}, Здоровье: ${healthText}, Стресс: ${stressText}</small><button ${isDisabled ? 'disabled' : ''} onclick="eat('${item.name}')">Скушать</button>`;
+                el.innerHTML = `<strong><i class="fa-solid ${item.icon}"></i> ${item.name}</strong> - ${item.cost.toLocaleString()} ₽<br><small>Сытость: +${item.satiety}, Здоровье: ${healthText}, Стресс: ${stressText}</small><button ${isDisabled ? 'disabled' : ''} onclick="eat('${item.name}')">Скушать</button>`;
                 container.appendChild(el);
             });
             showModal('food-modal');
@@ -937,7 +956,7 @@
             changeStat('health', foodItem.health); 
             changeStat('stress', foodItem.stress);
             
-            addEvent(`Поел: ${foodItem.name}. Заткнул свое ебало. Хоть какая-то радость.`, 'success', 'fa-burger');
+            addEvent(`Поел: ${foodItem.name}. Заткнул свое ебало. Хоть какая-то радость. **МНЯМ**`, 'success', foodItem.icon);
             audioSystem.play('success');
             hideModal('food-modal'); 
             nextDay(); 
@@ -954,7 +973,7 @@
                 const healthDisplay = deal.health ? `, Здоровье: ${deal.health}` : '';
                 const isDisabled = gameState.money < cost;
 
-                el.innerHTML = `<strong>${deal.name}</strong><br><small>${deal.desc}</small><br><small style="color:var(--warning)">${costDisplay} | Профит (Успех): ${deal.reward.toLocaleString()} ₽ | Потери (Провал): ${penaltyDisplay}${healthDisplay} | Шанс: ${deal.chance*100}%</small><button ${isDisabled ? 'disabled' : ''} onclick="attemptShadyDeal('${deal.name}')">Рискнуть</button>`;
+                el.innerHTML = `<strong><i class="fa-solid ${deal.icon}"></i> ${deal.name}</strong><br><small>${deal.desc}</small><br><small style="color:var(--text-low)">${costDisplay} | Профит (Успех): ${deal.reward.toLocaleString()} ₽ | Потери (Провал): ${penaltyDisplay}${healthDisplay} | Шанс: ${deal.chance*100}%</small><button ${isDisabled ? 'disabled' : ''} onclick="attemptShadyDeal('${deal.name}')">Рискнуть</button>`;
                 container.appendChild(el);
             });
             showModal('shady-deals-modal');
@@ -974,19 +993,19 @@
 
             changeStat('stress', deal.stress);
             if (deal.health) changeStat('health', deal.health);
-            let icon = 'fa-bolt-lightning';
+            let icon = deal.icon;
 
             if (Math.random() <= deal.chance) {
                 const profit = deal.reward;
                 changeStat('money', profit);
-                showToast(`Афера удалась, красава! Ты поднял ${profit.toLocaleString()} ₽! 🤘`, 'success');
-                addEvent(`Ты провернул ${deal.name} и сорвал куш. Коллектор Злой в ахуе.`, 'success', 'fa-hand-holding-dollar');
+                showToast(`Афера удалась, красава! Ты поднял ${profit.toLocaleString()} ₽! 🤘 **WINNER**`, 'success');
+                addEvent(`Ты провернул ${deal.name} и сорвал куш. Коллектор Злой в ахуе. **ИЗИ**`, 'success', 'fa-hand-holding-dollar');
                 audioSystem.play('money');
-                setStepaAnimation('money-bounce', 1);
+                setStepaAnimation('doge-vibe', 1.5);
             } else {
                 changeStat('money', deal.penalty);
-                showToast(`Тебя кинули, лох ебаный! Потеряно ${Math.abs(deal.penalty).toLocaleString()} ₽ 🤡`, 'danger');
-                addEvent(`Схема ${deal.name} провалилась. Ты в еще большей жопе, мудак.`, 'danger', 'fa-skull-crossbones');
+                showToast(`Тебя кинули, лох ебаный! Потеряно ${Math.abs(deal.penalty).toLocaleString()} ₽ 🤡 **ОЙ**`, 'danger');
+                addEvent(`Схема ${deal.name} провалилась. Ты в еще большей жопе, мудак. **НЕ ФАРТИТ**`, 'danger', 'fa-skull-crossbones');
                 audioSystem.play('fail');
                 setStepaAnimation('danger-shake', 1.5);
             }
@@ -997,12 +1016,12 @@
         // --- Случайные события и конец игры ---
         function randomEvent() {
             const events = [
-                () => { changeStat('money', 1500); addEvent("Нашёл 1500 ₽ у ларька! Сегодня фартит. 👍", 'success', 'fa-sack-dollar'); audioSystem.play('money'); },
-                () => { if(gameState.money > 2000) { changeStat('money', -2000); showToast("Цыгане развели на 2000 ₽. Лох - это судьба, хули. 🤦‍♂️", 'danger'); audioSystem.play('fail'); addEvent("Цыгане развели на 2к. Пиздец.", 'danger', 'fa-comments-dollar'); }},
-                () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак. 🤧", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда.", 'warning', 'fa-temperature-low');},
-                () => { changeStat('stress', -25); showToast("По телеку показали Бригаду. На душе стало тепло. Эх, времена... 😌", 'success'); addEvent("Посмотрел любимый сериал, на время отпустило.", 'success', 'fa-tv'); },
-                () => { changeStat('health', 5); changeStat('satiety', -5); addEvent("Нашел в мусорке почти целую булку. Слегка подзарядился.", 'success', 'fa-utensils'); audioSystem.play('success'); },
-                () => { changeStat('stress', 15); showToast("Вспомнил, как Коллектор Злой смотрел на тебя. Ух, аж пропотел. 🥵", 'danger'); setStepaAnimation('danger-shake', 1.5); addEvent("Тревога, сука. Я должен бабки.", 'danger', 'fa-face-anxious-sweat'); } 
+                () => { changeStat('money', 1500); addEvent("Нашёл 1500 ₽ у ларька! Сегодня фартит. **ПОДАРОК** 👍", 'success', 'fa-sack-dollar'); audioSystem.play('money'); },
+                () => { if(gameState.money > 2000) { changeStat('money', -2000); showToast("Цыгане развели на 2000 ₽. Лох - это судьба, хули. 🤦‍♂️ **КИДОК**", 'danger'); audioSystem.play('fail'); addEvent("Цыгане развели на 2к. Пиздец.", 'danger', 'fa-comments-dollar'); }},
+                () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось. Ебать, ты слабак. 🤧 **СЛАБАК**", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда.", 'warning', 'fa-temperature-low');},
+                () => { changeStat('stress', -25); showToast("По телеку показали Бригаду. На душе стало тепло. Эх, времена... 😌 **НОСТАЛЬГИЯ**", 'success'); addEvent("Посмотрел любимый сериал, на время отпустило.", 'success', 'fa-tv'); },
+                () => { changeStat('health', 5); changeStat('satiety', -5); addEvent("Нашел в мусорке почти целую булку. Слегка подзарядился. **ПЕРЕКУС**", 'success', 'fa-utensils'); audioSystem.play('success'); },
+                () => { changeStat('stress', 15); showToast("Вспомнил, как Коллектор Злой смотрел на тебя. Ух, аж пропотел. 🥵 **ТРЕВОГА**", 'danger'); setStepaAnimation('danger-shake', 1.5); addEvent("Тревога, сука. Я должен бабки.", 'danger', 'fa-face-anxious-sweat'); } 
             ];
             events[Math.floor(Math.random() * events.length)]();
         }
@@ -1056,8 +1075,7 @@
                     loadedState.skills = loadedState.skills || initialGameState.skills;
                     loadedState.creditor = loadedState.creditor || initialGameState.creditor;
                     loadedState.maxDays = loadedState.maxDays || initialGameState.maxDays;
-
-                    // Гарантированная структура друзей
+                    
                     if (!loadedState.friends || loadedState.friends.length !== initialGameState.friends.length) {
                        loadedState.friends = JSON.parse(JSON.stringify(initialGameState.friends));
                     } else {
@@ -1068,7 +1086,6 @@
                         });
                     }
                     
-                    // Коррекция здоровья, если оно превышает лимит прокачки (багфикс)
                     const maxHealth = 100 + (loadedState.skills.health || 0) * 10;
                     if (loadedState.health > maxHealth) loadedState.health = maxHealth;
                     
@@ -1089,11 +1106,10 @@
             document.getElementById('welcome-escape').textContent = ESCAPE_COST.toLocaleString('ru-RU');
 
             if (gameState.day === 1 || forceWelcome) {
-              addEvent("Проснулся с бодуна. Кажется, я должен Коллектору Злому... Пиздец.", "warning", 'fa-face-sad-cry');
+              addEvent("Проснулся с бодуна. Кажется, я должен Коллектору Злому... Пиздец. **НЕ ВЕЗЕТ**", "warning", 'fa-face-sad-cry');
               ui.welcomeModal.classList.add('show');
             }
 
-            // Обновляем текст на кнопке побега после загрузки/инициализации
             document.querySelector('.action-btn.escape').innerHTML = `<i class="fa-solid fa-plane-departure"></i>Свалить нахуй (${ESCAPE_COST.toLocaleString('ru-RU')} ₽)`;
 
             updateUI();
