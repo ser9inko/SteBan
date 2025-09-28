@@ -37,7 +37,7 @@
             background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 100%);
             color: var(--text);
             min-height: 100vh;
-            min-height: 100dvh; /* Код уже был отлично адаптирован под мобилки, dvh - правильный подход */
+            min-height: 100dvh;
             padding: 15px;
             overflow-x: hidden;
             touch-action: manipulation;
@@ -110,7 +110,7 @@
 
         .actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Чуть уменьшил минимальный размер для очень узких экранов */
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
             gap: 10px;
             margin-bottom: 15px;
         }
@@ -252,10 +252,12 @@
 
         async function initAudio() {
             if (audioContext && audioContext.state !== 'suspended') return;
+            // Создаем AudioContext при первом взаимодействии
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             if (audioContext.state === 'suspended') {
                 await audioContext.resume();
             }
+            // Загрузка всех звуков в буфер
             const promises = Object.keys(soundUrls).map(async (key) => {
                 try {
                     const response = await fetch(soundUrls[key]);
@@ -268,13 +270,19 @@
             await Promise.all(promises);
         }
         
+        // Обертка для проверки, активен ли AudioContext
         function playSound(name, playbackRate = 1.0) {
-            if (!audioContext || !soundBuffers[name]) return;
-            const source = audioContext.createBufferSource();
-            source.buffer = soundBuffers[name];
-            source.playbackRate.value = playbackRate;
-            source.connect(audioContext.destination);
-            source.start(0);
+            // Проверка на null/undefined/suspended
+            if (!audioContext || audioContext.state === 'suspended' || !soundBuffers[name]) return;
+            try {
+                const source = audioContext.createBufferSource();
+                source.buffer = soundBuffers[name];
+                source.playbackRate.value = playbackRate;
+                source.connect(audioContext.destination);
+                source.start(0);
+            } catch (e) {
+                console.error("Ошибка при воспроизведении звука:", e);
+            }
         }
 
         // --- Виброотклик ---
@@ -424,6 +432,8 @@
             ui.toastContainer.appendChild(toast);
             const soundMap = { danger: 'error', success: 'notification', warning: 'notification' };
             const hapticMap = { danger: 'error', success: 'success', warning: 'warning' };
+            
+            // Воспроизведение звука при тосте
             if (soundMap[type]) playSound(soundMap[type]);
             if (hapticMap[type]) haptic(hapticMap[type]);
             if (type === 'danger') setStepaAnimation('danger-shake', 1.5);
@@ -436,6 +446,7 @@
             if (gameState.gameOver) return;
             changeStat('day', 1);
             
+            // Ежедневные дебаффы
             changeStat('satiety', -10);
             if (gameState.satiety <= 0) {
                 changeStat('health', -10);
@@ -455,7 +466,7 @@
         
         // --- Действия игрока ---
         function work() {
-            playSound('work');
+            playSound('work'); // Звук работы
             const { salary, stress, health, satiety } = gameState.job;
             let finalSalary = salary;
             let eventMsg = phrases.work[Math.floor(Math.random() * phrases.work.length)];
@@ -480,10 +491,13 @@
             haptic('light');
             setStepaAnimation('money-bounce', 1);
             addEvent(`${eventMsg} Заработано: ${finalSalary.toLocaleString()} ₽.`);
-            nextDay();
+            
+            // !!! СМЕНА ДНЯ ТОЛЬКО ПОСЛЕ РАБОТЫ !!!
+            nextDay(); 
         }
 
         function findJob() {
+            playSound('click'); // Звук клика
             if (Math.random() > 0.4) {
                 const newJob = jobs[Math.floor(Math.random() * jobs.length)];
                 gameState.job = newJob;
@@ -493,7 +507,8 @@
                 showToast("Никому ты нахуй не нужен, неудачник.", 'danger');
                 changeStat('stress', 10);
             }
-            nextDay();
+            updateUI();
+            saveGame();
         }
         
         function relieveStress() {
@@ -505,7 +520,8 @@
             setStepaAnimation('dizzy', 2);
             setTimeout(() => updateStepaEmoji(), 2000);
             addEvent("Просадил 1000 ₽ в баре. Стало легче, но печень передает привет.");
-            nextDay();
+            updateUI();
+            saveGame();
         }
         
         function payDebt() {
@@ -514,7 +530,7 @@
             playSound('gain');
             changeStat('money', -payment); changeStat('debt', -payment); changeStat('stress', -20);
             showToast(`Отдал ${payment} ₽. Серёга сегодня не будет ломать тебе ноги.`, "success");
-            nextDay();
+            updateUI(); checkGameOver(); saveGame();
         }
 
         // --- Модальные окна ---
@@ -522,6 +538,7 @@
         function hideModal(id) { document.getElementById(id).classList.remove('show'); }
 
         function showFriendsModal() {
+            playSound('click'); // Звук клика
             const container = document.getElementById('friends-options'); container.innerHTML = '';
             gameState.friends.forEach(friend => {
                 const el = document.createElement('div'); el.className = 'option';
@@ -539,11 +556,12 @@
             if (Math.random() <= friend.chance) {
                 changeStat('money', friend.maxLoan); friend.debtAmount = friend.maxLoan;
                 showToast(`${friend.name} одолжил ${friend.maxLoan.toLocaleString()} ₽. "Верни, сука, а то хуже будет"`, 'success');
+                playSound('gain', 1.2);
             } else {
                 changeStat('stress', 15);
                 showToast(`${friend.name} ${phrases.friendReject[Math.floor(Math.random() * phrases.friendReject.length)]}`, 'danger');
             }
-            hideModal('friends-modal'); nextDay();
+            hideModal('friends-modal'); updateUI(); saveGame();
         }
 
         function repayFriend(name) {
@@ -552,10 +570,11 @@
              changeStat('money', -friend.debtAmount);
              showToast(`Ты вернул долг ${friend.name}. Он снова считает тебя человеком.`, 'success');
              friend.debtAmount = 0;
-             hideModal('friends-modal'); nextDay();
+             hideModal('friends-modal'); updateUI(); saveGame();
         }
 
         function showFoodModal() {
+            playSound('click'); // Звук клика
             const container = document.getElementById('food-options'); container.innerHTML = '';
             food.forEach(item => {
                 const el = document.createElement('div'); el.className = 'option';
@@ -571,10 +590,11 @@
             changeStat('money', -foodItem.cost); changeStat('satiety', foodItem.satiety); changeStat('health', foodItem.health); changeStat('stress', foodItem.stress);
             playSound('loss', 1.5);
             addEvent(`Поел: "${foodItem.name}". Хоть какая-то радость в этой жизни.`);
-            hideModal('food-modal'); nextDay();
+            hideModal('food-modal'); updateUI(); saveGame();
         }
 
         function showShadyDealsModal() {
+            playSound('click'); // Звук клика
             const container = document.getElementById('shady-deals-options'); container.innerHTML = '';
             shadyDeals.forEach(deal => {
                 const el = document.createElement('div');
@@ -599,23 +619,26 @@
                 changeStat('money', deal.reward);
                 showToast(`Афера удалась! Ты поднял ${deal.reward.toLocaleString()} ₽!`, 'success');
                 addEvent(`Ты провернул "${deal.name}" и сорвал куш.`);
+                playSound('gain', 1.2);
             } else {
                 changeStat('money', deal.penalty);
                 showToast(`Тебя кинули! Потеряно ${Math.abs(deal.penalty).toLocaleString()} ₽`, 'danger');
                 addEvent(`Схема "${deal.name}" провалилась. Ты в еще большей жопе.`);
+                playSound('loss', 1.2);
             }
             hideModal('shady-deals-modal');
-            nextDay();
+            updateUI();
+            saveGame();
         }
         
         // --- Случайные события и конец игры (БОЛЬШЕ РАНДОМА) ---
         function randomEvent() {
             const events = [
-                () => { changeStat('money', 1000); showToast("Нашёл 1000 ₽ у ларька! Сегодня везет.", 'success'); },
-                () => { if(gameState.money > 1500) { changeStat('money', -1500); showToast("Цыгане развели на 1500 ₽. Лох - это судьба.", 'danger'); }},
+                () => { changeStat('money', 1000); showToast("Нашёл 1000 ₽ у ларька! Сегодня везет.", 'success'); playSound('gain'); },
+                () => { if(gameState.money > 1500) { changeStat('money', -1500); showToast("Цыгане развели на 1500 ₽. Лох - это судьба.", 'danger'); playSound('loss'); }},
                 () => { changeStat('health', -15); showToast("Простудился под дождем, здоровье ухудшилось.", 'warning'); addEvent("Заболела спина и жопа. Кажется, это простуда.", 'warning');},
                 () => { changeStat('stress', -20); showToast("По телеку показали 'Бригаду'. На душе стало тепло.", 'success'); },
-                () => { if(gameState.money > 500) { changeStat('money', -500); showToast("Гопники отжали 500 ₽ 'на семки'.", 'danger'); addEvent("Нарвался на гоп-стоп. Легко отделался.", 'danger'); }},
+                () => { if(gameState.money > 500) { changeStat('money', -500); showToast("Гопники отжали 500 ₽ 'на семки'.", 'danger'); addEvent("Нарвался на гоп-стоп. Легко отделался.", 'danger'); playSound('loss'); }},
                 () => { changeStat('satiety', 20); showToast("Баба Нюра из подъезда угостила пирожками.", 'success'); }
             ];
             events[Math.floor(Math.random() * events.length)]();
@@ -675,12 +698,15 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация звука при первом клике на body, чтобы обойти ограничения браузеров
             document.body.addEventListener('click', initAudio, { once: true });
+            
+            // Убрали playSound('click') из общего обработчика, чтобы он не срабатывал на каждое модальное окно/кнопку закрытия/option, 
+            // так как это мешало звукам в toast'ах и основной логике.
             document.querySelectorAll('.action-btn, .modal-close, .option').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     haptic('light');
-                    playSound('click', 1.5);
                 });
             });
             initGame();
